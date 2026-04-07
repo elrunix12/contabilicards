@@ -73,34 +73,59 @@ function montarTelaJogo() {
         </div>
     `).join('');
 
-    // --- Monta Tabuleiro (Formato de Caminho em "S") ---
+    // --- Monta Tabuleiro (Formato Clássico / Banco Imobiliário) ---
     const tab = document.getElementById('tabuleiro');
     tab.innerHTML = '';
-    
-    let caminhoS = [];
-    const colunas = 5; // Como temos 25 casas (0 a 24), 5 colunas formam um quadrado perfeito 5x5
-    
-    // Organiza as casas em linhas que vão e voltam
-    for (let i = 0; i <= NUM_CASAS; i += colunas) {
-        let linha = [];
-        for (let j = 0; j < colunas && (i + j) <= NUM_CASAS; j++) {
-            linha.push(i + j);
-        }
-        // Inverte a ordem das casas se for uma linha ímpar (faz o zigue-zague)
-        if ((i / colunas) % 2 !== 0) {
-            linha.reverse();
-        }
-        caminhoS.push(...linha);
-    }
 
-    // Desenha as casas na tela baseada na ordem do zigue-zague
-    caminhoS.forEach(i => {
+    // Cria a área central com o nome do jogo E O BOTÃO DE JOGAR
+    let centro = document.createElement('div');
+    centro.id = 'centro-tabuleiro';
+    centro.innerHTML = `
+        <h1>Contabilidade<br>em Ação</h1>
+        <button onclick="abrirPainelPergunta()" id="btn-jogar">Sortear Pergunta</button>
+    `;
+    tab.appendChild(centro);
+
+    // Desenha as casas nas bordas
+    for (let i = 0; i <= NUM_CASAS; i++) {
         let div = document.createElement('div');
-        div.className = `casa ${CASAS_BONUS.includes(i) ? 'bonus' : ''} ${CASAS_RUINS.includes(i) ? 'ruim' : ''}`;
+        
+        let ehBonus = CASAS_BONUS.includes(i);
+        let ehRuim = CASAS_RUINS.includes(i);
+        
+        div.className = `casa ${ehBonus ? 'bonus' : ''} ${ehRuim ? 'ruim' : ''}`;
         div.id = `casa-${i}`;
-        div.innerText = i === 0 ? 'Início' : i;
+        
+        // Adiciona o número da casa e o texto de efeito
+        let conteudoHTML = `<span class="numero">${i === 0 ? 'Início' : i}</span>`;
+        if (ehBonus) {
+            conteudoHTML += `<span class="efeito-casa">+2 Casas</span>`;
+        } else if (ehRuim) {
+            conteudoHTML += `<span class="efeito-casa">-2 Casas</span>`;
+        }
+        div.innerHTML = conteudoHTML;
+
+        // Define a posição exata de cada casa no formato de anel
+        let row, col;
+        if (i >= 0 && i <= 6) { // Borda inferior (direita pra esquerda)
+            row = 8;
+            col = 7 - i;
+        } else if (i >= 7 && i <= 12) { // Borda esquerda (baixo pra cima)
+            col = 1;
+            row = 8 - (i - 6);
+        } else if (i >= 13 && i <= 19) { // Borda superior (esquerda pra direita)
+            row = 1;
+            col = i - 12; 
+        } else if (i >= 20 && i <= 24) { // Borda direita (cima pra baixo)
+            col = 7;
+            row = 1 + (i - 19); 
+        }
+        
+        div.style.gridRow = row;
+        div.style.gridColumn = col;
+
         tab.appendChild(div);
-    });
+    }
 
     posicionarPecas();
     atualizarBotoesHistorico();
@@ -463,4 +488,18 @@ function alternarModoProjetor() {
         btn.innerText = "Modo Projetor";
         btn.style.backgroundColor = "#007bff"; // Volta ao azul
     }
+}
+
+// --- SISTEMA DE ZOOM ---
+let nivelZoom = 1; // 1 significa 100% (tamanho original)
+
+function mudarZoom(alteracao) {
+    nivelZoom += alteracao;
+    
+    // Limita o zoom para não ficar nem minúsculo nem gigantesco (de 50% a 200%)
+    if (nivelZoom < 0.5) nivelZoom = 0.5;
+    if (nivelZoom > 2.0) nivelZoom = 2.0;
+    
+    // Aplica a transformação visual no tabuleiro
+    document.getElementById('tabuleiro').style.transform = `scale(${nivelZoom})`;
 }
