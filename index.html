@@ -28,16 +28,21 @@
             <button onclick="desfazerJogada()" id="btn-desfazer" disabled>Desfazer Jogada</button>
             <button onclick="refazerJogada()" id="btn-refazer" disabled>Refazer Jogada</button>
             <button onclick="voltarMenu()">Voltar ao Menu</button>
-            <hr style="margin: 15px 0;"> <button onclick="alternarModoProjetor()" id="btn-projetor" style="background-color: #007bff; color: white;">Modo Projetor</button>
+            <hr style="margin: 15px 0;">
+            <button onclick="alternarModoProjetor()" id="btn-projetor" style="background-color: #007bff; color: white;">Modo Projetor</button>
             
+            <div style="display: flex; gap: 5px; margin-top: 10px;">
+                <button onclick="mudarZoom(0.1)" style="flex: 1; font-size: 1.2rem; background: #6c757d; color: white;">Zoom +</button>
+                <button onclick="mudarZoom(-0.1)" style="flex: 1; font-size: 1.2rem; background: #6c757d; color: white;">Zoom -</button>
+            </div>
+
             <h3>Grupos</h3>
             <div id="tabela-grupos"></div>
         </div>
 
         <div class="area-principal">
             <div id="tabuleiro"></div>
-            <button onclick="abrirPainelPergunta()" id="btn-jogar">Sortear Pergunta</button>
-        </div>
+            </div>
     </div>
 
     <div id="modal-pergunta" class="modal">
