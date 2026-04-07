@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Contabilidade</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="tela-inicial" class="tela ativa">
+        <h1 class="titulo">Contabilidade em Ação</h1>
+        
+        <div class="menu-botoes">
+            <button onclick="iniciarNovoJogo()">Novo Jogo</button>
+            <button onclick="carregarJogoSalvo()" id="btn-continuar" style="display: none;">Continuar Jogo</button>
+            <button onclick="abrirModal('modal-regras')">Regras</button>
+            <button onclick="abrirModal('modal-configs')">Configurações</button>
+        </div>
+
+        <div class="rodape">
+            <p id="contribuidores">Contribuidores: Aluno 1, Aluno 2, Aluno 3</p>
+            <p id="licenca"><a href="LICENSE" target="_blank">Licença do Projeto</a></p>
+        </div>
+    </div>
+
+    <div id="tela-jogo" class="tela">
+        <div class="painel-lateral">
+            <button onclick="desfazerJogada()" id="btn-desfazer" disabled>Desfazer Jogada</button>
+            <button onclick="refazerJogada()" id="btn-refazer" disabled>Refazer Jogada</button>
+            <button onclick="voltarMenu()">Voltar ao Menu</button>
+            <hr style="margin: 15px 0;"> <button onclick="alternarModoProjetor()" id="btn-projetor" style="background-color: #007bff; color: white;">Modo Projetor</button>
+            
+            <h3>Grupos</h3>
+            <div id="tabela-grupos"></div>
+        </div>
+
+        <div class="area-principal">
+            <div id="tabuleiro"></div>
+            <button onclick="abrirPainelPergunta()" id="btn-jogar">Sortear Pergunta</button>
+        </div>
+    </div>
+
+    <div id="modal-pergunta" class="modal">
+        <div class="modal-conteudo">
+            <h2 id="grupo-atual-texto"></h2>
+            <div class="escolha-dificuldade" id="bloco-dificuldade">
+                <p>Escolha a dificuldade:</p>
+                <button onclick="carregarPergunta('facil')">Fácil (15s)</button>
+                <button onclick="carregarPergunta('dificil')">Difícil (1min)</button>
+            </div>
+            
+            <div id="area-pergunta" style="display:none;">
+                <p id="texto-tempo">Tempo: <span id="contador">0</span>s</p>
+                <p id="texto-pergunta"></p>
+                <div id="alternativas"></div>
+                <div id="resolucao" style="display:none;">
+                    <p id="texto-resolucao"></p>
+                    <button onclick="proximoTurno()">Próximo Grupo</button>
+                </div>
+            </div>
+        </div>
+    </div> <div id="modal-regras" class="modal">
+        <div class="modal-conteudo">
+            <h2>Regras do Jogo</h2>
+            <div id="conteudo-regras" style="text-align: left; max-height: 60vh; overflow-y: auto; margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+                Carregando regras...
+            </div>
+            <button onclick="fecharModal('modal-regras')">Fechar Regras</button>
+        </div>
+    </div>
+
+    <div id="modal-configs" class="modal">
+        <div class="modal-conteudo">
+            <h2>Configurações</h2>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 15px;">
+                    <input type="checkbox" id="config-som" onchange="salvarConfiguracoes()">
+                    Ativar som de movimento das peças
+                </label>
+                <label style="display: block;">
+                    <input type="checkbox" id="config-exibir-pergunta" onchange="salvarConfiguracoes()">
+                    Exibir texto da pergunta na tela (se desmarcado, exibe apenas as alternativas)
+                </label>
+            </div>
+            <button onclick="fecharModal('modal-configs')">Salvar e Fechar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

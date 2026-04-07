@@ -1,0 +1,16 @@
+[
+  {
+    "dificuldade": "facil",
+    "pergunta": "O que é um Ativo?",
+    "alternativas": ["Bens e direitos", "Obrigações", "Capital Social"],
+    "correta": "Bens e direitos",
+    "resolucao": "Os ativos representam todos os bens e direitos que a empresa possui."
+  },
+  {
+    "dificuldade": "dificil",
+    "pergunta": "Como é calculada a Depreciação Linear?",
+    "alternativas": ["(Valor do bem - Valor residual) / Vida útil", "Valor do bem x Taxa de juros", "Valor residual / Vida útil"],
+    "correta": "(Valor do bem - Valor residual) / Vida útil",
+    "resolucao": "Na depreciação linear subtraímos o valor residual do custo de aquisição e dividimos pela vida útil estimada."
+  }
+]
