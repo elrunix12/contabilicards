@@ -22,6 +22,6 @@ Preste atenção onde a sua peça vai parar:
 * Se o cronômetro zerar antes de escolherem a alternativa, a resposta conta como errada.
 * **Botão Desfazer:** Serve apenas caso o mediador clique em algo sem querer.
 * **Botão Refazer:** Caso clique no **Botão Desfazer**, ele desfaz essa ação. 
-* **Fim de jogo:** Quem bater na Casa 24 primeiro, vence.
+* **Fim de jogo:** Quem completar a volta, vence!
 
 Boa sorte!

@@ -2,6 +2,7 @@
 const CASAS_BONUS = [3, 8, 14, 20, 26, 31, 37, 43, 49, 55, 61, 67, 73, 79]; 
 const CASAS_RUINS = [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71, 77]; 
 const CORES_DISTINTAS = ['#FF0000', '#0000FF', '#008000', '#FFA500', '#800080', '#00FFFF', '#FF00FF', '#FFFF00', '#00FF00', '#800000'];
+const LIMITE_HISTORICO = 20; // Limita a memória a 20 jogadas
 
 let bancoDePerguntasGeral = [];
 
@@ -212,6 +213,12 @@ function aplicarFotoDoJogo(fotoString) {
 // --- LÓGICA DE PERGUNTAS E TURNOS ---
 function abrirPainelPergunta() {
     jogo.historico.push(obterFotoDoJogo());
+    
+    // Trava de segurança do limite
+    if (jogo.historico.length > LIMITE_HISTORICO) {
+        jogo.historico.shift(); // Remove a jogada mais antiga
+    }
+    
     jogo.historicoDesfeito = []; 
     atualizarBotoesHistorico();
 
@@ -337,6 +344,10 @@ function proximoTurno() {
     // Verifica se alguém completou a volta inteira
     let ganhador = jogo.grupos.find(g => g.posicao >= jogo.totalCasas);
     if (ganhador) {
+        // AQUI ESTÁ A CORREÇÃO: Força o tabuleiro a se redesenhar com a peça na casa FIM
+        montarTelaJogo(); 
+        
+        // Só depois chama a tela final
         encerrarJogoMostrarRanking();
         return;
     }
@@ -352,6 +363,12 @@ function desfazerJogada() {
         let desfeitoAtual = jogo.historicoDesfeito || [];
         
         desfeitoAtual.push(obterFotoDoJogo());
+        
+        // Trava de segurança no refazer
+        if (desfeitoAtual.length > LIMITE_HISTORICO) {
+            desfeitoAtual.shift();
+        }
+        
         let estadoAnterior = historicoAtual.pop();
         aplicarFotoDoJogo(estadoAnterior);
         
@@ -369,6 +386,12 @@ function refazerJogada() {
         let desfeitoAtual = jogo.historicoDesfeito;
         
         historicoAtual.push(obterFotoDoJogo());
+        
+        // Trava de segurança no histórico principal
+        if (historicoAtual.length > LIMITE_HISTORICO) {
+            historicoAtual.shift();
+        }
+        
         let estadoRefeito = desfeitoAtual.pop();
         aplicarFotoDoJogo(estadoRefeito);
         
@@ -381,28 +404,56 @@ function refazerJogada() {
 }
 
 function encerrarJogoMostrarRanking() {
+    // Esconde o modal de perguntas caso esteja aberto
     document.getElementById('modal-pergunta').classList.remove('ativo');
     
+    // Calcula o ranking
     let ranking = [...jogo.grupos].sort((a, b) => b.posicao - a.posicao);
     let maiorPosicao = ranking[0].posicao;
     let vencedores = ranking.filter(g => g.posicao === maiorPosicao).map(g => g.nome);
     
-    let mensagem = "🏆 FIM DE JOGO! 🏆\n\n";
-    if (vencedores.length > 1) {
-        mensagem += `Houve um empate! Os vencedores são: ${vencedores.join(', ')} (Volta Completa)\n\n`;
-    } else {
-        mensagem += `O grande vencedor é: ${vencedores[0]} (Volta Completa)\n\n`;
-    }
-    
-    mensagem += "--- RANKING FINAL ---\n";
-    ranking.forEach((g, index) => {
-        let casaAtual = g.posicao === jogo.totalCasas ? "Chegada" : g.posicao;
-        mensagem += `${index + 1}º Lugar: ${g.nome} - Casa ${casaAtual}\n`;
-    });
-    
-    alert(mensagem);
+    // Limpa o save do jogo para o próximo recomeçar do zero
     localStorage.removeItem('jogoSalvo');
-    location.reload();
+
+    // Desativa os botões laterais para travar o estado do jogo
+    const btnDesfazer = document.getElementById('btn-desfazer');
+    const btnRefazer = document.getElementById('btn-refazer');
+    if (btnDesfazer) btnDesfazer.disabled = true;
+    if (btnRefazer) btnRefazer.disabled = true;
+
+    // Configura o texto de vitória
+    let tituloFim = vencedores.length > 1 ? "EMPATE TÉCNICO!" : "TEMOS UM VENCEDOR!";
+    let subtitulo = vencedores.join(', ');
+
+    // Constrói o HTML da tela de Ranking que vai no centro do tabuleiro
+    let rankingHTML = `
+        <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+            <h2 style="font-size: 2.8rem; color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin: 0 0 10px 0;">🏆 FIM DE JOGO 🏆</h2>
+            <p style="font-size: 1.5rem; color: white; margin: 0 0 20px 0;">${tituloFim}<br><strong style="font-size: 2rem;">${subtitulo}</strong></p>
+            
+            <div style="background: rgba(255, 255, 255, 0.95); padding: 15px 30px; border-radius: 10px; width: 85%; box-shadow: 0 4px 10px rgba(0,0,0,0.3); max-height: 50%; overflow-y: auto;">
+                <h3 style="margin: 0 0 10px 0; color: #333; font-size: 1.6rem; text-align: center; text-transform: uppercase;">Ranking Final</h3>
+                <ol style="margin: 0; padding-left: 20px; font-size: 1.3rem; color: #444; text-align: left;">
+                    ${ranking.map((g, i) => {
+                        let casaTexto = g.posicao >= jogo.totalCasas ? "Volta Completa" : `Casa ${g.posicao}`;
+                        let medalha = i === 0 ? "🥇" : (i === 1 ? "🥈" : (i === 2 ? "🥉" : ""));
+                        return `<li style="margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 5px;"><strong>${g.nome}</strong> ${medalha} - <span style="font-size: 1rem;">${casaTexto}</span></li>`;
+                    }).join('')}
+                </ol>
+            </div>
+            
+            <button onclick="location.reload()" style="margin-top: 25px; padding: 15px 30px; font-size: 1.4rem; font-weight: bold; background: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.4); transition: transform 0.2s;">Sair para o Menu</button>
+        </div>
+    `;
+
+    // Aplica o placar no centro e escurece o fundo para dar destaque dramático
+    const centro = document.getElementById('centro-tabuleiro');
+    centro.style.background = "rgba(44, 62, 80, 0.95)"; // Fundo escuro azulado
+    centro.style.transform = "scale(1.03)"; // Leve zoom no centro
+    centro.style.transition = "all 0.5s ease";
+    centro.style.zIndex = "20";
+    
+    centro.innerHTML = rankingHTML;
 }
 
 // --- NAVEGAÇÃO, MODAIS E ZOOM ---
