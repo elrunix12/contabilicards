@@ -79,6 +79,12 @@
             <h2>Configurações</h2>
             <div style="text-align: left; margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 15px;">
+                    <strong>Quantidade de casas no tabuleiro:</strong><br>
+                    <small>(Aumente de 4 em 4 para fechar perfeito. Ex: 24, 28, 32, 36)</small><br>
+                    <input type="number" id="config-casas" min="16" max="100" step="4" onchange="salvarConfiguracoes()" style="width: 80px; padding: 8px; font-size: 1.1rem; margin-top: 5px;">
+                </label>
+                <hr style="margin: 15px 0;">
+                <label style="display: block; margin-bottom: 15px;">
                     <input type="checkbox" id="config-som" onchange="salvarConfiguracoes()">
                     Ativar som de movimento das peças
                 </label>
@@ -87,7 +93,7 @@
                     Exibir texto da pergunta na tela (se desmarcado, exibe apenas as alternativas)
                 </label>
             </div>
-            <button onclick="fecharModal('modal-configs')">Salvar e Fechar</button>
+            <button onclick="fecharModal('modal-configs')" style="padding: 10px 20px; font-size: 1.1rem; cursor: pointer;">Salvar e Fechar</button>
         </div>
     </div>
 
