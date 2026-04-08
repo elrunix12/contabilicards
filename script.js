@@ -1,7 +1,7 @@
 // --- CONFIGURAÇÕES INICIAIS ---
 const NUM_CASAS = 24;
 const CASAS_BONUS = [1, 7, 10]; 
-const CASAS_RUINS = [4, 13, 19]; 
+const CASAS_RUINS = [4, 13, 23]; 
 const CORES_DISTINTAS = ['#FF0000', '#0000FF', '#008000', '#FFA500', '#800080', '#00FFFF', '#FF00FF', '#FFFF00', '#00FF00', '#800000'];
 
 // Variável para guardar TODAS as perguntas do arquivo
@@ -81,7 +81,7 @@ function montarTelaJogo() {
     let centro = document.createElement('div');
     centro.id = 'centro-tabuleiro';
     centro.innerHTML = `
-        <h1>Contabilidade<br>em Ação</h1>
+        <h1>Contabilicards</h1>
         <button onclick="abrirPainelPergunta()" id="btn-jogar">Sortear Pergunta</button>
     `;
     tab.appendChild(centro);
@@ -430,8 +430,10 @@ async function carregarRegras() {
         if (!response.ok) throw new Error("Arquivo não encontrado");
         
         const texto = await response.text();
-        // Exibe o markdown usando <pre> para respeitar quebras de linha e formatação básica
-        document.getElementById('conteudo-regras').innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">${texto}</pre>`;
+        
+        // Usa a biblioteca Marked para transformar o texto Markdown em HTML real
+        document.getElementById('conteudo-regras').innerHTML = marked.parse(texto);
+        
     } catch (error) {
         document.getElementById('conteudo-regras').innerHTML = "Arquivo manual/regras.md não encontrado.";
     }
