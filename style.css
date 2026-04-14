@@ -269,3 +269,26 @@ body.modo-projetor .casa { width: 105px; height: 105px; }
 body.modo-projetor .casa .numero { font-size: 1.8rem; }
 body.modo-projetor .efeito-casa { font-size: 0.9rem; }
 body.modo-projetor .peca { width: 35px; height: 35px; }
+
+/* Botões da Tela de Seleção Inicial */
+.btn-selecao {
+    padding: 15px;
+    font-size: 1.2rem;
+    background: transparent;
+    border: 2px solid #2c3e50;
+    border-radius: 8px;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-selecao:hover {
+    background: #2c3e50;
+    color: white;
+    transform: translateY(-2px);
+}

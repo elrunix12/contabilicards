@@ -2,7 +2,7 @@
 const CASAS_BONUS = [3, 8, 14, 20, 26, 31, 37, 43, 49, 55, 61, 67, 73, 79]; 
 const CASAS_RUINS = [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71, 77]; 
 const CORES_DISTINTAS = ['#FF0000', '#0000FF', '#008000', '#FFA500', '#800080', '#00FFFF', '#FF00FF', '#FFFF00', '#00FF00', '#800000'];
-const LIMITE_HISTORICO = 20; // Limita a memória a 20 jogadas
+const LIMITE_HISTORICO = 20;
 
 let bancoDePerguntasGeral = [];
 
@@ -12,7 +12,7 @@ let jogo = {
     perguntasDisponiveis: [],
     historico: [],
     historicoDesfeito: [],
-    totalCasas: 32 
+    totalCasas: 28 // Padrão atualizado para 28
 };
 
 let temporizador;
@@ -21,7 +21,7 @@ let temporizador;
 let configuracoes = {
     somAtivo: false,
     exibirPergunta: true,
-    totalCasas: 32
+    totalCasas: 28
 };
 
 function carregarConfiguracoes() {
@@ -29,7 +29,7 @@ function carregarConfiguracoes() {
         let salvo = JSON.parse(localStorage.getItem('jogoConfigs'));
         configuracoes.somAtivo = salvo.somAtivo || false;
         configuracoes.exibirPergunta = salvo.exibirPergunta !== undefined ? salvo.exibirPergunta : true;
-        configuracoes.totalCasas = salvo.totalCasas || 32; 
+        configuracoes.totalCasas = salvo.totalCasas || 28; 
     }
     
     let chkSom = document.getElementById('config-som');
@@ -44,16 +44,15 @@ function carregarConfiguracoes() {
 function salvarConfiguracoes() {
     configuracoes.somAtivo = document.getElementById('config-som').checked;
     configuracoes.exibirPergunta = document.getElementById('config-exibir-pergunta').checked;
-    configuracoes.totalCasas = parseInt(document.getElementById('config-casas').value) || 32;
+    configuracoes.totalCasas = parseInt(document.getElementById('config-casas').value) || 28;
     
-    // Força o número a ser par para o tabuleiro fechar o anel
     if (configuracoes.totalCasas % 2 !== 0) configuracoes.totalCasas += 1;
     document.getElementById('config-casas').value = configuracoes.totalCasas;
     
     localStorage.setItem('jogoConfigs', JSON.stringify(configuracoes));
 }
 
-// --- INICIALIZAÇÃO ---
+// --- INICIALIZAÇÃO E SELEÇÃO DE PRIMEIRO JOGADOR ---
 window.onload = async () => {
     carregarConfiguracoes();
     if (localStorage.getItem('jogoSalvo')) {
@@ -75,19 +74,37 @@ function iniciarNovoJogo() {
     for (let i = 0; i < qtd; i++) {
         jogo.grupos.push({ id: i, nome: `G${i + 1}`, posicao: 0, cor: CORES_DISTINTAS[i] });
     }
-    jogo.turnoAtual = 0;
     jogo.historico = [];
     jogo.historicoDesfeito = [];
-    jogo.totalCasas = configuracoes.totalCasas || 32; 
+    jogo.totalCasas = configuracoes.totalCasas || 28; 
     jogo.perguntasDisponiveis = [...bancoDePerguntasGeral];
     
+    abrirSelecaoPrimeiro();
+}
+
+function abrirSelecaoPrimeiro() {
+    const lista = document.getElementById('lista-selecao-grupos');
+    lista.innerHTML = jogo.grupos.map((g, i) => `
+        <button class="btn-selecao" onclick="definirPrimeiro(${i})">
+            <span style="display:inline-block; width:20px; height:20px; background:${g.cor}; border-radius:50%; margin-right:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></span>
+            ${g.nome}
+        </button>
+    `).join('');
+
+    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+    document.getElementById('modal-selecao-primeiro').classList.add('ativo');
+}
+
+function definirPrimeiro(index) {
+    jogo.turnoAtual = index;
+    document.getElementById('modal-selecao-primeiro').classList.remove('ativo');
     salvarEstado();
     montarTelaJogo();
 }
 
 function carregarJogoSalvo() {
     jogo = JSON.parse(localStorage.getItem('jogoSalvo'));
-    if (!jogo.totalCasas) jogo.totalCasas = 32; 
+    if (!jogo.totalCasas) jogo.totalCasas = 28; 
     montarTelaJogo();
 }
 
@@ -95,7 +112,7 @@ function salvarEstado() {
     localStorage.setItem('jogoSalvo', JSON.stringify(jogo));
 }
 
-// --- INTERFACE DO TABULEIRO DINÂMICO ---
+// --- INTERFACE DO TABULEIRO DINÂMICO RETANGULAR ---
 function montarTelaJogo() {
     document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
     document.getElementById('tela-jogo').classList.add('ativa');
@@ -112,7 +129,8 @@ function montarTelaJogo() {
     tab.innerHTML = '';
 
     const C = jogo.totalCasas;
-    const W = Math.ceil((C + 4) / 4);
+    // Força formato retangular (largura maior que altura)
+    const W = Math.ceil((C + 4) / 4) + 1;
     const H = Math.floor((C + 4) / 2) - W;
 
     tab.style.gridTemplateColumns = `repeat(${W}, 1fr)`;
@@ -123,12 +141,12 @@ function montarTelaJogo() {
     centro.style.gridColumn = `2 / ${W}`;
     centro.style.gridRow = `2 / ${H}`;
     centro.innerHTML = `
-        <h1>Contabilicards!</h1>
+        <h1>Contabilidade<br>em Ação</h1>
         <button onclick="abrirPainelPergunta()" id="btn-jogar">Sortear Pergunta</button>
     `;
     tab.appendChild(centro);
 
-    // Desenha o anel de casas
+    // Desenha o anel de casas (Sentido Anti-Horário)
     for (let i = 0; i < C; i++) {
         let div = document.createElement('div');
         
@@ -141,7 +159,6 @@ function montarTelaJogo() {
         let conteudoHTML = "";
         
         if (i === 0) {
-            // A casa 0 agora é o início e o fim simultaneamente
             conteudoHTML = `<span class="efeito-casa" style="color: #333; font-size: 1rem; text-align: center; line-height: 1.2;">INÍCIO /<br>FIM</span>`;
             div.style.background = "#ffd700"; 
             div.style.borderColor = "#c6a700";
@@ -156,15 +173,20 @@ function montarTelaJogo() {
         
         div.innerHTML = conteudoHTML;
 
+        // Sentido Anti-Horário iniciando no canto inferior esquerdo
         let row, col;
-        if (i < W) { 
-            row = H; col = W - i;
-        } else if (i < W + H - 1) { 
-            let j = i - W; row = H - 1 - j; col = 1;
-        } else if (i < 2 * W + H - 2) { 
-            let j = i - (W + H - 1); row = 1; col = 2 + j;
-        } else { 
-            let j = i - (2 * W + H - 2); row = 2 + j; col = W;
+        if (i < W) { // Parede de baixo (Esquerda para Direita)
+            row = H; 
+            col = 1 + i;
+        } else if (i < W + H - 2) { // Parede da Direita (Baixo para Cima)
+            row = H - 1 - (i - W); 
+            col = W;
+        } else if (i < 2 * W + H - 2) { // Parede de Cima (Direita para Esquerda)
+            row = 1; 
+            col = W - (i - (W + H - 2));
+        } else { // Parede da Esquerda (Cima para Baixo)
+            row = 2 + (i - (2 * W + H - 2)); 
+            col = 1;
         }
         
         div.style.gridRow = row;
@@ -178,7 +200,6 @@ function montarTelaJogo() {
 
 function posicionarPecas() {
     jogo.grupos.forEach(g => {
-        // Se a posição for igual ou maior que o total (completou a volta), a peça renderiza na casa 0
         let idCasaVisual = g.posicao >= jogo.totalCasas ? 0 : g.posicao;
         let casaDiv = document.getElementById(`casa-${idCasaVisual}`);
         
@@ -207,16 +228,15 @@ function aplicarFotoDoJogo(fotoString) {
     jogo.grupos = backup.grupos;
     jogo.turnoAtual = backup.turnoAtual;
     jogo.perguntasDisponiveis = backup.perguntasDisponiveis;
-    jogo.totalCasas = backup.totalCasas || 32;
+    jogo.totalCasas = backup.totalCasas || 28;
 }
 
 // --- LÓGICA DE PERGUNTAS E TURNOS ---
 function abrirPainelPergunta() {
     jogo.historico.push(obterFotoDoJogo());
     
-    // Trava de segurança do limite
     if (jogo.historico.length > LIMITE_HISTORICO) {
-        jogo.historico.shift(); // Remove a jogada mais antiga
+        jogo.historico.shift(); 
     }
     
     jogo.historicoDesfeito = []; 
@@ -332,7 +352,6 @@ function processarResposta(acertou) {
         }
     }
 
-    // Trava quando o jogador completa a volta
     jogo.grupos.forEach(g => { if(g.posicao > jogo.totalCasas) g.posicao = jogo.totalCasas; });
 
     document.getElementById('texto-resolucao').innerText = msg + `\nResolução: ${perguntaAtual.resolucao}`;
@@ -341,13 +360,9 @@ function processarResposta(acertou) {
 function proximoTurno() {
     document.getElementById('modal-pergunta').classList.remove('ativo');
     
-    // Verifica se alguém completou a volta inteira
     let ganhador = jogo.grupos.find(g => g.posicao >= jogo.totalCasas);
     if (ganhador) {
-        // AQUI ESTÁ A CORREÇÃO: Força o tabuleiro a se redesenhar com a peça na casa FIM
         montarTelaJogo(); 
-        
-        // Só depois chama a tela final
         encerrarJogoMostrarRanking();
         return;
     }
@@ -364,7 +379,6 @@ function desfazerJogada() {
         
         desfeitoAtual.push(obterFotoDoJogo());
         
-        // Trava de segurança no refazer
         if (desfeitoAtual.length > LIMITE_HISTORICO) {
             desfeitoAtual.shift();
         }
@@ -387,7 +401,6 @@ function refazerJogada() {
         
         historicoAtual.push(obterFotoDoJogo());
         
-        // Trava de segurança no histórico principal
         if (historicoAtual.length > LIMITE_HISTORICO) {
             historicoAtual.shift();
         }
@@ -404,28 +417,22 @@ function refazerJogada() {
 }
 
 function encerrarJogoMostrarRanking() {
-    // Esconde o modal de perguntas caso esteja aberto
     document.getElementById('modal-pergunta').classList.remove('ativo');
     
-    // Calcula o ranking
     let ranking = [...jogo.grupos].sort((a, b) => b.posicao - a.posicao);
     let maiorPosicao = ranking[0].posicao;
     let vencedores = ranking.filter(g => g.posicao === maiorPosicao).map(g => g.nome);
     
-    // Limpa o save do jogo para o próximo recomeçar do zero
     localStorage.removeItem('jogoSalvo');
 
-    // Desativa os botões laterais para travar o estado do jogo
     const btnDesfazer = document.getElementById('btn-desfazer');
     const btnRefazer = document.getElementById('btn-refazer');
     if (btnDesfazer) btnDesfazer.disabled = true;
     if (btnRefazer) btnRefazer.disabled = true;
 
-    // Configura o texto de vitória
     let tituloFim = vencedores.length > 1 ? "EMPATE TÉCNICO!" : "TEMOS UM VENCEDOR!";
     let subtitulo = vencedores.join(', ');
 
-    // Constrói o HTML da tela de Ranking que vai no centro do tabuleiro
     let rankingHTML = `
         <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
             <h2 style="font-size: 2.8rem; color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin: 0 0 10px 0;">🏆 FIM DE JOGO 🏆</h2>
@@ -446,10 +453,9 @@ function encerrarJogoMostrarRanking() {
         </div>
     `;
 
-    // Aplica o placar no centro e escurece o fundo para dar destaque dramático
     const centro = document.getElementById('centro-tabuleiro');
-    centro.style.background = "rgba(44, 62, 80, 0.95)"; // Fundo escuro azulado
-    centro.style.transform = "scale(1.03)"; // Leve zoom no centro
+    centro.style.background = "rgba(44, 62, 80, 0.95)"; 
+    centro.style.transform = "scale(1.03)"; 
     centro.style.transition = "all 0.5s ease";
     centro.style.zIndex = "20";
     
