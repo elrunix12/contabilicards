@@ -141,7 +141,7 @@ function montarTelaJogo() {
     centro.style.gridColumn = `2 / ${W}`;
     centro.style.gridRow = `2 / ${H}`;
     centro.innerHTML = `
-        <h1>Contabilidade<br>em Ação</h1>
+        <h1>Contabilicards!</h1>
         <button onclick="abrirPainelPergunta()" id="btn-jogar">Sortear Pergunta</button>
     `;
     tab.appendChild(centro);
