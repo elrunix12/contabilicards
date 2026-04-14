@@ -12,7 +12,7 @@ let jogo = {
     perguntasDisponiveis: [],
     historico: [],
     historicoDesfeito: [],
-    totalCasas: 28 // Padrão atualizado para 28
+    totalCasas: 28 
 };
 
 let temporizador;
@@ -129,7 +129,6 @@ function montarTelaJogo() {
     tab.innerHTML = '';
 
     const C = jogo.totalCasas;
-    // Força formato retangular (largura maior que altura)
     const W = Math.ceil((C + 4) / 4) + 1;
     const H = Math.floor((C + 4) / 2) - W;
 
@@ -150,8 +149,8 @@ function montarTelaJogo() {
     for (let i = 0; i < C; i++) {
         let div = document.createElement('div');
         
-        let ehBonus = CASAS_BONUS.includes(i) && i !== 0;
-        let ehRuim = CASAS_RUINS.includes(i) && i !== 0;
+        let ehBonus = CASAS_BONUS.includes(i) && i !== 0 && i !== C - 1;
+        let ehRuim = CASAS_RUINS.includes(i) && i !== 0 && i !== C - 1;
         
         div.className = `casa ${ehBonus ? 'bonus' : ''} ${ehRuim ? 'ruim' : ''}`;
         div.id = `casa-${i}`;
@@ -159,7 +158,11 @@ function montarTelaJogo() {
         let conteudoHTML = "";
         
         if (i === 0) {
-            conteudoHTML = `<span class="efeito-casa" style="color: #333; font-size: 1rem; text-align: center; line-height: 1.2;">INÍCIO /<br>FIM</span>`;
+            conteudoHTML = `<span class="efeito-casa" style="color: #333; font-size: 1.2rem; font-weight: bold; text-align: center;">INÍCIO</span>`;
+            div.style.background = "#e0f7fa"; 
+            div.style.borderColor = "#00bcd4";
+        } else if (i === C - 1) { // A Última Casa
+            conteudoHTML = `<span class="numero">${i}</span><span class="efeito-casa" style="color: #333; font-size: 0.9rem;">Publicação</span>`;
             div.style.background = "#ffd700"; 
             div.style.borderColor = "#c6a700";
         } else {
@@ -173,18 +176,17 @@ function montarTelaJogo() {
         
         div.innerHTML = conteudoHTML;
 
-        // Sentido Anti-Horário iniciando no canto inferior esquerdo
         let row, col;
-        if (i < W) { // Parede de baixo (Esquerda para Direita)
+        if (i < W) { 
             row = H; 
             col = 1 + i;
-        } else if (i < W + H - 2) { // Parede da Direita (Baixo para Cima)
+        } else if (i < W + H - 2) { 
             row = H - 1 - (i - W); 
             col = W;
-        } else if (i < 2 * W + H - 2) { // Parede de Cima (Direita para Esquerda)
+        } else if (i < 2 * W + H - 2) { 
             row = 1; 
             col = W - (i - (W + H - 2));
-        } else { // Parede da Esquerda (Cima para Baixo)
+        } else { 
             row = 2 + (i - (2 * W + H - 2)); 
             col = 1;
         }
@@ -200,7 +202,8 @@ function montarTelaJogo() {
 
 function posicionarPecas() {
     jogo.grupos.forEach(g => {
-        let idCasaVisual = g.posicao >= jogo.totalCasas ? 0 : g.posicao;
+        // A peça estaciona visualmente na última casa (C - 1) caso a pontuação a ultrapasse
+        let idCasaVisual = g.posicao >= jogo.totalCasas - 1 ? jogo.totalCasas - 1 : g.posicao;
         let casaDiv = document.getElementById(`casa-${idCasaVisual}`);
         
         if(casaDiv) {
@@ -323,8 +326,8 @@ function processarResposta(acertou) {
 
     if (dificuldadeAtual === 'facil') {
         if (acertou) {
-            grupoAtual.posicao += 1;
-            msg += "Você andou 1 casa.";
+            grupoAtual.posicao += 3; // Agora anda 3 casas
+            msg += "Você andou 3 casas.";
         } else {
             let idxAnterior = jogo.turnoAtual === 0 ? jogo.grupos.length - 1 : jogo.turnoAtual - 1;
             jogo.grupos[idxAnterior].posicao += 3;
@@ -332,8 +335,8 @@ function processarResposta(acertou) {
         }
     } else { 
         if (acertou) {
-            grupoAtual.posicao += 3;
-            msg += "Você andou 3 casas!";
+            grupoAtual.posicao += 5; // Agora anda 5 casas
+            msg += "Você andou 5 casas!";
         } else {
             msg += "Você não se move.";
         }
@@ -341,7 +344,7 @@ function processarResposta(acertou) {
 
     let grupoQueMoveu = acertou ? grupoAtual : (dificuldadeAtual === 'facil' ? jogo.grupos[jogo.turnoAtual === 0 ? jogo.grupos.length - 1 : jogo.turnoAtual - 1] : null);
 
-    if (grupoQueMoveu && grupoQueMoveu.posicao < jogo.totalCasas) {
+    if (grupoQueMoveu && grupoQueMoveu.posicao < jogo.totalCasas - 1) {
         if (CASAS_BONUS.includes(grupoQueMoveu.posicao)) {
             grupoQueMoveu.posicao += 2;
             msg += `\n🎉 BÔNUS: O ${grupoQueMoveu.nome} caiu em uma casa bônus e avançou +2 casas!`;
@@ -352,7 +355,8 @@ function processarResposta(acertou) {
         }
     }
 
-    jogo.grupos.forEach(g => { if(g.posicao > jogo.totalCasas) g.posicao = jogo.totalCasas; });
+    // Trava na última casa lógica (27, caso o padrão seja 28)
+    jogo.grupos.forEach(g => { if(g.posicao >= jogo.totalCasas - 1) g.posicao = jogo.totalCasas - 1; });
 
     document.getElementById('texto-resolucao').innerText = msg + `\nResolução: ${perguntaAtual.resolucao}`;
 }
@@ -360,7 +364,8 @@ function processarResposta(acertou) {
 function proximoTurno() {
     document.getElementById('modal-pergunta').classList.remove('ativo');
     
-    let ganhador = jogo.grupos.find(g => g.posicao >= jogo.totalCasas);
+    // Verifica a vitória com base na penúltima casa
+    let ganhador = jogo.grupos.find(g => g.posicao >= jogo.totalCasas - 1);
     if (ganhador) {
         montarTelaJogo(); 
         encerrarJogoMostrarRanking();
@@ -442,7 +447,7 @@ function encerrarJogoMostrarRanking() {
                 <h3 style="margin: 0 0 10px 0; color: #333; font-size: 1.6rem; text-align: center; text-transform: uppercase;">Ranking Final</h3>
                 <ol style="margin: 0; padding-left: 20px; font-size: 1.3rem; color: #444; text-align: left;">
                     ${ranking.map((g, i) => {
-                        let casaTexto = g.posicao >= jogo.totalCasas ? "Volta Completa" : `Casa ${g.posicao}`;
+                        let casaTexto = g.posicao >= jogo.totalCasas - 1 ? "Publicação (Final)" : `Casa ${g.posicao}`;
                         let medalha = i === 0 ? "🥇" : (i === 1 ? "🥈" : (i === 2 ? "🥉" : ""));
                         return `<li style="margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 5px;"><strong>${g.nome}</strong> ${medalha} - <span style="font-size: 1rem;">${casaTexto}</span></li>`;
                     }).join('')}
