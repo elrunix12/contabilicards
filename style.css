@@ -1,45 +1,88 @@
 /* =========================================
-   ESTRUTURA GERAL
+   ESTRUTURA GERAL E TIPOGRAFIA CARTUNESCA
    ========================================= */
 body { 
-    font-family: Arial, sans-serif; 
+    /* Fontes mais arredondadas e amigáveis, padrão do sistema */
+    font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif; 
     margin: 0; 
-    background-color: #f4f4f9; 
+    background-color: #e4ebf1; /* Fundo acinzentado/azulado bem suave (Graphite light) */
+    color: #2c3e50; /* Texto principal sempre em grafite escuro, nunca preto puro */
 }
 
-.tela { 
-    display: none; 
-    height: 100vh; 
+.tela { display: none; height: 100vh; }
+.tela.ativa { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+/* =========================================
+   BOTÕES GERAIS (EFEITO TÁTIL/BRINQUEDO)
+   ========================================= */
+button {
+    font-family: inherit;
+    border: 3px solid #2c3e50; /* Borda grossa grafite */
+    border-radius: 12px;
+    box-shadow: 4px 4px 0px #2c3e50; /* Sombra sólida cartunesca */
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
 }
 
-.tela.ativa { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
+/* Efeito de afundar o botão ao clicar */
+button:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px #2c3e50;
 }
 
 /* =========================================
    MENU INICIAL
    ========================================= */
 .titulo { 
-    font-size: 3rem; 
+    font-size: 4rem; 
     margin-bottom: 2rem; 
+    color: #ffffff;
+    text-shadow: 4px 4px 0px #2c3e50, -2px -2px 0px #2c3e50, 2px -2px 0px #2c3e50, -2px 2px 0px #2c3e50; /* Contorno grosso */
+    letter-spacing: 2px;
 }
 
 .menu-botoes button { 
     display: block; 
-    width: 200px; 
-    margin: 10px; 
+    width: 220px; 
+    margin: 15px auto; 
     padding: 15px; 
-    cursor: pointer; 
+    font-size: 1.2rem;
+    background-color: #ffffff;
+    color: #2c3e50;
 }
+
+.menu-botoes button:hover { background-color: #f0f4f8; }
 
 .rodape { 
     position: absolute; 
-    bottom: 10px; 
-    left: 10px; 
-    font-size: 0.8rem; 
+    bottom: 20px; 
+    width: 100%; /* Ocupa a largura toda da tela */
+    display: flex;
+    justify-content: space-between; /* Joga um item pra cada canto e o outro pro centro */
+    align-items: flex-end; /* Alinha todos por baixo */
+    padding: 0 40px; /* Margem das bordas da tela */
+    box-sizing: border-box;
+    font-size: 0.9rem; 
+    font-weight: bold;
+    color: #7f8c8d;
+}
+
+/* Estilo para os links do rodapé (Licença e GitHub) */
+.rodape a {
+    color: #7f8c8d;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+}
+
+.rodape a:hover {
+    color: #2c3e50; /* Fica mais escuro ao passar o mouse */
+    transform: translateY(-2px); /* Dá um leve pulinho para cima */
+}
+
+.rodape p {
+    margin: 0; /* Remove margens extras dos parágrafos para alinhar perfeitamente */
 }
 
 /* =========================================
@@ -49,58 +92,58 @@ body {
     flex-direction: row; 
     align-items: flex-start; 
     padding: 20px; 
+    box-sizing: border-box;
 }
 
 .painel-lateral { 
     width: 250px; 
-    background: #fff; 
+    background: #ffffff; 
     padding: 20px; 
-    border-radius: 8px; 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    border-radius: 16px; 
+    border: 4px solid #2c3e50;
+    box-shadow: 6px 6px 0px #2c3e50;
+    margin-right: 20px;
 }
 
 .painel-lateral button {
     width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-    cursor: pointer;
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: #ecf0f1;
 }
 
 .area-principal { 
     flex-grow: 1; 
-    margin-left: 20px; 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
 }
 
 .grupo-item.ativo { 
-    font-weight: bold; 
-    background: #e9ecef; 
-    border-left: 5px solid black; 
+    background: #e4ebf1; 
+    border: 3px solid #2c3e50;
+    border-radius: 8px;
+    box-shadow: 2px 2px 0px #2c3e50;
 }
 
 /* =========================================
-   TABULEIRO (ESTILO MONOPOLY) E ZOOM
+   TABULEIRO E CASAS
    ========================================= */
 #tabuleiro { 
     display: grid; 
-    grid-template-columns: repeat(7, 1fr); 
-    grid-template-rows: repeat(8, 1fr); 
-    gap: 8px; 
-    background-color: #cde6d0; 
+    gap: 10px; 
+    background-color: #cbd5e1; /* Fundo do tabuleiro estilo mesa grafite */
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    border-radius: 20px;
+    border: 4px solid #2c3e50;
+    box-shadow: 8px 8px 0px rgba(44, 62, 80, 0.2);
     max-width: 900px;
     margin-bottom: 20px;
     transform-origin: top center; 
     transition: transform 0.3s ease; 
 }
 
-/* =========================================
-   CENTRO DO TABULEIRO
-   ========================================= */
+/* CENTRO DO TABULEIRO */
 #centro-tabuleiro {
     grid-column: 2 / 7;
     grid-row: 2 / 8;
@@ -108,241 +151,212 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 15px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+    background: transparent;
     margin: 10px;
 }
 
-/* =========================================
-   CASAS DO TABULEIRO
-   ========================================= */
 .casa { 
     width: 80px; 
     height: 80px; 
-    background: #fafafa; 
+    background: #ffffff; 
     display: flex; 
     flex-direction: column;
     align-items: center; 
     justify-content: center; 
-    border-radius: 8px; 
+    border-radius: 12px; 
     position: relative; 
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.1); 
-    border: 2px solid #999; 
+    border: 3px solid #2c3e50; 
+    box-shadow: 3px 3px 0px rgba(44, 62, 80, 0.15); /* Sombra mais leve nas casas para não poluir */
 }
 
 .casa .numero {
-    font-weight: bold; 
-    font-size: 1.4rem; 
-    color: #333;
+    font-weight: 900; 
+    font-size: 1.6rem; 
+    color: #2c3e50;
+    opacity: 0.3; /* Número grande no fundo como marca d'água */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
 }
 
 .efeito-casa {
-    font-size: 0.75rem;
-    font-weight: bold;
-    margin-top: 5px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    z-index: 1;
+    text-align: center;
 }
 
-.casa.bonus { 
-    background: #d4edda; 
-    border-color: #28a745; 
-    border-width: 3px;
-}
-.casa.bonus .efeito-casa { color: #155724; }
+/* Cores das Casas Cartunescas */
+.casa.bonus { background: #a8e6cf; } /* Verde menta */
+.casa.ruim { background: #ffb7b2; } /* Vermelho pastel */
 
 /* =========================================
    PEÇAS DOS JOGADORES
    ========================================= */
 .peca { 
-    width: 25px; 
-    height: 25px; 
+    width: 24px; 
+    height: 24px; 
     border-radius: 50%; 
     position: absolute; 
-    box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 -3px 3px rgba(0,0,0,0.3); 
+    border: 3px solid #ffffff; 
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.4); 
     z-index: 10; 
-    transition: all 0.5s ease-in-out; 
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Animação de pulo (bounce) */
 }
 
 /* =========================================
-   MODAIS E CARTAS
+   MODAIS
    ========================================= */
 .modal { 
     display: none; 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(0,0,0,0.7); 
-    align-items: center; 
-    justify-content: center; 
-    z-index: 100;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(44, 62, 80, 0.8); /* Fundo grafite transparente */
+    align-items: center; justify-content: center; z-index: 100;
 }
-
-.modal.ativo { 
-    display: flex; 
-}
+.modal.ativo { display: flex; }
 
 .modal-conteudo { 
     background: white; 
     padding: 30px; 
-    border-radius: 8px; 
+    border-radius: 16px; 
+    border: 4px solid #2c3e50;
+    box-shadow: 8px 8px 0px #2c3e50;
     width: 80%; 
-    max-width: 600px; 
+    max-width: 500px; 
     text-align: center; 
-}
-
-.alternativa { 
-    display: block; 
-    margin: 10px auto; 
-    padding: 10px; 
-    width: 80%; 
-    cursor: pointer; 
-    text-align: left; 
-}
-
-/* =========================================
-   MODO PROJETOR (TELA GRANDE)
-   ========================================= */
-body.modo-projetor { font-size: 1.3rem; }
-body.modo-projetor .titulo { font-size: 4rem; }
-
-body.modo-projetor .painel-lateral { width: 350px; }
-body.modo-projetor .painel-lateral button { font-size: 1.2rem; padding: 15px; }
-
-body.modo-projetor .modal-conteudo { width: 95%; max-width: 1400px; padding: 50px; }
-body.modo-projetor .alternativa { font-size: 1.8rem; padding: 20px; }
-body.modo-projetor #texto-pergunta { font-size: 2.2rem; line-height: 1.5; }
-body.modo-projetor h2 { font-size: 3rem; }
-
-body.modo-projetor #tabuleiro { gap: 12px; padding: 25px; max-width: 1200px; }
-body.modo-projetor .casa { width: 105px; height: 105px; }
-body.modo-projetor .casa .numero { font-size: 1.8rem; }
-body.modo-projetor .efeito-casa { font-size: 0.9rem; }
-body.modo-projetor .peca { width: 35px; height: 35px; }
-
-/* =========================================
-   BOTÕES DE SELEÇÃO INICIAL
-   ========================================= */
-.btn-selecao {
-    padding: 15px;
-    font-size: 1.2rem;
-    background: transparent;
-    border: 2px solid #2c3e50;
-    border-radius: 8px;
-    color: #2c3e50;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-selecao:hover {
-    background: #2c3e50;
-    color: white;
-    transform: translateY(-2px);
-}
-
-/* =========================================
-   POP-UP DE COMBOS (TOAST) - CORRIGIDO
-   ========================================= */
-.toast {
-    opacity: 0;
-    pointer-events: none; /* Evita clicar nele quando está invisível */
-    min-width: 300px;
-    background-color: #2c3e50;
-    color: #fff;
-    text-align: center;
-    border-radius: 8px;
-    padding: 16px 20px;
-    position: fixed;
-    z-index: 10000;
-    left: 50%;
-    top: 20px;
-    transform: translateX(-50%);
-    font-size: 1.2rem;
-    box-shadow: 0px 5px 15px rgba(0,0,0,0.4);
-    transition: opacity 0.4s ease, top 0.4s ease;
-    cursor: pointer;
-    line-height: 1.4;
-    border: 2px solid #ffd700;
-}
-
-.toast.mostrar {
-    opacity: 1;
-    pointer-events: auto; /* Reativa o clique ao aparecer */
-    top: 50px;
 }
 
 /* =========================================
    CARTA MESTRA 3D E BOTÕES REDONDOS
    ========================================= */
 .carta-mestra {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     perspective: 1000px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
 }
 
 .carta-inner {
-    width: 90%;
-    height: 90%;
+    width: 95%; height: 95%;
     position: relative;
-    transition: transform 0.6s;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
     transform-style: preserve-3d;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    border-radius: 15px;
+    border-radius: 16px;
+    border: 4px solid #2c3e50;
+    box-shadow: 8px 8px 0px rgba(44, 62, 80, 0.3);
+    background: transparent;
 }
 
-.carta-mestra.virada .carta-inner {
-    transform: rotateY(180deg);
-}
+.carta-mestra.virada .carta-inner { transform: rotateY(180deg); }
 
 .carta-frente, .carta-verso {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     position: absolute;
     backface-visibility: hidden;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.95);
+    background: #ffffff;
     box-sizing: border-box;
     overflow-y: auto;
 }
 
-.carta-verso {
-    transform: rotateY(180deg);
-    background: #f8f9fa;
+.carta-verso { 
+    transform: rotateY(180deg); 
+    background: #f8fafc;
 }
 
+/* Botões Formato de Bola */
 .btn-bola {
-    width: 60px;
-    height: 60px;
+    width: 60px; height: 60px;
     border-radius: 50%;
-    background-color: #000;
+    background-color: #2c3e50;
     color: #fff;
     font-size: 2rem;
-    font-weight: bold;
     border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-shadow: 0px 5px 0px #1a252f;
+    display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; 
+    transition: transform 0.1s, box-shadow 0.1s;
 }
 
-.btn-bola:hover {
-    transform: scale(1.1);
-    background-color: #333;
+.btn-bola:active {
+    transform: translateY(5px);
+    box-shadow: 0px 0px 0px #1a252f;
+}
+
+/* Alternativas (A, B, C, D) */
+.alternativa { 
+    display: block; 
+    margin: 5px auto; 
+    padding: 15px; 
+    width: 100%; 
+    background-color: #ffffff;
+    text-align: left; 
+    font-size: 1.1rem;
+}
+.alternativa:hover { background-color: #e4ebf1; }
+
+/* =========================================
+   POP-UP DE COMBOS (TOAST)
+   ========================================= */
+.toast {
+    opacity: 0; pointer-events: none;
+    min-width: 300px;
+    background-color: #ffffff;
+    color: #2c3e50;
+    text-align: center;
+    border-radius: 12px;
+    border: 4px solid #2c3e50;
+    padding: 16px 20px;
+    position: fixed; z-index: 10000;
+    left: 50%; top: 20px;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 6px 6px 0px #2c3e50;
+    transition: opacity 0.3s ease, top 0.3s ease;
+}
+.toast.mostrar { opacity: 1; pointer-events: auto; top: 50px; }
+
+/* =========================================
+   MODO PROJETOR (TELA GRANDE)
+   ========================================= */
+body.modo-projetor { font-size: 1.5rem; }
+body.modo-projetor .titulo { font-size: 4rem; }
+
+/* Painel Lateral */
+body.modo-projetor .painel-lateral { width: 350px; }
+body.modo-projetor .painel-lateral button { font-size: 1.4rem; padding: 15px; }
+
+/* Tabuleiro e Casas */
+body.modo-projetor #tabuleiro { gap: 15px; padding: 30px; max-width: 1300px; }
+body.modo-projetor .casa { width: 110px; height: 110px; }
+body.modo-projetor .casa .numero { font-size: 2.5rem; }
+/* Textos especiais (BP, DRE) e suas descrições muito maiores */
+body.modo-projetor .efeito-casa { font-size: 2rem !important; line-height: 1.1; } 
+body.modo-projetor .efeito-casa small { font-size: 1.2rem !important; display: block; margin-top: 5px; }
+body.modo-projetor .peca { width: 40px; height: 40px; border-width: 4px; }
+
+/* Modais */
+body.modo-projetor .modal-conteudo { width: 95%; max-width: 1400px; padding: 50px; }
+
+/* Carta 3D - Textos (Uso de !important para sobrescrever o JavaScript) */
+body.modo-projetor .carta-frente div:first-child { font-size: 2.5rem !important; margin-bottom: 30px !important; } /* Título "Lê: G1 | Responde: G2" */
+body.modo-projetor #texto-tempo { font-size: 2.2rem !important; margin-bottom: 20px !important; } /* Cronômetro */
+body.modo-projetor #texto-pergunta { font-size: 2.4rem !important; line-height: 1.4; margin-bottom: 30px !important; } /* Pergunta destacada */
+
+/* Botões da Carta */
+body.modo-projetor .btn-bola { width: 95px; height: 95px; font-size: 3.5rem; } /* Botões 3 e 5 enormes */
+body.modo-projetor .alternativa { font-size: 1.8rem; padding: 15px; } /* Alternativas proporcionais */
+
+/* Pop-up de Combos (Toast) */
+body.modo-projetor .toast { font-size: 1.8rem; padding: 25px 30px; border-width: 6px; }
+
+/* Botões 3 Casas e 5 Casas */
+body.modo-projetor .btn-dificuldade { 
+    font-size: 2.5rem !important; 
+    padding: 25px 50px !important; 
+    border-radius: 16px !important; 
 }

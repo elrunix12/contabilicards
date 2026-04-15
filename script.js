@@ -65,6 +65,7 @@ function salvarConfiguracoes() {
 // --- INICIALIZAÇÃO E SELEÇÃO DE PRIMEIRO JOGADOR ---
 window.onload = async () => {
     carregarConfiguracoes();
+    carregarContribuidores();
     if (localStorage.getItem('jogoSalvo')) {
         document.getElementById('btn-continuar').style.display = 'block';
     }
@@ -172,17 +173,33 @@ function montarTelaJogo() {
     centro.style.gridColumn = `2 / ${W}`;
     centro.style.gridRow = `2 / ${H}`;
     
-    // Identifica quem Lê e quem Responde
-    let jogadorAtivo = jogo.grupos[jogo.turnoAtual];
-    let idxAlvo = (jogo.turnoAtual + 1) % jogo.grupos.length;
-    let jogadorAlvo = jogo.grupos[idxAlvo];
+    // Identifica quem Lê e quem Responde (com correção para DRE)
+    let jogadorAtivo;
+    let jogadorAlvo;
+
+    if (jogo.emEventoDRE) {
+        jogadorAlvo = jogo.grupos[jogo.turnoAtual]; // Quem responde é o alvo escolhido
+        let idxCausador = (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
+        jogadorAtivo = jogo.grupos[idxCausador]; // Quem causou o DRE
+    } else {
+        jogadorAtivo = jogo.grupos[jogo.turnoAtual];
+        let idxAlvo = (jogo.turnoAtual + 1) % jogo.grupos.length;
+        jogadorAlvo = jogo.grupos[idxAlvo];
+    }
     
     let nomeGrupoAtual = jogadorAtivo ? jogadorAtivo.nome : "";
     let nomeAlvo = jogadorAlvo ? jogadorAlvo.nome : "";
 
-    let tituloTurno = jogo.emEventoDRE 
-        ? `✨ Bônus DRE: ${nomeGrupoAtual}` 
-        : `Lê: ${nomeGrupoAtual} | Responde: ${nomeAlvo}`;
+    let tituloTurno = "";
+    if (jogo.emEventoDRE) {
+        if (jogadorAtivo.id === jogadorAlvo.id) {
+            tituloTurno = `✨ DRE+: ${nomeAlvo} responde sozinho!`;
+        } else {
+            tituloTurno = `🎯 DRE-: ${nomeGrupoAtual} escolheu ${nomeAlvo}!`;
+        }
+    } else {
+        tituloTurno = `Lê: ${nomeGrupoAtual} | Responde: ${nomeAlvo}`;
+    }
 
     centro.innerHTML = `
         <div class="carta-mestra" id="carta-central">
@@ -437,9 +454,18 @@ function responder(respostaOuAlternativa) {
 }
 
 function processarResposta(acertou) {
-    let jogadorAtivo = jogo.grupos[jogo.turnoAtual]; // Quem tirou a carta e leu
-    let idxAlvo = (jogo.turnoAtual + 1) % jogo.grupos.length;
-    let jogadorAlvo = jogo.grupos[idxAlvo]; // Quem tenta responder (o próximo)
+    let jogadorAtivo;
+    let jogadorAlvo;
+
+    if (jogo.emEventoDRE) {
+        jogadorAlvo = jogo.grupos[jogo.turnoAtual];
+        let idxCausador = (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
+        jogadorAtivo = jogo.grupos[idxCausador];
+    } else {
+        jogadorAtivo = jogo.grupos[jogo.turnoAtual];
+        let idxAlvo = (jogo.turnoAtual + 1) % jogo.grupos.length;
+        jogadorAlvo = jogo.grupos[idxAlvo];
+    }
 
     let msgPopUp = "";
     let grupoQueMoveu = null;
@@ -450,9 +476,14 @@ function processarResposta(acertou) {
             grupoQueMoveu = jogadorAlvo;
             msgPopUp = `<strong>Correto!</strong> ${jogadorAlvo.nome} acertou e avançou 3 casas.`;
         } else {
-            jogadorAtivo.posicao += 1;
-            grupoQueMoveu = jogadorAtivo;
-            msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 1 casa de bônus por dificultar.`;
+            // Verifica se está em qualquer evento DRE (DRE+ ou DRE-)
+            if (jogo.emEventoDRE) {
+                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>Como era uma Pergunta Bônus (DRE), ninguém sofre penalidade.`;
+            } else {
+                jogadorAtivo.posicao += 1;
+                grupoQueMoveu = jogadorAtivo;
+                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 1 casa de bônus por dificultar.`;
+            }
         }
     } else { 
         if (acertou) {
@@ -460,9 +491,14 @@ function processarResposta(acertou) {
             grupoQueMoveu = jogadorAlvo;
             msgPopUp = `<strong>Correto!</strong> ${jogadorAlvo.nome} acertou e avançou 5 casas.`;
         } else {
-            jogadorAtivo.posicao += 3;
-            grupoQueMoveu = jogadorAtivo;
-            msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 3 casas de bônus por dificultar.`;
+            // Verifica se está em qualquer evento DRE (DRE+ ou DRE-)
+            if (jogo.emEventoDRE) {
+                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>Como era uma Pergunta Bônus (DRE), ninguém sofre penalidade.`;
+            } else {
+                jogadorAtivo.posicao += 3;
+                grupoQueMoveu = jogadorAtivo;
+                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 3 casas de bônus por dificultar.`;
+            }
         }
     }
 
@@ -493,49 +529,50 @@ function processarResposta(acertou) {
         
         const verso = document.getElementById('carta-conteudo-verso');
         verso.innerHTML = `
-            <h3 style="color: ${acertou ? '#28a745' : '#dc3545'}; margin-top: 0;">${acertou ? 'Correto!' : 'Incorreto!'}</h3>
-            <p style="text-align: center; max-width: 90%;"><strong>Resolução:</strong><br>${perguntaAtual.resolucao}</p>
-            <button onclick="proximoTurno()" style="margin-top: 15px; padding: 10px 20px; font-size: 1.1rem; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 8px;">Concluir e Passar a Vez</button>
+            <h3 style="color: ${acertou ? '#28a745' : '#dc3545'}; margin-top: 0; font-size: 2rem;">${acertou ? 'Correto!' : 'Incorreto!'}</h3>
+            <p style="text-align: center; max-width: 90%; font-size: 1.3rem;"><strong>Resolução:</strong><br>${perguntaAtual.resolucao}</p>
+            <button onclick="proximoTurno()" style="margin-top: 25px; padding: 15px 30px; font-size: 1.3rem; cursor: pointer; background-color: #2c3e50; color: white; border: none; border-radius: 12px; box-shadow: 4px 4px 0px #1a252f; transition: transform 0.1s;">Concluir e Passar a Vez</button>
         `;
     }
 }
 
-// O MOTOR DE COMBOS!
+// O MOTOR DE COMBOS! (Sem loop, restrito a 1 execução por turno)
 function ativarMotorDeCombos(grupo) {
     let log = "";
-    let combinando = true;
     
-    while (combinando && grupo.posicao > 0 && grupo.posicao < jogo.totalCasas - 1) {
+    // Substituímos o 'while' por um 'if'. O efeito só acontece UMA vez e o turno encerra!
+    if (grupo.posicao > 0 && grupo.posicao < jogo.totalCasas - 1) {
         let especial = CASAS_ESPECIAIS[grupo.posicao];
-        if (!especial) break; 
         
-        // Inclui o nome do grupo diretamente no log do pop-up
-        log += `<br>🎯 <strong>${grupo.nome}</strong> caiu na Casa ${grupo.posicao} (${especial}): `;
-        
-        if (especial === 'BP+') {
-            grupo.posicao += 2; log += `Avança +2 casas!`;
-        } else if (especial === 'BP-') {
-            grupo.posicao -= 2; log += `Recua -2 casas!`;
-        } else if (especial === 'IR+') {
-            grupo.posicao += 1;
-            jogo.grupos.forEach(g => { if (g.id !== grupo.id) g.posicao -= 1; });
-            log += `Avançou +1 e os outros recuaram -1!`;
-        } else if (especial === 'IR-') {
-            grupo.posicao -= 2;
-            jogo.grupos.forEach(g => { if (g.id !== grupo.id) g.posicao += 1; });
-            log += `Recuou -2 e os outros avançaram +1!`;
-        } else if (especial === 'DRE+') {
-            log += `Pergunta Bônus garantida!`;
-            jogo.pendenciaDRE = { ativo: true, tipo: 'DRE+', grupoCausador: grupo };
-            break; 
-        } else if (especial === 'DRE-') {
-            log += `Deve escolher quem sofrerá/ganhará a pergunta!`;
-            jogo.pendenciaDRE = { ativo: true, tipo: 'DRE-', grupoCausador: grupo };
-            break; 
+        if (especial) { 
+            // Inclui o nome do grupo diretamente no log do pop-up
+            log += `<br>🎯 <strong>${grupo.nome}</strong> caiu na Casa ${grupo.posicao} (${especial}): `;
+            
+            if (especial === 'BP+') {
+                grupo.posicao += 2; log += `Avança +2 casas!`;
+            } else if (especial === 'BP-') {
+                grupo.posicao -= 2; log += `Recua -2 casas!`;
+            } else if (especial === 'IR+') {
+                grupo.posicao += 1;
+                jogo.grupos.forEach(g => { if (g.id !== grupo.id) g.posicao -= 1; });
+                log += `Avançou +1 e os outros recuaram -1!`;
+            } else if (especial === 'IR-') {
+                grupo.posicao -= 2;
+                jogo.grupos.forEach(g => { if (g.id !== grupo.id) g.posicao += 2; });
+                log += `Recuou -2 e os outros avançaram +2!`;
+            } else if (especial === 'DRE+') {
+                log += `Pergunta Bônus garantida!`;
+                jogo.pendenciaDRE = { ativo: true, tipo: 'DRE+', grupoCausador: grupo };
+            } else if (especial === 'DRE-') {
+                log += `Deve escolher quem sofrerá/ganhará a pergunta!`;
+                jogo.pendenciaDRE = { ativo: true, tipo: 'DRE-', grupoCausador: grupo };
+            }
         }
-        
-        jogo.grupos.forEach(g => { if(g.posicao < 0) g.posicao = 0; }); 
     }
+    
+    // Garante que ninguém fique com posição negativa
+    jogo.grupos.forEach(g => { if(g.posicao < 0) g.posicao = 0; }); 
+    
     return log;
 }
 
@@ -588,12 +625,18 @@ function abrirSelecaoAlvoDRE(nomeEscolhedor) {
     titulo.innerHTML = `DRE- <br><small style="font-size: 1rem; color: #555;">${nomeEscolhedor}, escolha o alvo:</small>`;
     
     const lista = document.getElementById('lista-selecao-grupos');
-    lista.innerHTML = jogo.grupos.map((g, i) => `
+    
+    // Mapeia os grupos, mas retorna vazio se for o próprio grupo que caiu na casa
+    lista.innerHTML = jogo.grupos.map((g, i) => {
+        if (g.nome === nomeEscolhedor) return ''; 
+        
+        return `
         <button class="btn-selecao" onclick="aplicarAlvoDRE(${i})">
             <span style="display:inline-block; width:20px; height:20px; background:${g.cor}; border-radius:50%; margin-right:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></span>
             ${g.nome}
         </button>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function aplicarAlvoDRE(index) {
@@ -782,4 +825,29 @@ function mostrarNotificacao(mensagem) {
 function fecharNotificacao() {
     const toast = document.getElementById('toast-notificacao');
     toast.classList.remove('mostrar');
+}
+
+async function carregarContribuidores() {
+    try {
+        const resposta = await fetch('contributors.json'); 
+        if (!resposta.ok) throw new Error("Arquivo não encontrado");
+        
+        const contribuidores = await resposta.json();
+        const container = document.getElementById('lista-contribuidores');
+        
+        // Monta a lista formatada
+        container.innerHTML = contribuidores.map(c => {
+            // Só monta o texto do usuário se ele existir e não for vazio
+            let textoUsuario = (c.usuario && c.usuario.trim() !== "") ? ` (${c.usuario})` : "";
+            
+            if (c.link && c.link.trim() !== "") {
+                return `<a href="${c.link}" target="_blank" style="color: inherit; text-decoration: none;">${c.nome}${textoUsuario}</a>`;
+            }
+            return `${c.nome}${textoUsuario}`;
+        }).join('<br>');
+
+    } catch (error) {
+        document.getElementById('lista-contribuidores').innerText = "elrunix12"; 
+        console.error("Erro ao carregar contribuidores:", error);
+    }
 }
