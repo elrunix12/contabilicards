@@ -156,9 +156,17 @@ function montarTelaJogo() {
     centro.style.gridColumn = `2 / ${W}`;
     centro.style.gridRow = `2 / ${H}`;
     
-    // Identifica quem está jogando
-    let nomeGrupoAtual = jogo.grupos[jogo.turnoAtual] ? jogo.grupos[jogo.turnoAtual].nome : "";
-    let tituloTurno = jogo.emEventoDRE ? `✨ Bônus DRE: ${nomeGrupoAtual}` : `Vez do ${nomeGrupoAtual}`;
+    // Identifica quem Lê e quem Responde
+    let jogadorAtivo = jogo.grupos[jogo.turnoAtual];
+    let idxAlvo = (jogo.turnoAtual + 1) % jogo.grupos.length;
+    let jogadorAlvo = jogo.grupos[idxAlvo];
+    
+    let nomeGrupoAtual = jogadorAtivo ? jogadorAtivo.nome : "";
+    let nomeAlvo = jogadorAlvo ? jogadorAlvo.nome : "";
+
+    let tituloTurno = jogo.emEventoDRE 
+        ? `✨ Bônus DRE: ${nomeGrupoAtual}` 
+        : `Lê: ${nomeGrupoAtual} | Responde: ${nomeAlvo}`;
 
     centro.innerHTML = `
         <div class="carta-mestra" id="carta-central">
@@ -405,39 +413,41 @@ function responder(respostaOuAlternativa) {
 }
 
 function processarResposta(acertou) {
-    let grupoAtual = jogo.grupos[jogo.turnoAtual];
-    let msgPopUp = acertou ? `<strong>Correto, ${grupoAtual.nome}!</strong> ` : `<strong>Incorreto, ${grupoAtual.nome}.</strong> `;
+    let jogadorAtivo = jogo.grupos[jogo.turnoAtual]; // Quem tirou a carta e leu
+    let idxAlvo = (jogo.turnoAtual + 1) % jogo.grupos.length;
+    let jogadorAlvo = jogo.grupos[idxAlvo]; // Quem tenta responder (o próximo)
 
-    let moverAlguem = true;
-    let grupoQueMoveu = grupoAtual;
+    let msgPopUp = "";
+    let grupoQueMoveu = null;
 
     if (dificuldadeAtual === 'facil') {
         if (acertou) {
-            grupoAtual.posicao += 3;
-            msgPopUp += `Avançou 3 casas.`;
+            jogadorAlvo.posicao += 3;
+            grupoQueMoveu = jogadorAlvo;
+            msgPopUp = `<strong>Correto!</strong> ${jogadorAlvo.nome} acertou e avançou 3 casas.`;
         } else {
-            let idxAnterior = jogo.turnoAtual === 0 ? jogo.grupos.length - 1 : jogo.turnoAtual - 1;
-            jogo.grupos[idxAnterior].posicao += 1;
-            grupoQueMoveu = jogo.grupos[idxAnterior];
-            msgPopUp += `<br>O grupo anterior (${grupoQueMoveu.nome}) avançou 1 casa.`;
+            jogadorAtivo.posicao += 1;
+            grupoQueMoveu = jogadorAtivo;
+            msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 1 casa de bônus por dificultar.`;
         }
     } else { 
         if (acertou) {
-            grupoAtual.posicao += 5;
-            msgPopUp += `Avançou 5 casas.`;
+            jogadorAlvo.posicao += 5;
+            grupoQueMoveu = jogadorAlvo;
+            msgPopUp = `<strong>Correto!</strong> ${jogadorAlvo.nome} acertou e avançou 5 casas.`;
         } else {
-            // Agora o erro na difícil beneficia o anterior em 3 casas
-            let idxAnterior = jogo.turnoAtual === 0 ? jogo.grupos.length - 1 : jogo.turnoAtual - 1;
-            jogo.grupos[idxAnterior].posicao += 3;
-            grupoQueMoveu = jogo.grupos[idxAnterior];
-            msgPopUp += `<br>O grupo anterior (${grupoQueMoveu.nome}) avançou 3 casas.`;
+            jogadorAtivo.posicao += 3;
+            grupoQueMoveu = jogadorAtivo;
+            msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 3 casas de bônus por dificultar.`;
         }
     }
 
+    // Trava para não ultrapassar o final do tabuleiro
     jogo.grupos.forEach(g => { if(g.posicao >= jogo.totalCasas - 1) g.posicao = jogo.totalCasas - 1; });
 
+    // Se o grupo que se moveu caiu em casa especial, ativa o combo
     let logCombo = "";
-    if (moverAlguem && grupoQueMoveu.posicao > 0 && grupoQueMoveu.posicao < jogo.totalCasas - 1) {
+    if (grupoQueMoveu && grupoQueMoveu.posicao > 0 && grupoQueMoveu.posicao < jogo.totalCasas - 1) {
         logCombo = ativarMotorDeCombos(grupoQueMoveu);
     }
 
@@ -450,11 +460,10 @@ function processarResposta(acertou) {
     if (logCombo !== "") textoNotificacao += `<br><br><strong>Efeitos Extras:</strong>` + logCombo;
     mostrarNotificacao(textoNotificacao);
 
-    // MÁGICA: Se for Físico, a vez passa na hora e a carta vira. Se for Digital, mostra a resolução no verso!
+    // Finaliza o turno (virando a carta ou mostrando a resolução no digital)
     if (jogo.modoFisico) {
         proximoTurno();
     } else {
-        // Atualiza a posição das peças para a turma ver a movimentação
         document.querySelectorAll('.peca').forEach(p => p.remove());
         posicionarPecas();
         
@@ -507,7 +516,7 @@ function ativarMotorDeCombos(grupo) {
 }
 
 function proximoTurno() {
-    document.getElementById('modal-pergunta').classList.remove('ativo');
+    // Removemos a linha que tentava fechar o modal antigo
     
     if (jogo.pendenciaDRE && jogo.pendenciaDRE.ativo) {
         let p = jogo.pendenciaDRE;
@@ -543,7 +552,7 @@ function proximoTurno() {
     }
     
     salvarEstado();
-    montarTelaJogo();
+    montarTelaJogo(); // Recria o tabuleiro e desvira a carta central para o próximo
 }
 
 // --- FUNÇÕES DE CONTROLE DO DRE ---
@@ -620,7 +629,7 @@ function refazerJogada() {
 }
 
 function encerrarJogoMostrarRanking() {
-    document.getElementById('modal-pergunta').classList.remove('ativo');
+    // Removemos a linha que tentava fechar o modal antigo
     
     let ranking = [...jogo.grupos].sort((a, b) => b.posicao - a.posicao);
     let maiorPosicao = ranking[0].posicao;
@@ -731,13 +740,19 @@ function alternarModoProjetor() {
 let timerToast;
 function mostrarNotificacao(mensagem) {
     const toast = document.getElementById('toast-notificacao');
+    
+    // Atualiza o texto
     toast.innerHTML = mensagem + `<br><small style="font-size: 0.8rem; color: #ccc;">(Clique para fechar)</small>`;
-    toast.classList.add('mostrar');
+    
+    // Se não estiver aparecendo, mostra. Se já estiver, só reseta o tempo sem piscar.
+    if (!toast.classList.contains('mostrar')) {
+        toast.classList.add('mostrar');
+    }
     
     clearTimeout(timerToast);
     timerToast = setTimeout(() => {
         fecharNotificacao();
-    }, 6000); // Fica 6 segundos na tela e some automático
+    }, 6000); 
 }
 
 function fecharNotificacao() {

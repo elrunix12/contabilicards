@@ -21,7 +21,7 @@
             <p class="contribuidores">
                 <strong>Contribuidores:</strong><br>
                 L. Silva (elrunix12)<br>
-                </p>
+            </p>
             <p id="licenca"><a href="https://www.gnu.org/licenses/agpl-3.0.txt" target="_blank">Licença do Projeto</a></p>
         </div>
     </div>
@@ -45,29 +45,10 @@
 
         <div class="area-principal">
             <div id="tabuleiro"></div>
-            </div>
+        </div>
     </div>
 
-    <div id="modal-pergunta" class="modal">
-        <div class="modal-conteudo">
-            <h2 id="grupo-atual-texto"></h2>
-            <div class="escolha-dificuldade" id="bloco-dificuldade">
-                <p>Escolha a dificuldade:</p>
-                <button onclick="carregarPergunta('facil')">Fácil (30s)</button>
-                <button onclick="carregarPergunta('dificil')">Difícil (1min)</button>
-            </div>
-            
-            <div id="area-pergunta" style="display:none;">
-                <p id="texto-tempo">Tempo: <span id="contador">0</span>s</p>
-                <p id="texto-pergunta"></p>
-                <div id="alternativas"></div>
-                <div id="resolucao" style="display:none;">
-                    <p id="texto-resolucao"></p>
-                    <button onclick="proximoTurno()">Próximo Grupo</button>
-                </div>
-            </div>
-        </div>
-    </div> <div id="modal-regras" class="modal">
+    <div id="modal-regras" class="modal">
         <div class="modal-conteudo">
             <h2>Regras do Jogo</h2>
             <div id="conteudo-regras" style="text-align: left; max-height: 60vh; overflow-y: auto; margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
@@ -102,16 +83,19 @@
             </div>
             <button onclick="fecharModal('modal-configs')" style="padding: 10px 20px; font-size: 1.1rem; cursor: pointer;">Salvar e Fechar</button>
         </div>
-    </div> <div id="modal-selecao-primeiro" class="modal">
+    </div> 
+    
+    <div id="modal-selecao-primeiro" class="modal">
         <div class="modal-conteudo" style="max-width: 400px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
             <h2 style="color: #2c3e50; font-size: 2rem; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Quem começa?</h2>
             <div id="lista-selecao-grupos" style="display: flex; flex-direction: column; gap: 10px;">
-                </div>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <div id="toast-notificacao" class="toast" onclick="fecharNotificacao()"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
