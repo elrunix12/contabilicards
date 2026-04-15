@@ -155,9 +155,26 @@ function montarTelaJogo() {
     centro.id = 'centro-tabuleiro';
     centro.style.gridColumn = `2 / ${W}`;
     centro.style.gridRow = `2 / ${H}`;
+    
+    // Identifica quem está jogando
+    let nomeGrupoAtual = jogo.grupos[jogo.turnoAtual] ? jogo.grupos[jogo.turnoAtual].nome : "";
+    let tituloTurno = jogo.emEventoDRE ? `✨ Bônus DRE: ${nomeGrupoAtual}` : `Vez do ${nomeGrupoAtual}`;
+
     centro.innerHTML = `
-        <img src="logo.png" alt="Contabilicards" style="max-width: 80%; max-height: 50%; object-fit: contain; margin-bottom: 10px;">
-        <button onclick="abrirPainelPergunta()" id="btn-jogar">Sortear Pergunta</button>
+        <div class="carta-mestra" id="carta-central">
+            <div class="carta-inner">
+                <div class="carta-frente">
+                    <div style="font-size: 1.4rem; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">${tituloTurno}</div>
+                    <img src="logo.png" alt="Contabilicards" style="max-width: 60%; max-height: 40%; object-fit: contain; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 20px;">
+                        <button class="btn-dificuldade btn-3" onclick="carregarPergunta('facil')">3 Casas</button>
+                        <button class="btn-dificuldade btn-5" onclick="carregarPergunta('dificil')">5 Casas</button>
+                    </div>
+                </div>
+                <div class="carta-verso" id="carta-conteudo-verso">
+                    </div>
+            </div>
+        </div>
     `;
     tab.appendChild(centro);
 
@@ -288,24 +305,27 @@ let perguntaAtual;
 let dificuldadeAtual;
 
 function carregarPergunta(dificuldade) {
-    dificuldadeAtual = dificuldade;
-    document.getElementById('bloco-dificuldade').style.display = 'none';
-    document.getElementById('area-pergunta').style.display = 'block';
+    // Salva o histórico logo no clique do 3 ou 5
+    jogo.historico.push(obterFotoDoJogo());
+    if (jogo.historico.length > LIMITE_HISTORICO) jogo.historico.shift(); 
+    jogo.historicoDesfeito = []; 
+    atualizarBotoesHistorico();
 
-    const textoPergunta = document.getElementById('texto-pergunta');
-    const altDiv = document.getElementById('alternativas');
+    dificuldadeAtual = dificuldade;
+    const verso = document.getElementById('carta-conteudo-verso');
+    const cartaCentral = document.getElementById('carta-central');
+
+    let htmlVerso = `<p id="texto-tempo" style="font-size: 1.2rem; font-weight: bold; color: #333; margin-top: 0;">Tempo: <span id="contador">0</span>s</p>`;
 
     if (jogo.modoFisico) {
-        textoPergunta.innerHTML = `
-            <div style="font-size: 1.5rem; font-weight: bold; color: ${dificuldade === 'facil' ? '#28a745' : '#dc3545'}; text-transform: uppercase; margin-bottom: 15px;">
-                Pergunta ${dificuldade}
+        htmlVerso += `
+            <div style="font-size: 1.8rem; font-weight: bold; color: ${dificuldade === 'facil' ? '#28a745' : '#dc3545'}; text-transform: uppercase; margin-bottom: 20px;">
+                Andar ${dificuldade === 'facil' ? '3' : '5'} Casas
             </div>
-            <img src="logo.png" alt="Logo Card" style="max-width: 150px; display: block; margin: 0 auto 20px auto;">
-        `;
-        
-        altDiv.innerHTML = `
-            <button class="alternativa" style="background-color: #28a745; color: white;" onclick="responder(true)">Acertou</button>
-            <button class="alternativa" style="background-color: #dc3545; color: white;" onclick="responder(false)">Errou</button>
+            <div style="display: flex; gap: 15px;">
+                <button class="alternativa" style="background-color: #28a745; color: white; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px;" onclick="responder(true)">Acertou</button>
+                <button class="alternativa" style="background-color: #dc3545; color: white; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px;" onclick="responder(false)">Errou</button>
+            </div>
         `;
     } else {
         let perguntasFiltradas = jogo.perguntasDisponiveis.filter(p => p.dificuldade === dificuldade);
@@ -324,20 +344,23 @@ function carregarPergunta(dificuldade) {
 
         const idx = Math.floor(Math.random() * perguntasFiltradas.length);
         perguntaAtual = perguntasFiltradas[idx];
-        
         const removeIdx = jogo.perguntasDisponiveis.findIndex(p => p.pergunta === perguntaAtual.pergunta);
         if (removeIdx !== -1) jogo.perguntasDisponiveis.splice(removeIdx, 1);
         
-        if (configuracoes.exibirPergunta) {
-            textoPergunta.innerText = perguntaAtual.pergunta;
-        } else {
-            textoPergunta.innerText = "[A pergunta será lida pelo mediador. Escolha a alternativa correta abaixo:]";
-        }
+        let textoQ = configuracoes.exibirPergunta ? perguntaAtual.pergunta : "[A pergunta será lida pelo mediador. Escolha a alternativa correta abaixo:]";
         
-        altDiv.innerHTML = perguntaAtual.alternativas.map(alt => {
-            return `<button class="alternativa" onclick="responder('${alt}')">${alt}</button>`
-        }).join('');
+        htmlVerso += `
+            <p id="texto-pergunta" style="font-size: 1.2rem; margin-bottom: 15px; text-align: center;">${textoQ}</p>
+            <div id="alternativas" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                ${perguntaAtual.alternativas.map(alt => `<button class="alternativa" onclick="responder('${alt}')">${alt}</button>`).join('')}
+            </div>
+        `;
     }
+
+    verso.innerHTML = htmlVerso;
+    
+    // Gira a carta visualmente
+    cartaCentral.classList.add('virada');
 
     iniciarTemporizador(dificuldade === 'facil' ? 30 : 60); 
 }
@@ -382,13 +405,7 @@ function responder(respostaOuAlternativa) {
 }
 
 function processarResposta(acertou) {
-    document.getElementById('alternativas').innerHTML = ''; 
-    const resolucaoDiv = document.getElementById('resolucao');
-    resolucaoDiv.style.display = 'block';
-
     let grupoAtual = jogo.grupos[jogo.turnoAtual];
-    
-    // O texto principal agora vai para o Pop-up
     let msgPopUp = acertou ? `<strong>Correto, ${grupoAtual.nome}!</strong> ` : `<strong>Incorreto, ${grupoAtual.nome}.</strong> `;
 
     let moverAlguem = true;
@@ -416,7 +433,6 @@ function processarResposta(acertou) {
 
     jogo.grupos.forEach(g => { if(g.posicao >= jogo.totalCasas - 1) g.posicao = jogo.totalCasas - 1; });
 
-    // Verifica se ativou um combo
     let logCombo = "";
     if (moverAlguem && grupoQueMoveu.posicao > 0 && grupoQueMoveu.posicao < jogo.totalCasas - 1) {
         logCombo = ativarMotorDeCombos(grupoQueMoveu);
@@ -427,16 +443,25 @@ function processarResposta(acertou) {
         if(g.posicao >= jogo.totalCasas - 1) g.posicao = jogo.totalCasas - 1; 
     });
 
-    // Envia tudo para o Pop-up (Movimentação básica + Combos se houver)
     let textoNotificacao = msgPopUp;
-    if (logCombo !== "") {
-        textoNotificacao += `<br><br><strong>Efeitos Extras:</strong>` + logCombo;
-    }
+    if (logCombo !== "") textoNotificacao += `<br><br><strong>Efeitos Extras:</strong>` + logCombo;
     mostrarNotificacao(textoNotificacao);
 
-    // O card central fica sem texto no modo físico
-    let textoFinal = jogo.modoFisico ? "" : `Resolução: ${perguntaAtual.resolucao}`;
-    document.getElementById('texto-resolucao').innerText = textoFinal;
+    // MÁGICA: Se for Físico, a vez passa na hora e a carta vira. Se for Digital, mostra a resolução no verso!
+    if (jogo.modoFisico) {
+        proximoTurno();
+    } else {
+        // Atualiza a posição das peças para a turma ver a movimentação
+        document.querySelectorAll('.peca').forEach(p => p.remove());
+        posicionarPecas();
+        
+        const verso = document.getElementById('carta-conteudo-verso');
+        verso.innerHTML = `
+            <h3 style="color: ${acertou ? '#28a745' : '#dc3545'}; margin-top: 0;">${acertou ? 'Correto!' : 'Incorreto!'}</h3>
+            <p style="text-align: center; max-width: 90%;"><strong>Resolução:</strong><br>${perguntaAtual.resolucao}</p>
+            <button onclick="proximoTurno()" style="margin-top: 15px; padding: 10px 20px; font-size: 1.1rem; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 8px;">Concluir e Passar a Vez</button>
+        `;
+    }
 }
 
 // O MOTOR DE COMBOS!
@@ -542,13 +567,9 @@ function aplicarAlvoDRE(index) {
 }
 
 function prepararPerguntaDRE(nomeAlvo) {
+    // Como a carta central agora é dinâmica, apenas reconstruir o tabuleiro
+    // já atualiza o título dela para "✨ Bônus DRE: NomeDoAlvo"
     montarTelaJogo(); 
-    
-    document.getElementById('modal-pergunta').classList.add('ativo');
-    document.getElementById('bloco-dificuldade').style.display = 'block';
-    document.getElementById('area-pergunta').style.display = 'none';
-    document.getElementById('resolucao').style.display = 'none';
-    document.getElementById('grupo-atual-texto').innerText = `✨ Turno Bônus (DRE): ${nomeAlvo}`;
 }
 
 function desfazerJogada() {

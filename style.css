@@ -321,3 +321,64 @@ body.modo-projetor .peca { width: 35px; height: 35px; }
     opacity: 1;
     top: 50px;
 }
+
+/* --- CARTA MESTRA 3D (Centro do Tabuleiro) --- */
+.carta-mestra {
+    width: 100%;
+    height: 100%;
+    perspective: 1000px; /* Cria a profundidade 3D */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carta-inner {
+    width: 90%;
+    height: 90%;
+    position: relative;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-radius: 15px;
+}
+
+/* Quando essa classe for adicionada, a carta vira */
+.carta-mestra.virada .carta-inner {
+    transform: rotateY(180deg);
+}
+
+.carta-frente, .carta-verso {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.carta-verso {
+    transform: rotateY(180deg);
+    background: #f8f9fa;
+}
+
+/* Botões da Frente da Carta */
+.btn-dificuldade {
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    transition: transform 0.2s;
+}
+.btn-3 { background-color: #28a745; }
+.btn-5 { background-color: #dc3545; }
+.btn-dificuldade:hover { transform: scale(1.05); }
