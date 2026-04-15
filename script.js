@@ -417,17 +417,20 @@ function processarResposta(acertou) {
             msgPopUp += `Avançou 3 casas.`;
         } else {
             let idxAnterior = jogo.turnoAtual === 0 ? jogo.grupos.length - 1 : jogo.turnoAtual - 1;
-            jogo.grupos[idxAnterior].posicao += 3;
+            jogo.grupos[idxAnterior].posicao += 1;
             grupoQueMoveu = jogo.grupos[idxAnterior];
-            msgPopUp += `<br>O grupo anterior (${grupoQueMoveu.nome}) avançou 3 casas.`;
+            msgPopUp += `<br>O grupo anterior (${grupoQueMoveu.nome}) avançou 1 casa.`;
         }
     } else { 
         if (acertou) {
             grupoAtual.posicao += 5;
             msgPopUp += `Avançou 5 casas.`;
         } else {
-            msgPopUp += `Não se move.`;
-            moverAlguem = false;
+            // Agora o erro na difícil beneficia o anterior em 3 casas
+            let idxAnterior = jogo.turnoAtual === 0 ? jogo.grupos.length - 1 : jogo.turnoAtual - 1;
+            jogo.grupos[idxAnterior].posicao += 3;
+            grupoQueMoveu = jogo.grupos[idxAnterior];
+            msgPopUp += `<br>O grupo anterior (${grupoQueMoveu.nome}) avançou 3 casas.`;
         }
     }
 
