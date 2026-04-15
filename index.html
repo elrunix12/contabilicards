@@ -93,6 +93,30 @@
         </div>
     </div>
 
+    <div id="modal-novo-jogo" class="modal">
+        <div class="modal-conteudo" style="max-width: 450px;">
+            <h2 style="color: #2c3e50; margin-top: 0;">Configurar Partida</h2>
+            
+            <div style="text-align: left; margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 15px; font-size: 1.1rem;">
+                    <strong>Quantidade de Grupos (1 a 10):</strong><br>
+                    <input type="number" id="input-qtd-grupos" min="1" max="10" value="4" style="width: 100%; padding: 12px; font-size: 1.2rem; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+                    <span id="erro-qtd-grupos" style="color: #dc3545; font-size: 0.9rem; display: none; margin-top: 5px;">Por favor, insira um número entre 1 e 10.</span>
+                </label>
+                
+                <label style="display: flex; align-items: center; gap: 15px; font-size: 1.1rem; cursor: pointer; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; transition: background 0.2s;">
+                    <input type="checkbox" id="input-modo-fisico" style="width: 25px; height: 25px; cursor: pointer;">
+                    <span><strong>Usar Cards Físicos</strong><br><small style="color: #666;">(O mediador lê as cartas em voz alta)</small></span>
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button onclick="fecharModal('modal-novo-jogo')" style="padding: 12px 20px; font-size: 1.1rem; cursor: pointer; background: #6c757d; color: white; border: none; border-radius: 8px;">Cancelar</button>
+                <button onclick="confirmarNovoJogo()" style="padding: 12px 25px; font-size: 1.1rem; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold;">Iniciar Jogo</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast-notificacao" class="toast" onclick="fecharNotificacao()"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

@@ -77,10 +77,26 @@ window.onload = async () => {
 };
 
 function iniciarNovoJogo() {
-    let usaCardsFisicos = confirm("Deseja usar CARDS FÍSICOS?\n\n[OK] para Cards Físicos (você lê a pergunta em sala).\n[Cancelar] para Cards Digitais (perguntas na tela).");
+    abrirModal('modal-novo-jogo');
+}
+
+function confirmarNovoJogo() {
+    let qtdInput = document.getElementById('input-qtd-grupos');
+    let usaCardsFisicos = document.getElementById('input-modo-fisico').checked;
+    let erroMsg = document.getElementById('erro-qtd-grupos');
     
-    let qtd = parseInt(prompt("Quantos grupos/jogadores? (Máx 10)"));
-    if (isNaN(qtd) || qtd < 1 || qtd > 10) return alert("Número inválido.");
+    let qtd = parseInt(qtdInput.value);
+    
+    // Validação de segurança sem alert()
+    if (isNaN(qtd) || qtd < 1 || qtd > 10) {
+        erroMsg.style.display = 'block';
+        qtdInput.style.borderColor = '#dc3545';
+        return; 
+    }
+    
+    erroMsg.style.display = 'none';
+    qtdInput.style.borderColor = '#ccc';
+    fecharModal('modal-novo-jogo');
 
     jogo.grupos = [];
     for (let i = 0; i < qtd; i++) {
@@ -339,15 +355,11 @@ function carregarPergunta(dificuldade) {
         let perguntasFiltradas = jogo.perguntasDisponiveis.filter(p => p.dificuldade === dificuldade);
         
         if (perguntasFiltradas.length === 0) {
-            let reembaralhar = confirm(`As cartas de nível ${dificuldade} acabaram!\nClique [OK] para reembaralhar ou [Cancelar] para encerrar.`);
-            if (reembaralhar) {
-                const recuperar = bancoDePerguntasGeral.filter(p => p.dificuldade === dificuldade);
-                jogo.perguntasDisponiveis.push(...recuperar);
-                perguntasFiltradas = recuperar; 
-            } else {
-                encerrarJogoMostrarRanking();
-                return; 
-            }
+            // Reembaralhamento automático para manter a fluidez da partida
+            const recuperar = bancoDePerguntasGeral.filter(p => p.dificuldade === dificuldade);
+            jogo.perguntasDisponiveis.push(...recuperar);
+            perguntasFiltradas = recuperar; 
+            mostrarNotificacao(`🔄 As cartas de nível <strong>${dificuldade}</strong> foram reembaralhadas!`);
         }
 
         const idx = Math.floor(Math.random() * perguntasFiltradas.length);
@@ -384,7 +396,7 @@ function iniciarTemporizador(segundos) {
         if (tempo <= 0) {
             clearInterval(temporizador);
             if (configuracoes.penalidadeTempo) {
-                alert("Tempo Esgotado! Resposta considerada incorreta.");
+                mostrarNotificacao("⏳ <strong>Tempo Esgotado!</strong> Resposta incorreta.");
                 
                 if (jogo.modoFisico) {
                     perguntaAtual = { resolucao: "Tempo esgotado (validação do professor)." };
@@ -392,7 +404,7 @@ function iniciarTemporizador(segundos) {
                 
                 processarResposta(false); 
             } else {
-                alert("Tempo Esgotado! Aguardando ação do mediador.");
+                mostrarNotificacao("⏳ <strong>Tempo Esgotado!</strong> Aguardando ação do mediador.");
             }
         }
     }, 1000);
