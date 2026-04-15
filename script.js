@@ -249,7 +249,7 @@ function montarTelaJogo() {
                 if(tipoEspecial === 'BP+') desc = "+2 Casas";
                 if(tipoEspecial === 'BP-') desc = "-2 Casas";
                 if(tipoEspecial === 'IR+') desc = "Você +1<br>Outros -1";
-                if(tipoEspecial === 'IR-') desc = "Você -2<br>Outros +1";
+                if(tipoEspecial === 'IR-') desc = "Você -2<br>Outros +2";
                 if(tipoEspecial === 'DRE+') desc = "Pergunta Bônus";
                 if(tipoEspecial === 'DRE-') desc = "Escolha o Alvo";
                 
