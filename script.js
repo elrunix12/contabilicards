@@ -355,7 +355,6 @@ function carregarPergunta(dificuldade) {
         let perguntasFiltradas = jogo.perguntasDisponiveis.filter(p => p.dificuldade === dificuldade);
         
         if (perguntasFiltradas.length === 0) {
-            // Reembaralhamento automático para manter a fluidez da partida
             const recuperar = bancoDePerguntasGeral.filter(p => p.dificuldade === dificuldade);
             jogo.perguntasDisponiveis.push(...recuperar);
             perguntasFiltradas = recuperar; 
@@ -367,12 +366,25 @@ function carregarPergunta(dificuldade) {
         const removeIdx = jogo.perguntasDisponiveis.findIndex(p => p.pergunta === perguntaAtual.pergunta);
         if (removeIdx !== -1) jogo.perguntasDisponiveis.splice(removeIdx, 1);
         
-        let textoQ = configuracoes.exibirPergunta ? perguntaAtual.pergunta : "[A pergunta será lida pelo mediador. Escolha a alternativa correta abaixo:]";
+        let textoQ = configuracoes.exibirPergunta ? perguntaAtual.pergunta : "[O mediador lerá a pergunta e as opções. Escolha a alternativa abaixo:]";
         
         htmlVerso += `
             <p id="texto-pergunta" style="font-size: 1.2rem; margin-bottom: 15px; text-align: center;">${textoQ}</p>
             <div id="alternativas" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-                ${perguntaAtual.alternativas.map(alt => `<button class="alternativa" onclick="responder('${alt}')">${alt}</button>`).join('')}
+                ${perguntaAtual.alternativas.map((alt, index) => {
+                    // Gera as letras A, B, C, D usando a tabela ASCII (65 = A)
+                    let letra = String.fromCharCode(65 + index); 
+                    
+                    // Se exibir pergunta estiver marcado, mostra "A) Texto". Se não, mostra só um "A" centralizado e grande.
+                    let textoBotao = configuracoes.exibirPergunta 
+                        ? `<strong>${letra})</strong> ${alt}` 
+                        : `<span style="font-size: 1.5rem; font-weight: bold; text-align: center; display: block;">${letra}</span>`;
+                    
+                    // Substitui aspas simples para não quebrar o código
+                    let altEscapada = alt.replace(/'/g, "\\'"); 
+
+                    return `<button class="alternativa" onclick="responder('${altEscapada}')">${textoBotao}</button>`;
+                }).join('')}
             </div>
         `;
     }
