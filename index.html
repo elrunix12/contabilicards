@@ -18,11 +18,14 @@
         </div>
 
         <div class="rodape">
-            <p class="contribuidores">
+            <p id="licenca"><a href="https://www.gnu.org/licenses/agpl-3.0.txt" target="_blank">Licença do Software</a></p>
+            
+            <p class="contribuidores" style="text-align: center; margin: 0;">
                 <strong>Contribuidores:</strong><br>
-                L. Silva (elrunix12)<br>
-                </p>
-            <p id="licenca"><a href="https://www.gnu.org/licenses/agpl-3.0.txt" target="_blank">Licença do Projeto</a></p>
+                <span id="lista-contribuidores">Carregando...</span>
+            </p>
+            
+            <p id="github-repo"><a href="https://github.com/elrunix12/contabilicards" target="_blank">Repositório no GitHub</a></p>
         </div>
     </div>
 
@@ -45,29 +48,10 @@
 
         <div class="area-principal">
             <div id="tabuleiro"></div>
-            </div>
+        </div>
     </div>
 
-    <div id="modal-pergunta" class="modal">
-        <div class="modal-conteudo">
-            <h2 id="grupo-atual-texto"></h2>
-            <div class="escolha-dificuldade" id="bloco-dificuldade">
-                <p>Escolha a dificuldade:</p>
-                <button onclick="carregarPergunta('facil')">Fácil (15s)</button>
-                <button onclick="carregarPergunta('dificil')">Difícil (1min)</button>
-            </div>
-            
-            <div id="area-pergunta" style="display:none;">
-                <p id="texto-tempo">Tempo: <span id="contador">0</span>s</p>
-                <p id="texto-pergunta"></p>
-                <div id="alternativas"></div>
-                <div id="resolucao" style="display:none;">
-                    <p id="texto-resolucao"></p>
-                    <button onclick="proximoTurno()">Próximo Grupo</button>
-                </div>
-            </div>
-        </div>
-    </div> <div id="modal-regras" class="modal">
+    <div id="modal-regras" class="modal">
         <div class="modal-conteudo">
             <h2>Regras do Jogo</h2>
             <div id="conteudo-regras" style="text-align: left; max-height: 60vh; overflow-y: auto; margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
@@ -91,20 +75,52 @@
                     <input type="checkbox" id="config-som" onchange="salvarConfiguracoes()">
                     Ativar som de movimento das peças
                 </label>
-                <label style="display: block;">
+                <label style="display: block; margin-bottom: 15px;">
                     <input type="checkbox" id="config-exibir-pergunta" onchange="salvarConfiguracoes()">
-                    Exibir texto da pergunta na tela (se desmarcado, exibe apenas as alternativas)
+                    Exibir texto da pergunta e das alternativas na tela (se desmarcado, exibe apenas A, B, C, D...)
+                </label>
+                <label style="display: block;">
+                    <input type="checkbox" id="config-penalidade-tempo" onchange="salvarConfiguracoes()">
+                    Marcar como errada automaticamente se o tempo esgotar
                 </label>
             </div>
             <button onclick="fecharModal('modal-configs')" style="padding: 10px 20px; font-size: 1.1rem; cursor: pointer;">Salvar e Fechar</button>
         </div>
-    </div> <div id="modal-selecao-primeiro" class="modal">
+    </div> 
+    
+    <div id="modal-selecao-primeiro" class="modal">
         <div class="modal-conteudo" style="max-width: 400px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
             <h2 style="color: #2c3e50; font-size: 2rem; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Quem começa?</h2>
             <div id="lista-selecao-grupos" style="display: flex; flex-direction: column; gap: 10px;">
-                </div>
+            </div>
         </div>
     </div>
+
+    <div id="modal-novo-jogo" class="modal">
+        <div class="modal-conteudo" style="max-width: 450px;">
+            <h2 style="color: #2c3e50; margin-top: 0;">Configurar Partida</h2>
+            
+            <div style="text-align: left; margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 15px; font-size: 1.1rem;">
+                    <strong>Quantidade de Grupos (1 a 10):</strong><br>
+                    <input type="number" id="input-qtd-grupos" min="1" max="10" value="4" style="width: 100%; padding: 12px; font-size: 1.2rem; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+                    <span id="erro-qtd-grupos" style="color: #dc3545; font-size: 0.9rem; display: none; margin-top: 5px;">Por favor, insira um número entre 1 e 10.</span>
+                </label>
+                
+                <label style="display: flex; align-items: center; gap: 15px; font-size: 1.1rem; cursor: pointer; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; transition: background 0.2s;">
+                    <input type="checkbox" id="input-modo-fisico" style="width: 25px; height: 25px; cursor: pointer;">
+                    <span><strong>Usar Cards Físicos</strong><br><small style="color: #666;">(O mediador lê as cartas em voz alta)</small></span>
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button onclick="fecharModal('modal-novo-jogo')" style="padding: 12px 20px; font-size: 1.1rem; cursor: pointer; background: #6c757d; color: white; border: none; border-radius: 8px;">Cancelar</button>
+                <button onclick="confirmarNovoJogo()" style="padding: 12px 25px; font-size: 1.1rem; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold;">Iniciar Jogo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-notificacao" class="toast" onclick="fecharNotificacao()"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="script.js"></script>

@@ -1,27 +1,39 @@
 # 🎲 Regras: Contabilicards
 
 ## 📌 Como funciona o seu turno
-Na sua vez, a equipe escolhe se quer um desafio Fácil ou Difícil.
+1. Os jogadores jogam sozinhos ou em grupos, alternando entre si para fazer ou responder as perguntas.
+2. O jogador ativo (quem lê a carta) pergunta para o jogador à sua esquerda (o alvo) se ele quer uma pergunta Fácil (3 casas) ou Difícil (5 casas).
 
-### 🟢 Nível Fácil (15 segundos)
-Perguntas diretas para testar os conceitos básicos.
-* **Acertou?** Avança 1 casa.
-* **Errou?** Vocês não andam. O grupo que jogou *antes* de vocês ganha 3 casas de bônus!
+### 🟢 Nível Fácil (3 casas - 30 segundos)
+* **Acertou?** O jogador que respondeu avança 3 casas.
+* **Errou?** O jogador que respondeu fica onde está, e o jogador ativo (que leu a pergunta) avança 1 casa de bônus.
 
-### 🔴 Nível Difícil (60 segundos)
-Cálculos e cenários complexos.
-* **Acertou?** Avança 3 casas de uma só vez!
-* **Errou?** Fica onde está. Ninguém mais ganha vantagem.
+### 🔴 Nível Difícil (5 casas - 60 segundos)
+* **Acertou?** O jogador que respondeu avança 5 casas.
+* **Errou?** O jogador que respondeu fica onde está, e o jogador ativo (que leu a pergunta) avança 3 casas de bônus.
+
+*Após o fim do tempo ou a resposta, a carta é descartada e o jogador à esquerda se torna o novo jogador ativo.*
 
 ## 🏢 Casas Especiais no Tabuleiro
-Preste atenção onde a sua peça vai parar:
-* 🍀 **Casa Bônus (Verde):** Avança **2 casas** extras.
-* ⚠️ **Casa Ruim (Vermelha):** Você paga a multa e recua **2 casas**.
+Quando uma peça cair em uma destas casas, o efeito imediato é ativado:
+
+* **BP+ (Bônus Próprio):** Avance 2 casas.
+* **BP- (Azar):** Volte 2 casas.
+* **IR+ (Interação):** Avance 1 casa. Os outros jogadores voltam 1 casa.
+* **IR- (Interação):** Volte 2 casas. Os outros jogadores avançam 2 casas.
+* **DRE+ (Pergunta Bônus):** O jogador que caiu na casa responde sozinho a uma pergunta extra. **Não há penalidade se errar.**
+* **DRE- (Armadilha):** O jogador escolhe um alvo para responder a uma pergunta extra. **Não há penalidade se o alvo errar.**
+
+## 🔄 Regra de Combos e Reações em Cadeia
+* **Limite de 1 Combo:** Para evitar confusão e loops infinitos, os efeitos de casas especiais ocorrem **apenas uma vez por rodada**. 
+* Se um jogador sofrer o efeito de uma casa (como avançar ou recuar) e acabar parando em cima de uma segunda casa especial, a segunda casa será **ignorada**.
+
+## ⚙️ Configurações Opcionais (Menu Iniciar)
+O jogo possui um botão de "Configurações" na tela inicial onde o professor/mediador pode personalizar a partida:
+* **Penalidade de Tempo:** Se o tempo esgotar, o jogo apenas avisa e aguarda a decisão do mediador. Se esta opção for ativada, o esgotamento do tempo contará automaticamente como uma resposta errada.
+* **Tamanho do Tabuleiro:** Pode ser ajustado de 16 a 100 casas.
+* **Exibir Pergunta na Tela:** Permite esconder o texto da pergunta na tela digital (mostrando apenas os botões A, B, C...) para forçar os alunos a prestarem atenção na leitura do mediador.
 
 ## ⏱️ Acordos do Jogo
-* Se o cronômetro zerar antes de escolherem a alternativa, a resposta conta como errada.
-* **Botão Desfazer:** Serve apenas caso o mediador clique em algo sem querer.
-* **Botão Refazer:** Caso clique no **Botão Desfazer**, ele desfaz essa ação. 
-* **Fim de jogo:** Quem completar a volta, vence!
-
-Boa sorte!
+* **Botão Desfazer/Refazer:** Utilize apenas caso o mediador clique em algo por acidente na tela.
+* **Fim de jogo:** Quem chegar na última casa (Publicação) primeiro, vence o jogo!

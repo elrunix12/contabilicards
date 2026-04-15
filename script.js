@@ -1,6 +1,7 @@
 // --- CONFIGURAÇÕES INICIAIS ---
-const CASAS_BONUS = [3, 8, 14, 20, 26, 31, 37, 43, 49, 55, 61, 67, 73, 79]; 
-const CASAS_RUINS = [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71, 77]; 
+const CASAS_ESPECIAIS = {
+    5: 'BP+', 9: 'IR-', 12: 'BP-', 15: 'IR+', 18: 'DRE-', 21: 'DRE+', 25: 'BP-', 26: 'IR-'
+};
 const CORES_DISTINTAS = ['#FF0000', '#0000FF', '#008000', '#FFA500', '#800080', '#00FFFF', '#FF00FF', '#FFFF00', '#00FF00', '#800000'];
 const LIMITE_HISTORICO = 20;
 
@@ -12,38 +13,47 @@ let jogo = {
     perguntasDisponiveis: [],
     historico: [],
     historicoDesfeito: [],
-    totalCasas: 28 
+    totalCasas: 28,
+    pendenciaDRE: null,
+    emEventoDRE: false,
+    turnoRetornoDRE: null,
+    modoFisico: false 
+};
+
+let configuracoes = {
+    somAtivo: false,
+    exibirPergunta: true,
+    totalCasas: 28,
+    penalidadeTempo: false 
 };
 
 let temporizador;
 
 // --- SISTEMA DE CONFIGURAÇÕES ---
-let configuracoes = {
-    somAtivo: false,
-    exibirPergunta: true,
-    totalCasas: 28
-};
-
 function carregarConfiguracoes() {
     if(localStorage.getItem('jogoConfigs')) {
         let salvo = JSON.parse(localStorage.getItem('jogoConfigs'));
         configuracoes.somAtivo = salvo.somAtivo || false;
         configuracoes.exibirPergunta = salvo.exibirPergunta !== undefined ? salvo.exibirPergunta : true;
         configuracoes.totalCasas = salvo.totalCasas || 28; 
+        configuracoes.penalidadeTempo = salvo.penalidadeTempo || false;
     }
     
     let chkSom = document.getElementById('config-som');
     let chkPergunta = document.getElementById('config-exibir-pergunta');
+    let chkPenalidade = document.getElementById('config-penalidade-tempo');
     let inpCasas = document.getElementById('config-casas');
     
     if (chkSom) chkSom.checked = configuracoes.somAtivo;
     if (chkPergunta) chkPergunta.checked = configuracoes.exibirPergunta;
+    if (chkPenalidade) chkPenalidade.checked = configuracoes.penalidadeTempo;
     if (inpCasas) inpCasas.value = configuracoes.totalCasas;
 }
 
 function salvarConfiguracoes() {
     configuracoes.somAtivo = document.getElementById('config-som').checked;
     configuracoes.exibirPergunta = document.getElementById('config-exibir-pergunta').checked;
+    configuracoes.penalidadeTempo = document.getElementById('config-penalidade-tempo').checked;
     configuracoes.totalCasas = parseInt(document.getElementById('config-casas').value) || 28;
     
     if (configuracoes.totalCasas % 2 !== 0) configuracoes.totalCasas += 1;
@@ -55,6 +65,7 @@ function salvarConfiguracoes() {
 // --- INICIALIZAÇÃO E SELEÇÃO DE PRIMEIRO JOGADOR ---
 window.onload = async () => {
     carregarConfiguracoes();
+    carregarContribuidores();
     if (localStorage.getItem('jogoSalvo')) {
         document.getElementById('btn-continuar').style.display = 'block';
     }
@@ -67,8 +78,26 @@ window.onload = async () => {
 };
 
 function iniciarNovoJogo() {
-    let qtd = parseInt(prompt("Quantos grupos/jogadores? (Máx 10)"));
-    if (isNaN(qtd) || qtd < 1 || qtd > 10) return alert("Número inválido.");
+    abrirModal('modal-novo-jogo');
+}
+
+function confirmarNovoJogo() {
+    let qtdInput = document.getElementById('input-qtd-grupos');
+    let usaCardsFisicos = document.getElementById('input-modo-fisico').checked;
+    let erroMsg = document.getElementById('erro-qtd-grupos');
+    
+    let qtd = parseInt(qtdInput.value);
+    
+    // Validação de segurança sem alert()
+    if (isNaN(qtd) || qtd < 1 || qtd > 10) {
+        erroMsg.style.display = 'block';
+        qtdInput.style.borderColor = '#dc3545';
+        return; 
+    }
+    
+    erroMsg.style.display = 'none';
+    qtdInput.style.borderColor = '#ccc';
+    fecharModal('modal-novo-jogo');
 
     jogo.grupos = [];
     for (let i = 0; i < qtd; i++) {
@@ -78,11 +107,15 @@ function iniciarNovoJogo() {
     jogo.historicoDesfeito = [];
     jogo.totalCasas = configuracoes.totalCasas || 28; 
     jogo.perguntasDisponiveis = [...bancoDePerguntasGeral];
+    jogo.modoFisico = usaCardsFisicos;
     
     abrirSelecaoPrimeiro();
 }
 
 function abrirSelecaoPrimeiro() {
+    let titulo = document.querySelector('#modal-selecao-primeiro h2');
+    if(titulo) titulo.innerHTML = "Quem começa?";
+
     const lista = document.getElementById('lista-selecao-grupos');
     lista.innerHTML = jogo.grupos.map((g, i) => `
         <button class="btn-selecao" onclick="definirPrimeiro(${i})">
@@ -139,9 +172,50 @@ function montarTelaJogo() {
     centro.id = 'centro-tabuleiro';
     centro.style.gridColumn = `2 / ${W}`;
     centro.style.gridRow = `2 / ${H}`;
+    
+    // Identifica quem Lê e quem Responde (com correção para DRE)
+    let jogadorAtivo;
+    let jogadorAlvo;
+
+    if (jogo.emEventoDRE) {
+        jogadorAlvo = jogo.grupos[jogo.turnoAtual]; // Quem responde é o alvo escolhido
+        let idxCausador = (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
+        jogadorAtivo = jogo.grupos[idxCausador]; // Quem causou o DRE
+    } else {
+        jogadorAtivo = jogo.grupos[jogo.turnoAtual];
+        let idxAlvo = (jogo.turnoAtual + 1) % jogo.grupos.length;
+        jogadorAlvo = jogo.grupos[idxAlvo];
+    }
+    
+    let nomeGrupoAtual = jogadorAtivo ? jogadorAtivo.nome : "";
+    let nomeAlvo = jogadorAlvo ? jogadorAlvo.nome : "";
+
+    let tituloTurno = "";
+    if (jogo.emEventoDRE) {
+        if (jogadorAtivo.id === jogadorAlvo.id) {
+            tituloTurno = `✨ DRE+: ${nomeAlvo} responde sozinho!`;
+        } else {
+            tituloTurno = `🎯 DRE-: ${nomeGrupoAtual} escolheu ${nomeAlvo}!`;
+        }
+    } else {
+        tituloTurno = `Lê: ${nomeGrupoAtual} | Responde: ${nomeAlvo}`;
+    }
+
     centro.innerHTML = `
-        <h1>Contabilicards!</h1>
-        <button onclick="abrirPainelPergunta()" id="btn-jogar">Sortear Pergunta</button>
+        <div class="carta-mestra" id="carta-central">
+            <div class="carta-inner">
+                <div class="carta-frente">
+                    <div style="font-size: 1.4rem; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">${tituloTurno}</div>
+                    <img src="logo.png" alt="Contabilicards" style="max-width: 60%; max-height: 40%; object-fit: contain; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 20px;">
+                        <button class="btn-dificuldade btn-3" onclick="carregarPergunta('facil')">3 Casas</button>
+                        <button class="btn-dificuldade btn-5" onclick="carregarPergunta('dificil')">5 Casas</button>
+                    </div>
+                </div>
+                <div class="carta-verso" id="carta-conteudo-verso">
+                    </div>
+            </div>
+        </div>
     `;
     tab.appendChild(centro);
 
@@ -149,10 +223,10 @@ function montarTelaJogo() {
     for (let i = 0; i < C; i++) {
         let div = document.createElement('div');
         
-        let ehBonus = CASAS_BONUS.includes(i) && i !== 0 && i !== C - 1;
-        let ehRuim = CASAS_RUINS.includes(i) && i !== 0 && i !== C - 1;
+        let tipoEspecial = CASAS_ESPECIAIS[i];
+        let ehEspecial = tipoEspecial !== undefined && i !== 0 && i !== C - 1;
         
-        div.className = `casa ${ehBonus ? 'bonus' : ''} ${ehRuim ? 'ruim' : ''}`;
+        div.className = `casa ${ehEspecial ? 'bonus' : ''}`;
         div.id = `casa-${i}`;
         
         let conteudoHTML = "";
@@ -161,16 +235,25 @@ function montarTelaJogo() {
             conteudoHTML = `<span class="efeito-casa" style="color: #333; font-size: 1.2rem; font-weight: bold; text-align: center;">INÍCIO</span>`;
             div.style.background = "#e0f7fa"; 
             div.style.borderColor = "#00bcd4";
-        } else if (i === C - 1) { // A Última Casa
+        } else if (i === C - 1) { 
             conteudoHTML = `<span class="numero">${i}</span><span class="efeito-casa" style="color: #333; font-size: 0.9rem;">Publicação</span>`;
             div.style.background = "#ffd700"; 
             div.style.borderColor = "#c6a700";
         } else {
             conteudoHTML = `<span class="numero">${i}</span>`;
-            if (ehBonus) {
-                conteudoHTML += `<span class="efeito-casa">+2 Casas</span>`;
-            } else if (ehRuim) {
-                conteudoHTML += `<span class="efeito-casa">-2 Casas</span>`;
+            if (ehEspecial) {
+                if(tipoEspecial.includes('+')) div.style.background = "#d4edda";
+                if(tipoEspecial.includes('-')) div.style.background = "#f8d7da";
+                
+                let desc = "";
+                if(tipoEspecial === 'BP+') desc = "+2 Casas";
+                if(tipoEspecial === 'BP-') desc = "-2 Casas";
+                if(tipoEspecial === 'IR+') desc = "Você +1<br>Outros -1";
+                if(tipoEspecial === 'IR-') desc = "Você -2<br>Outros +1";
+                if(tipoEspecial === 'DRE+') desc = "Pergunta Bônus";
+                if(tipoEspecial === 'DRE-') desc = "Escolha o Alvo";
+                
+                conteudoHTML += `<span class="efeito-casa"><strong>${tipoEspecial}</strong><br><small style="font-size:0.6rem; line-height: 1.1; display: block; margin-top: 2px;">${desc}</small></span>`;
             }
         }
         
@@ -202,7 +285,6 @@ function montarTelaJogo() {
 
 function posicionarPecas() {
     jogo.grupos.forEach(g => {
-        // A peça estaciona visualmente na última casa (C - 1) caso a pontuação a ultrapasse
         let idCasaVisual = g.posicao >= jogo.totalCasas - 1 ? jogo.totalCasas - 1 : g.posicao;
         let casaDiv = document.getElementById(`casa-${idCasaVisual}`);
         
@@ -222,7 +304,11 @@ function obterFotoDoJogo() {
         grupos: jogo.grupos,
         turnoAtual: jogo.turnoAtual,
         perguntasDisponiveis: jogo.perguntasDisponiveis,
-        totalCasas: jogo.totalCasas
+        totalCasas: jogo.totalCasas,
+        pendenciaDRE: jogo.pendenciaDRE,
+        emEventoDRE: jogo.emEventoDRE,
+        turnoRetornoDRE: jogo.turnoRetornoDRE,
+        modoFisico: jogo.modoFisico 
     });
 }
 
@@ -232,6 +318,10 @@ function aplicarFotoDoJogo(fotoString) {
     jogo.turnoAtual = backup.turnoAtual;
     jogo.perguntasDisponiveis = backup.perguntasDisponiveis;
     jogo.totalCasas = backup.totalCasas || 28;
+    jogo.pendenciaDRE = backup.pendenciaDRE || null;
+    jogo.emEventoDRE = backup.emEventoDRE || false;
+    jogo.turnoRetornoDRE = backup.turnoRetornoDRE !== undefined ? backup.turnoRetornoDRE : null;
+    jogo.modoFisico = backup.modoFisico || false; 
 }
 
 // --- LÓGICA DE PERGUNTAS E TURNOS ---
@@ -256,115 +346,257 @@ let perguntaAtual;
 let dificuldadeAtual;
 
 function carregarPergunta(dificuldade) {
+    // Salva o histórico logo no clique do 3 ou 5
+    jogo.historico.push(obterFotoDoJogo());
+    if (jogo.historico.length > LIMITE_HISTORICO) jogo.historico.shift(); 
+    jogo.historicoDesfeito = []; 
+    atualizarBotoesHistorico();
+
     dificuldadeAtual = dificuldade;
-    document.getElementById('bloco-dificuldade').style.display = 'none';
-    
-    let perguntasFiltradas = jogo.perguntasDisponiveis.filter(p => p.dificuldade === dificuldade);
-    
-    if (perguntasFiltradas.length === 0) {
-        let desejaReembaralhar = confirm(`As cartas de nível ${dificuldade} acabaram!\n\nClique em [OK] para reembaralhar.\nClique em [Cancelar] para encerrar o jogo e ver o ranking.`);
-        if (desejaReembaralhar) {
-            const recuperarPerguntas = bancoDePerguntasGeral.filter(p => p.dificuldade === dificuldade);
-            jogo.perguntasDisponiveis.push(...recuperarPerguntas);
-            perguntasFiltradas = recuperarPerguntas; 
-        } else {
-            encerrarJogoMostrarRanking();
-            return; 
-        }
-    }
+    const verso = document.getElementById('carta-conteudo-verso');
+    const cartaCentral = document.getElementById('carta-central');
 
-    document.getElementById('area-pergunta').style.display = 'block';
+    let htmlVerso = `<p id="texto-tempo" style="font-size: 1.2rem; font-weight: bold; color: #333; margin-top: 0;">Tempo: <span id="contador">0</span>s</p>`;
 
-    const indiceSorteado = Math.floor(Math.random() * perguntasFiltradas.length);
-    perguntaAtual = perguntasFiltradas[indiceSorteado];
-    
-    const indexNoBaralho = jogo.perguntasDisponiveis.findIndex(p => p.pergunta === perguntaAtual.pergunta);
-    if (indexNoBaralho !== -1) jogo.perguntasDisponiveis.splice(indexNoBaralho, 1);
-    
-    if (configuracoes.exibirPergunta) {
-        document.getElementById('texto-pergunta').innerText = perguntaAtual.pergunta;
+    if (jogo.modoFisico) {
+        htmlVerso += `
+            <div style="font-size: 1.8rem; font-weight: bold; color: ${dificuldade === 'facil' ? '#28a745' : '#dc3545'}; text-transform: uppercase; margin-bottom: 20px;">
+                Andar ${dificuldade === 'facil' ? '3' : '5'} Casas
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <button class="alternativa" style="background-color: #28a745; color: white; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px;" onclick="responder(true)">Acertou</button>
+                <button class="alternativa" style="background-color: #dc3545; color: white; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px;" onclick="responder(false)">Errou</button>
+            </div>
+        `;
     } else {
-        document.getElementById('texto-pergunta').innerText = "[A pergunta será lida pelo mediador. Escolha a alternativa correta abaixo:]";
-    }
-    
-    const altDiv = document.getElementById('alternativas');
-    altDiv.innerHTML = perguntaAtual.alternativas.map(alt => 
-        `<button class="alternativa" onclick="responder('${alt}')">${alt}</button>`
-    ).join('');
+        let perguntasFiltradas = jogo.perguntasDisponiveis.filter(p => p.dificuldade === dificuldade);
+        
+        if (perguntasFiltradas.length === 0) {
+            const recuperar = bancoDePerguntasGeral.filter(p => p.dificuldade === dificuldade);
+            jogo.perguntasDisponiveis.push(...recuperar);
+            perguntasFiltradas = recuperar; 
+            mostrarNotificacao(`🔄 As cartas de nível <strong>${dificuldade}</strong> foram reembaralhadas!`);
+        }
 
-    iniciarTemporizador(dificuldade === 'facil' ? 17 : 62); 
+        const idx = Math.floor(Math.random() * perguntasFiltradas.length);
+        perguntaAtual = perguntasFiltradas[idx];
+        const removeIdx = jogo.perguntasDisponiveis.findIndex(p => p.pergunta === perguntaAtual.pergunta);
+        if (removeIdx !== -1) jogo.perguntasDisponiveis.splice(removeIdx, 1);
+        
+        let textoQ = configuracoes.exibirPergunta ? perguntaAtual.pergunta : "[O mediador lerá a pergunta e as opções. Escolha a alternativa abaixo:]";
+        
+        htmlVerso += `
+            <p id="texto-pergunta" style="font-size: 1.2rem; margin-bottom: 15px; text-align: center;">${textoQ}</p>
+            <div id="alternativas" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                ${perguntaAtual.alternativas.map((alt, index) => {
+                    // Gera as letras A, B, C, D usando a tabela ASCII (65 = A)
+                    let letra = String.fromCharCode(65 + index); 
+                    
+                    // Se exibir pergunta estiver marcado, mostra "A) Texto". Se não, mostra só um "A" centralizado e grande.
+                    let textoBotao = configuracoes.exibirPergunta 
+                        ? `<strong>${letra})</strong> ${alt}` 
+                        : `<span style="font-size: 1.5rem; font-weight: bold; text-align: center; display: block;">${letra}</span>`;
+                    
+                    // Substitui aspas simples para não quebrar o código
+                    let altEscapada = alt.replace(/'/g, "\\'"); 
+
+                    return `<button class="alternativa" onclick="responder('${altEscapada}')">${textoBotao}</button>`;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    verso.innerHTML = htmlVerso;
+    
+    // Gira a carta visualmente
+    cartaCentral.classList.add('virada');
+
+    iniciarTemporizador(dificuldade === 'facil' ? 30 : 60); 
 }
 
 function iniciarTemporizador(segundos) {
     let tempo = segundos;
     document.getElementById('contador').innerText = tempo;
     clearInterval(temporizador);
+    
     temporizador = setInterval(() => {
         tempo--;
         document.getElementById('contador').innerText = tempo;
         if (tempo <= 0) {
             clearInterval(temporizador);
-            alert("Tempo Esgotado!");
-            processarResposta(false);
+            if (configuracoes.penalidadeTempo) {
+                mostrarNotificacao("⏳ <strong>Tempo Esgotado!</strong> Resposta incorreta.");
+                
+                if (jogo.modoFisico) {
+                    perguntaAtual = { resolucao: "Tempo esgotado (validação do professor)." };
+                }
+                
+                processarResposta(false); 
+            } else {
+                mostrarNotificacao("⏳ <strong>Tempo Esgotado!</strong> Aguardando ação do mediador.");
+            }
         }
     }, 1000);
 }
 
-function responder(alternativa) {
+function responder(respostaOuAlternativa) {
     clearInterval(temporizador);
-    const acertou = alternativa === perguntaAtual.correta;
+    let acertou;
+    
+    if (jogo.modoFisico) {
+        acertou = respostaOuAlternativa === true;
+        perguntaAtual = { resolucao: "Validação manual feita pelo professor." };
+    } else {
+        acertou = respostaOuAlternativa === perguntaAtual.correta;
+    }
+    
     processarResposta(acertou);
 }
 
 function processarResposta(acertou) {
-    document.getElementById('alternativas').innerHTML = ''; 
-    const resolucaoDiv = document.getElementById('resolucao');
-    resolucaoDiv.style.display = 'block';
+    let jogadorAtivo;
+    let jogadorAlvo;
 
-    let grupoAtual = jogo.grupos[jogo.turnoAtual];
-    let msg = acertou ? `Correto, ${grupoAtual.nome}! ` : `Incorreto, ${grupoAtual.nome}. `;
+    if (jogo.emEventoDRE) {
+        jogadorAlvo = jogo.grupos[jogo.turnoAtual];
+        let idxCausador = (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
+        jogadorAtivo = jogo.grupos[idxCausador];
+    } else {
+        jogadorAtivo = jogo.grupos[jogo.turnoAtual];
+        let idxAlvo = (jogo.turnoAtual + 1) % jogo.grupos.length;
+        jogadorAlvo = jogo.grupos[idxAlvo];
+    }
+
+    let msgPopUp = "";
+    let grupoQueMoveu = null;
 
     if (dificuldadeAtual === 'facil') {
         if (acertou) {
-            grupoAtual.posicao += 3; // Agora anda 3 casas
-            msg += "Você andou 3 casas.";
+            jogadorAlvo.posicao += 3;
+            grupoQueMoveu = jogadorAlvo;
+            msgPopUp = `<strong>Correto!</strong> ${jogadorAlvo.nome} acertou e avançou 3 casas.`;
         } else {
-            let idxAnterior = jogo.turnoAtual === 0 ? jogo.grupos.length - 1 : jogo.turnoAtual - 1;
-            jogo.grupos[idxAnterior].posicao += 3;
-            msg += `O grupo anterior (${jogo.grupos[idxAnterior].nome}) andou 3 casas!`;
+            // Verifica se está em qualquer evento DRE (DRE+ ou DRE-)
+            if (jogo.emEventoDRE) {
+                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>Como era uma Pergunta Bônus (DRE), ninguém sofre penalidade.`;
+            } else {
+                jogadorAtivo.posicao += 1;
+                grupoQueMoveu = jogadorAtivo;
+                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 1 casa de bônus por dificultar.`;
+            }
         }
     } else { 
         if (acertou) {
-            grupoAtual.posicao += 5; // Agora anda 5 casas
-            msg += "Você andou 5 casas!";
+            jogadorAlvo.posicao += 5;
+            grupoQueMoveu = jogadorAlvo;
+            msgPopUp = `<strong>Correto!</strong> ${jogadorAlvo.nome} acertou e avançou 5 casas.`;
         } else {
-            msg += "Você não se move.";
+            // Verifica se está em qualquer evento DRE (DRE+ ou DRE-)
+            if (jogo.emEventoDRE) {
+                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>Como era uma Pergunta Bônus (DRE), ninguém sofre penalidade.`;
+            } else {
+                jogadorAtivo.posicao += 3;
+                grupoQueMoveu = jogadorAtivo;
+                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 3 casas de bônus por dificultar.`;
+            }
         }
     }
 
-    let grupoQueMoveu = acertou ? grupoAtual : (dificuldadeAtual === 'facil' ? jogo.grupos[jogo.turnoAtual === 0 ? jogo.grupos.length - 1 : jogo.turnoAtual - 1] : null);
-
-    if (grupoQueMoveu && grupoQueMoveu.posicao < jogo.totalCasas - 1) {
-        if (CASAS_BONUS.includes(grupoQueMoveu.posicao)) {
-            grupoQueMoveu.posicao += 2;
-            msg += `\n🎉 BÔNUS: O ${grupoQueMoveu.nome} caiu em uma casa bônus e avançou +2 casas!`;
-        } else if (CASAS_RUINS.includes(grupoQueMoveu.posicao)) {
-            grupoQueMoveu.posicao -= 2;
-            if (grupoQueMoveu.posicao < 0) grupoQueMoveu.posicao = 0; 
-            msg += `\n⚠️ AZAR: O ${grupoQueMoveu.nome} caiu em uma casa ruim e recuou 2 casas!`;
-        }
-    }
-
-    // Trava na última casa lógica (27, caso o padrão seja 28)
+    // Trava para não ultrapassar o final do tabuleiro
     jogo.grupos.forEach(g => { if(g.posicao >= jogo.totalCasas - 1) g.posicao = jogo.totalCasas - 1; });
 
-    document.getElementById('texto-resolucao').innerText = msg + `\nResolução: ${perguntaAtual.resolucao}`;
+    // Se o grupo que se moveu caiu em casa especial, ativa o combo
+    let logCombo = "";
+    if (grupoQueMoveu && grupoQueMoveu.posicao > 0 && grupoQueMoveu.posicao < jogo.totalCasas - 1) {
+        logCombo = ativarMotorDeCombos(grupoQueMoveu);
+    }
+
+    jogo.grupos.forEach(g => { 
+        if(g.posicao < 0) g.posicao = 0;
+        if(g.posicao >= jogo.totalCasas - 1) g.posicao = jogo.totalCasas - 1; 
+    });
+
+    let textoNotificacao = msgPopUp;
+    if (logCombo !== "") textoNotificacao += `<br><br><strong>Efeitos Extras:</strong>` + logCombo;
+    mostrarNotificacao(textoNotificacao);
+
+    // Finaliza o turno (virando a carta ou mostrando a resolução no digital)
+    if (jogo.modoFisico) {
+        proximoTurno();
+    } else {
+        document.querySelectorAll('.peca').forEach(p => p.remove());
+        posicionarPecas();
+        
+        const verso = document.getElementById('carta-conteudo-verso');
+        verso.innerHTML = `
+            <h3 style="color: ${acertou ? '#28a745' : '#dc3545'}; margin-top: 0; font-size: 2rem;">${acertou ? 'Correto!' : 'Incorreto!'}</h3>
+            <p style="text-align: center; max-width: 90%; font-size: 1.3rem;"><strong>Resolução:</strong><br>${perguntaAtual.resolucao}</p>
+            <button onclick="proximoTurno()" style="margin-top: 25px; padding: 15px 30px; font-size: 1.3rem; cursor: pointer; background-color: #2c3e50; color: white; border: none; border-radius: 12px; box-shadow: 4px 4px 0px #1a252f; transition: transform 0.1s;">Concluir e Passar a Vez</button>
+        `;
+    }
+}
+
+// O MOTOR DE COMBOS! (Sem loop, restrito a 1 execução por turno)
+function ativarMotorDeCombos(grupo) {
+    let log = "";
+    
+    // Substituímos o 'while' por um 'if'. O efeito só acontece UMA vez e o turno encerra!
+    if (grupo.posicao > 0 && grupo.posicao < jogo.totalCasas - 1) {
+        let especial = CASAS_ESPECIAIS[grupo.posicao];
+        
+        if (especial) { 
+            // Inclui o nome do grupo diretamente no log do pop-up
+            log += `<br>🎯 <strong>${grupo.nome}</strong> caiu na Casa ${grupo.posicao} (${especial}): `;
+            
+            if (especial === 'BP+') {
+                grupo.posicao += 2; log += `Avança +2 casas!`;
+            } else if (especial === 'BP-') {
+                grupo.posicao -= 2; log += `Recua -2 casas!`;
+            } else if (especial === 'IR+') {
+                grupo.posicao += 1;
+                jogo.grupos.forEach(g => { if (g.id !== grupo.id) g.posicao -= 1; });
+                log += `Avançou +1 e os outros recuaram -1!`;
+            } else if (especial === 'IR-') {
+                grupo.posicao -= 2;
+                jogo.grupos.forEach(g => { if (g.id !== grupo.id) g.posicao += 2; });
+                log += `Recuou -2 e os outros avançaram +2!`;
+            } else if (especial === 'DRE+') {
+                log += `Pergunta Bônus garantida!`;
+                jogo.pendenciaDRE = { ativo: true, tipo: 'DRE+', grupoCausador: grupo };
+            } else if (especial === 'DRE-') {
+                log += `Deve escolher quem sofrerá/ganhará a pergunta!`;
+                jogo.pendenciaDRE = { ativo: true, tipo: 'DRE-', grupoCausador: grupo };
+            }
+        }
+    }
+    
+    // Garante que ninguém fique com posição negativa
+    jogo.grupos.forEach(g => { if(g.posicao < 0) g.posicao = 0; }); 
+    
+    return log;
 }
 
 function proximoTurno() {
-    document.getElementById('modal-pergunta').classList.remove('ativo');
+    // Removemos a linha que tentava fechar o modal antigo
     
-    // Verifica a vitória com base na penúltima casa
+    if (jogo.pendenciaDRE && jogo.pendenciaDRE.ativo) {
+        let p = jogo.pendenciaDRE;
+        jogo.pendenciaDRE = null; 
+        
+        jogo.emEventoDRE = true;
+        jogo.turnoRetornoDRE = (jogo.turnoAtual + 1) % jogo.grupos.length;
+        
+        let idCausador = jogo.grupos.findIndex(g => g.id === p.grupoCausador.id);
+
+        if (p.tipo === 'DRE+') {
+            jogo.turnoAtual = idCausador; 
+            prepararPerguntaDRE(p.grupoCausador.nome);
+        } else {
+            abrirSelecaoAlvoDRE(p.grupoCausador.nome); 
+        }
+        return; 
+    }
+
     let ganhador = jogo.grupos.find(g => g.posicao >= jogo.totalCasas - 1);
     if (ganhador) {
         montarTelaJogo(); 
@@ -372,9 +604,51 @@ function proximoTurno() {
         return;
     }
 
-    jogo.turnoAtual = (jogo.turnoAtual + 1) % jogo.grupos.length;
+    if (jogo.emEventoDRE) {
+        jogo.turnoAtual = jogo.turnoRetornoDRE;
+        jogo.emEventoDRE = false;
+        jogo.turnoRetornoDRE = null;
+    } else {
+        jogo.turnoAtual = (jogo.turnoAtual + 1) % jogo.grupos.length;
+    }
+    
     salvarEstado();
-    montarTelaJogo();
+    montarTelaJogo(); // Recria o tabuleiro e desvira a carta central para o próximo
+}
+
+// --- FUNÇÕES DE CONTROLE DO DRE ---
+function abrirSelecaoAlvoDRE(nomeEscolhedor) {
+    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+    document.getElementById('modal-selecao-primeiro').classList.add('ativo');
+    
+    let titulo = document.querySelector('#modal-selecao-primeiro h2');
+    titulo.innerHTML = `DRE- <br><small style="font-size: 1rem; color: #555;">${nomeEscolhedor}, escolha o alvo:</small>`;
+    
+    const lista = document.getElementById('lista-selecao-grupos');
+    
+    // Mapeia os grupos, mas retorna vazio se for o próprio grupo que caiu na casa
+    lista.innerHTML = jogo.grupos.map((g, i) => {
+        if (g.nome === nomeEscolhedor) return ''; 
+        
+        return `
+        <button class="btn-selecao" onclick="aplicarAlvoDRE(${i})">
+            <span style="display:inline-block; width:20px; height:20px; background:${g.cor}; border-radius:50%; margin-right:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></span>
+            ${g.nome}
+        </button>
+        `;
+    }).join('');
+}
+
+function aplicarAlvoDRE(index) {
+    jogo.turnoAtual = index;
+    document.getElementById('modal-selecao-primeiro').classList.remove('ativo');
+    prepararPerguntaDRE(jogo.grupos[index].nome);
+}
+
+function prepararPerguntaDRE(nomeAlvo) {
+    // Como a carta central agora é dinâmica, apenas reconstruir o tabuleiro
+    // já atualiza o título dela para "✨ Bônus DRE: NomeDoAlvo"
+    montarTelaJogo(); 
 }
 
 function desfazerJogada() {
@@ -422,7 +696,7 @@ function refazerJogada() {
 }
 
 function encerrarJogoMostrarRanking() {
-    document.getElementById('modal-pergunta').classList.remove('ativo');
+    // Removemos a linha que tentava fechar o modal antigo
     
     let ranking = [...jogo.grupos].sort((a, b) => b.posicao - a.posicao);
     let maiorPosicao = ranking[0].posicao;
@@ -526,5 +800,54 @@ function alternarModoProjetor() {
         if (document.exitFullscreen) document.exitFullscreen();
         btn.innerText = "Modo Projetor";
         btn.style.backgroundColor = "#007bff"; 
+    }
+}
+
+// --- NOTIFICAÇÃO TOAST (COMBO) ---
+let timerToast;
+function mostrarNotificacao(mensagem) {
+    const toast = document.getElementById('toast-notificacao');
+    
+    // Atualiza o texto
+    toast.innerHTML = mensagem + `<br><small style="font-size: 0.8rem; color: #ccc;">(Clique para fechar)</small>`;
+    
+    // Se não estiver aparecendo, mostra. Se já estiver, só reseta o tempo sem piscar.
+    if (!toast.classList.contains('mostrar')) {
+        toast.classList.add('mostrar');
+    }
+    
+    clearTimeout(timerToast);
+    timerToast = setTimeout(() => {
+        fecharNotificacao();
+    }, 6000); 
+}
+
+function fecharNotificacao() {
+    const toast = document.getElementById('toast-notificacao');
+    toast.classList.remove('mostrar');
+}
+
+async function carregarContribuidores() {
+    try {
+        const resposta = await fetch('contributors.json'); 
+        if (!resposta.ok) throw new Error("Arquivo não encontrado");
+        
+        const contribuidores = await resposta.json();
+        const container = document.getElementById('lista-contribuidores');
+        
+        // Monta a lista formatada
+        container.innerHTML = contribuidores.map(c => {
+            // Só monta o texto do usuário se ele existir e não for vazio
+            let textoUsuario = (c.usuario && c.usuario.trim() !== "") ? ` (${c.usuario})` : "";
+            
+            if (c.link && c.link.trim() !== "") {
+                return `<a href="${c.link}" target="_blank" style="color: inherit; text-decoration: none;">${c.nome}${textoUsuario}</a>`;
+            }
+            return `${c.nome}${textoUsuario}`;
+        }).join('<br>');
+
+    } catch (error) {
+        document.getElementById('lista-contribuidores').innerText = "elrunix12"; 
+        console.error("Erro ao carregar contribuidores:", error);
     }
 }
