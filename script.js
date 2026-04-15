@@ -1,5 +1,4 @@
 // --- CONFIGURAÇÕES INICIAIS ---
-// Mapeamento exato das casas especiais
 const CASAS_ESPECIAIS = {
     5: 'BP+', 9: 'IR-', 12: 'BP-', 15: 'IR+', 18: 'DRE-', 21: 'DRE+', 25: 'BP-', 26: 'IR-'
 };
@@ -15,41 +14,46 @@ let jogo = {
     historico: [],
     historicoDesfeito: [],
     totalCasas: 28,
-    // Variáveis para gerenciar a memória dos Eventos DRE
     pendenciaDRE: null,
     emEventoDRE: false,
-    turnoRetornoDRE: null
+    turnoRetornoDRE: null,
+    modoFisico: false 
+};
+
+let configuracoes = {
+    somAtivo: false,
+    exibirPergunta: true,
+    totalCasas: 28,
+    penalidadeTempo: false 
 };
 
 let temporizador;
 
 // --- SISTEMA DE CONFIGURAÇÕES ---
-let configuracoes = {
-    somAtivo: false,
-    exibirPergunta: true,
-    totalCasas: 28
-};
-
 function carregarConfiguracoes() {
     if(localStorage.getItem('jogoConfigs')) {
         let salvo = JSON.parse(localStorage.getItem('jogoConfigs'));
         configuracoes.somAtivo = salvo.somAtivo || false;
         configuracoes.exibirPergunta = salvo.exibirPergunta !== undefined ? salvo.exibirPergunta : true;
         configuracoes.totalCasas = salvo.totalCasas || 28; 
+        configuracoes.penalidadeTempo = salvo.penalidadeTempo || false;
     }
     
     let chkSom = document.getElementById('config-som');
     let chkPergunta = document.getElementById('config-exibir-pergunta');
+    let chkPenalidade = document.getElementById('config-penalidade-tempo');
     let inpCasas = document.getElementById('config-casas');
     
     if (chkSom) chkSom.checked = configuracoes.somAtivo;
     if (chkPergunta) chkPergunta.checked = configuracoes.exibirPergunta;
+    if (chkPenalidade) chkPenalidade.checked = configuracoes.penalidadeTempo;
     if (inpCasas) inpCasas.value = configuracoes.totalCasas;
 }
 
 function salvarConfiguracoes() {
     configuracoes.somAtivo = document.getElementById('config-som').checked;
     configuracoes.exibirPergunta = document.getElementById('config-exibir-pergunta').checked;
+    configuracoes.penalidadeTempo = document.getElementById('config-penalidade-tempo').checked;
     configuracoes.totalCasas = parseInt(document.getElementById('config-casas').value) || 28;
     
     if (configuracoes.totalCasas % 2 !== 0) configuracoes.totalCasas += 1;
@@ -73,6 +77,8 @@ window.onload = async () => {
 };
 
 function iniciarNovoJogo() {
+    let usaCardsFisicos = confirm("Deseja usar CARDS FÍSICOS?\n\n[OK] para Cards Físicos (você lê a pergunta em sala).\n[Cancelar] para Cards Digitais (perguntas na tela).");
+    
     let qtd = parseInt(prompt("Quantos grupos/jogadores? (Máx 10)"));
     if (isNaN(qtd) || qtd < 1 || qtd > 10) return alert("Número inválido.");
 
@@ -84,11 +90,15 @@ function iniciarNovoJogo() {
     jogo.historicoDesfeito = [];
     jogo.totalCasas = configuracoes.totalCasas || 28; 
     jogo.perguntasDisponiveis = [...bancoDePerguntasGeral];
+    jogo.modoFisico = usaCardsFisicos;
     
     abrirSelecaoPrimeiro();
 }
 
 function abrirSelecaoPrimeiro() {
+    let titulo = document.querySelector('#modal-selecao-primeiro h2');
+    if(titulo) titulo.innerHTML = "Quem começa?";
+
     const lista = document.getElementById('lista-selecao-grupos');
     lista.innerHTML = jogo.grupos.map((g, i) => `
         <button class="btn-selecao" onclick="definirPrimeiro(${i})">
@@ -146,7 +156,7 @@ function montarTelaJogo() {
     centro.style.gridColumn = `2 / ${W}`;
     centro.style.gridRow = `2 / ${H}`;
     centro.innerHTML = `
-        <h1>Contabilicards!</h1>
+        <img src="logo.png" alt="Contabilicards" style="max-width: 80%; max-height: 50%; object-fit: contain; margin-bottom: 10px;">
         <button onclick="abrirPainelPergunta()" id="btn-jogar">Sortear Pergunta</button>
     `;
     tab.appendChild(centro);
@@ -174,7 +184,6 @@ function montarTelaJogo() {
         } else {
             conteudoHTML = `<span class="numero">${i}</span>`;
             if (ehEspecial) {
-                // Cores baseadas se o efeito é positivo (+) ou negativo (-)
                 if(tipoEspecial.includes('+')) div.style.background = "#d4edda";
                 if(tipoEspecial.includes('-')) div.style.background = "#f8d7da";
                 
@@ -218,7 +227,6 @@ function montarTelaJogo() {
 
 function posicionarPecas() {
     jogo.grupos.forEach(g => {
-        // A peça estaciona visualmente na última casa (C - 1) caso a pontuação a ultrapasse
         let idCasaVisual = g.posicao >= jogo.totalCasas - 1 ? jogo.totalCasas - 1 : g.posicao;
         let casaDiv = document.getElementById(`casa-${idCasaVisual}`);
         
@@ -241,7 +249,8 @@ function obterFotoDoJogo() {
         totalCasas: jogo.totalCasas,
         pendenciaDRE: jogo.pendenciaDRE,
         emEventoDRE: jogo.emEventoDRE,
-        turnoRetornoDRE: jogo.turnoRetornoDRE
+        turnoRetornoDRE: jogo.turnoRetornoDRE,
+        modoFisico: jogo.modoFisico 
     });
 }
 
@@ -254,6 +263,7 @@ function aplicarFotoDoJogo(fotoString) {
     jogo.pendenciaDRE = backup.pendenciaDRE || null;
     jogo.emEventoDRE = backup.emEventoDRE || false;
     jogo.turnoRetornoDRE = backup.turnoRetornoDRE !== undefined ? backup.turnoRetornoDRE : null;
+    jogo.modoFisico = backup.modoFisico || false; 
 }
 
 // --- LÓGICA DE PERGUNTAS E TURNOS ---
@@ -280,61 +290,94 @@ let dificuldadeAtual;
 function carregarPergunta(dificuldade) {
     dificuldadeAtual = dificuldade;
     document.getElementById('bloco-dificuldade').style.display = 'none';
-    
-    let perguntasFiltradas = jogo.perguntasDisponiveis.filter(p => p.dificuldade === dificuldade);
-    
-    if (perguntasFiltradas.length === 0) {
-        let desejaReembaralhar = confirm(`As cartas de nível ${dificuldade} acabaram!\n\nClique em [OK] para reembaralhar.\nClique em [Cancelar] para encerrar o jogo e ver o ranking.`);
-        if (desejaReembaralhar) {
-            const recuperarPerguntas = bancoDePerguntasGeral.filter(p => p.dificuldade === dificuldade);
-            jogo.perguntasDisponiveis.push(...recuperarPerguntas);
-            perguntasFiltradas = recuperarPerguntas; 
-        } else {
-            encerrarJogoMostrarRanking();
-            return; 
-        }
-    }
-
     document.getElementById('area-pergunta').style.display = 'block';
 
-    const indiceSorteado = Math.floor(Math.random() * perguntasFiltradas.length);
-    perguntaAtual = perguntasFiltradas[indiceSorteado];
-    
-    const indexNoBaralho = jogo.perguntasDisponiveis.findIndex(p => p.pergunta === perguntaAtual.pergunta);
-    if (indexNoBaralho !== -1) jogo.perguntasDisponiveis.splice(indexNoBaralho, 1);
-    
-    if (configuracoes.exibirPergunta) {
-        document.getElementById('texto-pergunta').innerText = perguntaAtual.pergunta;
-    } else {
-        document.getElementById('texto-pergunta').innerText = "[A pergunta será lida pelo mediador. Escolha a alternativa correta abaixo:]";
-    }
-    
+    const textoPergunta = document.getElementById('texto-pergunta');
     const altDiv = document.getElementById('alternativas');
-    altDiv.innerHTML = perguntaAtual.alternativas.map(alt => 
-        `<button class="alternativa" onclick="responder('${alt}')">${alt}</button>`
-    ).join('');
 
-    iniciarTemporizador(dificuldade === 'facil' ? 17 : 62); 
+    if (jogo.modoFisico) {
+        textoPergunta.innerHTML = `
+            <div style="font-size: 1.5rem; font-weight: bold; color: ${dificuldade === 'facil' ? '#28a745' : '#dc3545'}; text-transform: uppercase; margin-bottom: 15px;">
+                Pergunta ${dificuldade}
+            </div>
+            <img src="logo.png" alt="Logo Card" style="max-width: 150px; display: block; margin: 0 auto 20px auto;">
+        `;
+        
+        altDiv.innerHTML = `
+            <button class="alternativa" style="background-color: #28a745; color: white;" onclick="responder(true)">Acertou</button>
+            <button class="alternativa" style="background-color: #dc3545; color: white;" onclick="responder(false)">Errou</button>
+        `;
+    } else {
+        let perguntasFiltradas = jogo.perguntasDisponiveis.filter(p => p.dificuldade === dificuldade);
+        
+        if (perguntasFiltradas.length === 0) {
+            let reembaralhar = confirm(`As cartas de nível ${dificuldade} acabaram!\nClique [OK] para reembaralhar ou [Cancelar] para encerrar.`);
+            if (reembaralhar) {
+                const recuperar = bancoDePerguntasGeral.filter(p => p.dificuldade === dificuldade);
+                jogo.perguntasDisponiveis.push(...recuperar);
+                perguntasFiltradas = recuperar; 
+            } else {
+                encerrarJogoMostrarRanking();
+                return; 
+            }
+        }
+
+        const idx = Math.floor(Math.random() * perguntasFiltradas.length);
+        perguntaAtual = perguntasFiltradas[idx];
+        
+        const removeIdx = jogo.perguntasDisponiveis.findIndex(p => p.pergunta === perguntaAtual.pergunta);
+        if (removeIdx !== -1) jogo.perguntasDisponiveis.splice(removeIdx, 1);
+        
+        if (configuracoes.exibirPergunta) {
+            textoPergunta.innerText = perguntaAtual.pergunta;
+        } else {
+            textoPergunta.innerText = "[A pergunta será lida pelo mediador. Escolha a alternativa correta abaixo:]";
+        }
+        
+        altDiv.innerHTML = perguntaAtual.alternativas.map(alt => {
+            return `<button class="alternativa" onclick="responder('${alt}')">${alt}</button>`
+        }).join('');
+    }
+
+    iniciarTemporizador(dificuldade === 'facil' ? 30 : 60); 
 }
 
 function iniciarTemporizador(segundos) {
     let tempo = segundos;
     document.getElementById('contador').innerText = tempo;
     clearInterval(temporizador);
+    
     temporizador = setInterval(() => {
         tempo--;
         document.getElementById('contador').innerText = tempo;
         if (tempo <= 0) {
             clearInterval(temporizador);
-            alert("Tempo Esgotado!");
-            processarResposta(false);
+            if (configuracoes.penalidadeTempo) {
+                alert("Tempo Esgotado! Resposta considerada incorreta.");
+                
+                if (jogo.modoFisico) {
+                    perguntaAtual = { resolucao: "Tempo esgotado (validação do professor)." };
+                }
+                
+                processarResposta(false); 
+            } else {
+                alert("Tempo Esgotado! Aguardando ação do mediador.");
+            }
         }
     }, 1000);
 }
 
-function responder(alternativa) {
+function responder(respostaOuAlternativa) {
     clearInterval(temporizador);
-    const acertou = alternativa === perguntaAtual.correta;
+    let acertou;
+    
+    if (jogo.modoFisico) {
+        acertou = respostaOuAlternativa === true;
+        perguntaAtual = { resolucao: "Validação manual feita pelo professor." };
+    } else {
+        acertou = respostaOuAlternativa === perguntaAtual.correta;
+    }
+    
     processarResposta(acertou);
 }
 
@@ -344,7 +387,9 @@ function processarResposta(acertou) {
     resolucaoDiv.style.display = 'block';
 
     let grupoAtual = jogo.grupos[jogo.turnoAtual];
-    let msg = acertou ? `Correto, ${grupoAtual.nome}! ` : `Incorreto, ${grupoAtual.nome}. `;
+    
+    // O texto principal agora vai para o Pop-up
+    let msgPopUp = acertou ? `<strong>Correto, ${grupoAtual.nome}!</strong> ` : `<strong>Incorreto, ${grupoAtual.nome}.</strong> `;
 
     let moverAlguem = true;
     let grupoQueMoveu = grupoAtual;
@@ -352,37 +397,46 @@ function processarResposta(acertou) {
     if (dificuldadeAtual === 'facil') {
         if (acertou) {
             grupoAtual.posicao += 3;
-            msg += "Você andou 3 casas.";
+            msgPopUp += `Avançou 3 casas.`;
         } else {
             let idxAnterior = jogo.turnoAtual === 0 ? jogo.grupos.length - 1 : jogo.turnoAtual - 1;
             jogo.grupos[idxAnterior].posicao += 3;
             grupoQueMoveu = jogo.grupos[idxAnterior];
-            msg += `O grupo anterior (${grupoQueMoveu.nome}) andou 3 casas!`;
+            msgPopUp += `<br>O grupo anterior (${grupoQueMoveu.nome}) avançou 3 casas.`;
         }
     } else { 
         if (acertou) {
             grupoAtual.posicao += 5;
-            msg += "Você andou 5 casas!";
+            msgPopUp += `Avançou 5 casas.`;
         } else {
-            msg += "Você não se move.";
+            msgPopUp += `Não se move.`;
             moverAlguem = false;
         }
     }
 
     jogo.grupos.forEach(g => { if(g.posicao >= jogo.totalCasas - 1) g.posicao = jogo.totalCasas - 1; });
 
-    // Se alguém se moveu, ativa o motor de combos!
+    // Verifica se ativou um combo
+    let logCombo = "";
     if (moverAlguem && grupoQueMoveu.posicao > 0 && grupoQueMoveu.posicao < jogo.totalCasas - 1) {
-        msg += ativarMotorDeCombos(grupoQueMoveu);
+        logCombo = ativarMotorDeCombos(grupoQueMoveu);
     }
 
-    // Trava para não passarem dos limites do tabuleiro após os efeitos
     jogo.grupos.forEach(g => { 
         if(g.posicao < 0) g.posicao = 0;
         if(g.posicao >= jogo.totalCasas - 1) g.posicao = jogo.totalCasas - 1; 
     });
 
-    document.getElementById('texto-resolucao').innerText = msg + `\n\nResolução: ${perguntaAtual.resolucao}`;
+    // Envia tudo para o Pop-up (Movimentação básica + Combos se houver)
+    let textoNotificacao = msgPopUp;
+    if (logCombo !== "") {
+        textoNotificacao += `<br><br><strong>Efeitos Extras:</strong>` + logCombo;
+    }
+    mostrarNotificacao(textoNotificacao);
+
+    // O card central fica sem texto no modo físico
+    let textoFinal = jogo.modoFisico ? "" : `Resolução: ${perguntaAtual.resolucao}`;
+    document.getElementById('texto-resolucao').innerText = textoFinal;
 }
 
 // O MOTOR DE COMBOS!
@@ -390,12 +444,12 @@ function ativarMotorDeCombos(grupo) {
     let log = "";
     let combinando = true;
     
-    // O loop garante que enquanto cair em casa especial, os efeitos continuam
     while (combinando && grupo.posicao > 0 && grupo.posicao < jogo.totalCasas - 1) {
         let especial = CASAS_ESPECIAIS[grupo.posicao];
         if (!especial) break; 
         
-        log += `\n🎯 Casa ${grupo.posicao} (${especial}): `;
+        // Inclui o nome do grupo diretamente no log do pop-up
+        log += `<br>🎯 <strong>${grupo.nome}</strong> caiu na Casa ${grupo.posicao} (${especial}): `;
         
         if (especial === 'BP+') {
             grupo.posicao += 2; log += `Avança +2 casas!`;
@@ -404,22 +458,22 @@ function ativarMotorDeCombos(grupo) {
         } else if (especial === 'IR+') {
             grupo.posicao += 1;
             jogo.grupos.forEach(g => { if (g.id !== grupo.id) g.posicao -= 1; });
-            log += `Avançou +1 e todos os outros recuaram -1!`;
+            log += `Avançou +1 e os outros recuaram -1!`;
         } else if (especial === 'IR-') {
             grupo.posicao -= 2;
             jogo.grupos.forEach(g => { if (g.id !== grupo.id) g.posicao += 1; });
-            log += `Recuou -2 e todos os outros avançaram +1!`;
+            log += `Recuou -2 e os outros avançaram +1!`;
         } else if (especial === 'DRE+') {
             log += `Pergunta Bônus garantida!`;
             jogo.pendenciaDRE = { ativo: true, tipo: 'DRE+', grupoCausador: grupo };
-            break; // Interrompe o combo físico para fazer a pergunta bônus
+            break; 
         } else if (especial === 'DRE-') {
-            log += `Escolha quem sofrerá/ganhará a pergunta!`;
+            log += `Deve escolher quem sofrerá/ganhará a pergunta!`;
             jogo.pendenciaDRE = { ativo: true, tipo: 'DRE-', grupoCausador: grupo };
-            break; // Interrompe
+            break; 
         }
         
-        jogo.grupos.forEach(g => { if(g.posicao < 0) g.posicao = 0; }); // Trava negativa
+        jogo.grupos.forEach(g => { if(g.posicao < 0) g.posicao = 0; }); 
     }
     return log;
 }
@@ -427,27 +481,24 @@ function ativarMotorDeCombos(grupo) {
 function proximoTurno() {
     document.getElementById('modal-pergunta').classList.remove('ativo');
     
-    // 1. Verifica se houve engatilho do DRE na jogada anterior
     if (jogo.pendenciaDRE && jogo.pendenciaDRE.ativo) {
         let p = jogo.pendenciaDRE;
         jogo.pendenciaDRE = null; 
         
         jogo.emEventoDRE = true;
-        // O turno salva de quem seria a vez originalmente (o cara DEPOIS de quem estava jogando de verdade)
         jogo.turnoRetornoDRE = (jogo.turnoAtual + 1) % jogo.grupos.length;
         
         let idCausador = jogo.grupos.findIndex(g => g.id === p.grupoCausador.id);
 
         if (p.tipo === 'DRE+') {
-            jogo.turnoAtual = idCausador; // O causador é o alvo
+            jogo.turnoAtual = idCausador; 
             prepararPerguntaDRE(p.grupoCausador.nome);
         } else {
-            abrirSelecaoAlvoDRE(p.grupoCausador.nome); // O causador escolhe
+            abrirSelecaoAlvoDRE(p.grupoCausador.nome); 
         }
         return; 
     }
 
-    // 2. Lógica padrão de vitória
     let ganhador = jogo.grupos.find(g => g.posicao >= jogo.totalCasas - 1);
     if (ganhador) {
         montarTelaJogo(); 
@@ -455,7 +506,6 @@ function proximoTurno() {
         return;
     }
 
-    // 3. Se acabou um evento DRE, devolve pro fluxo normal. Se não, passa a vez.
     if (jogo.emEventoDRE) {
         jogo.turnoAtual = jogo.turnoRetornoDRE;
         jogo.emEventoDRE = false;
@@ -492,31 +542,13 @@ function aplicarAlvoDRE(index) {
 }
 
 function prepararPerguntaDRE(nomeAlvo) {
-    montarTelaJogo(); // Atualiza o fundo para mostrar as peças nas novas casas
+    montarTelaJogo(); 
     
-    // Configura a tela de pergunta para o DRE
     document.getElementById('modal-pergunta').classList.add('ativo');
     document.getElementById('bloco-dificuldade').style.display = 'block';
     document.getElementById('area-pergunta').style.display = 'none';
     document.getElementById('resolucao').style.display = 'none';
     document.getElementById('grupo-atual-texto').innerText = `✨ Turno Bônus (DRE): ${nomeAlvo}`;
-}
-
-// Correção rápida para o Título do modal no início do jogo não ficar travado com o texto do DRE:
-function abrirSelecaoPrimeiro() {
-    let titulo = document.querySelector('#modal-selecao-primeiro h2');
-    if(titulo) titulo.innerHTML = "Quem começa?";
-    
-    const lista = document.getElementById('lista-selecao-grupos');
-    lista.innerHTML = jogo.grupos.map((g, i) => `
-        <button class="btn-selecao" onclick="definirPrimeiro(${i})">
-            <span style="display:inline-block; width:20px; height:20px; background:${g.cor}; border-radius:50%; margin-right:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></span>
-            ${g.nome}
-        </button>
-    `).join('');
-
-    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-    document.getElementById('modal-selecao-primeiro').classList.add('ativo');
 }
 
 function desfazerJogada() {
@@ -669,4 +701,22 @@ function alternarModoProjetor() {
         btn.innerText = "Modo Projetor";
         btn.style.backgroundColor = "#007bff"; 
     }
+}
+
+// --- NOTIFICAÇÃO TOAST (COMBO) ---
+let timerToast;
+function mostrarNotificacao(mensagem) {
+    const toast = document.getElementById('toast-notificacao');
+    toast.innerHTML = mensagem + `<br><small style="font-size: 0.8rem; color: #ccc;">(Clique para fechar)</small>`;
+    toast.classList.add('mostrar');
+    
+    clearTimeout(timerToast);
+    timerToast = setTimeout(() => {
+        fecharNotificacao();
+    }, 6000); // Fica 6 segundos na tela e some automático
+}
+
+function fecharNotificacao() {
+    const toast = document.getElementById('toast-notificacao');
+    toast.classList.remove('mostrar');
 }

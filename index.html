@@ -53,7 +53,7 @@
             <h2 id="grupo-atual-texto"></h2>
             <div class="escolha-dificuldade" id="bloco-dificuldade">
                 <p>Escolha a dificuldade:</p>
-                <button onclick="carregarPergunta('facil')">Fácil (15s)</button>
+                <button onclick="carregarPergunta('facil')">Fácil (30s)</button>
                 <button onclick="carregarPergunta('dificil')">Difícil (1min)</button>
             </div>
             
@@ -91,9 +91,13 @@
                     <input type="checkbox" id="config-som" onchange="salvarConfiguracoes()">
                     Ativar som de movimento das peças
                 </label>
-                <label style="display: block;">
+                <label style="display: block; margin-bottom: 15px;">
                     <input type="checkbox" id="config-exibir-pergunta" onchange="salvarConfiguracoes()">
                     Exibir texto da pergunta na tela (se desmarcado, exibe apenas as alternativas)
+                </label>
+                <label style="display: block;">
+                    <input type="checkbox" id="config-penalidade-tempo" onchange="salvarConfiguracoes()">
+                    Marcar como errada automaticamente se o tempo esgotar
                 </label>
             </div>
             <button onclick="fecharModal('modal-configs')" style="padding: 10px 20px; font-size: 1.1rem; cursor: pointer;">Salvar e Fechar</button>
@@ -107,6 +111,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <div id="toast-notificacao" class="toast" onclick="fecharNotificacao()"></div>
     <script src="script.js"></script>
 </body>
 </html>
