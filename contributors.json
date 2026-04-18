@@ -1,19 +1,32 @@
 [
   {
-    "nome": "L. Silva",
+    "nome": "L. Silva (elrunix12)",
     "usuario": "elrunix12",
-    "link": "https://github.com/elrunix12"
+    "link": "https://github.com/elrunix12",
+    "papel": "Criador e Mantenedor"
   },
   {
-    "nome": "Mariana Pereira Bonfim"
+    "nome": "Mariana Pereira Bonfim",
+    "usuario": "",
+    "link": "",
+    "papel": "Autora das Questões e Regras do Jogo"
   },
   {
-    "nome": "Carlos Eduardo Xavier de Souza"
+    "nome": "Carlos Eduardo Xavier de Souza",
+    "usuario": "",
+    "link": "",
+    "papel": "Autor das Questões"
   },
   {
-    "nome": "Wendell de Almeida Dias"
+    "nome": "Wendell de Almeida Dias",
+    "usuario": "",
+    "link": "",
+    "papel": "Autor das Questões"
   },
   {
-    "nome": "Yasmin Moura dos Santos Paiva"
+    "nome": "Yasmin Moura dos Santos Paiva",
+    "usuario": "",
+    "link": "",
+    "papel": "Autora das Questões"
   }
 ]

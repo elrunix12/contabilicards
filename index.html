@@ -112,21 +112,28 @@
                 <button onclick="confirmarNovoJogo()" style="padding: 12px 25px; font-size: 1.1rem; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold;">Iniciar Jogo</button>
             </div>
         </div>
-    </div> <div id="modal-sobre" class="modal">
-        <div class="modal-conteudo">
-            <h2 style="color: #2c3e50; margin-top: 0;">Sobre o Projeto</h2>
+    </div> 
+    
+    <div id="modal-sobre" class="modal">
+        <div class="modal-conteudo" style="max-width: 550px;">
+            <h2 style="color: #2c3e50; margin-top: 0; font-size: 2rem;">Contabilicards!</h2>
+            
             <div style="text-align: left; margin-bottom: 20px; font-size: 1.1rem; line-height: 1.6;">
-                <p><strong>Contribuidores:</strong></p>
-                <div id="lista-contribuidores" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;">
+                <p style="background: #e4ebf1; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; margin-bottom: 20px;">
+                    Um jogo de tabuleiro educacional digital focado no aprendizado e revisão de conceitos de contabilidade de forma interativa e gamificada.
+                </p>
+                
+                <p style="margin-bottom: 5px;"><strong>Equipe e Contribuidores:</strong></p>
+                <div id="lista-contribuidores" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px; max-height: 150px; overflow-y: auto;">
                     Carregando...
                 </div>
                 
-                <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                <div style="display: flex; justify-content: space-around; margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee;">
                     <a href="https://github.com/elrunix12/contabilicards" target="_blank" style="color: #007bff; text-decoration: none; font-weight: bold;">📦 Repositório GitHub</a>
                     <a href="https://www.gnu.org/licenses/agpl-3.0.txt" target="_blank" style="color: #28a745; text-decoration: none; font-weight: bold;">📜 Licença do Software</a>
                 </div>
             </div>
-            <button onclick="fecharModal('modal-sobre')" style="padding: 10px 20px; font-size: 1.1rem; cursor: pointer;">Fechar</button>
+            <button onclick="fecharModal('modal-sobre')" style="padding: 10px 20px; font-size: 1.1rem; cursor: pointer; width: 100%;">Fechar</button>
         </div>
     </div>
 

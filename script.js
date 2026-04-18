@@ -189,8 +189,11 @@ function montarTelaJogo() {
         jogadorAlvo = jogo.grupos[idxAlvo];
     }
     
-    let nomeGrupoAtual = jogadorAtivo ? jogadorAtivo.nome : "";
-    let nomeAlvo = jogadorAlvo ? jogadorAlvo.nome : "";
+    // Formata os nomes já com as cores dos grupos e um contorno escuro para leitura clara
+    // Formata os nomes com a bolinha colorida do lado e texto normal
+    let nomeGrupoAtual = jogadorAtivo ? `<span style="display:inline-block; width:15px; height:15px; background:${jogadorAtivo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong style="color: #2c3e50;">${jogadorAtivo.nome}</strong>` : "";
+    
+    let nomeAlvo = jogadorAlvo ? `<span style="display:inline-block; width:15px; height:15px; background:${jogadorAlvo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong style="color: #2c3e50;">${jogadorAlvo.nome}</strong>` : "";
 
     let tituloTurno = "";
     if (jogo.emEventoDRE) {
@@ -472,34 +475,37 @@ function processarResposta(acertou) {
     let msgPopUp = "";
     let grupoQueMoveu = null;
 
+    // Gera as bolinhas e o nome para o Pop-up
+    let corAtivo = jogadorAtivo ? `<span style="display:inline-block; width:15px; height:15px; background:${jogadorAtivo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong>${jogadorAtivo.nome}</strong>` : "";
+    
+    let corAlvo = jogadorAlvo ? `<span style="display:inline-block; width:15px; height:15px; background:${jogadorAlvo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong>${jogadorAlvo.nome}</strong>` : "";
+
     if (dificuldadeAtual === 'facil') {
         if (acertou) {
             jogadorAlvo.posicao += 3;
             grupoQueMoveu = jogadorAlvo;
-            msgPopUp = `<strong>Correto!</strong> ${jogadorAlvo.nome} acertou e avançou 3 casas.`;
+            msgPopUp = `<strong>Correto!</strong> ${corAlvo} acertou e avançou 3 casas.`;
         } else {
-            // Verifica se está em qualquer evento DRE (DRE+ ou DRE-)
             if (jogo.emEventoDRE) {
-                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>Como era uma Pergunta Bônus (DRE), ninguém sofre penalidade.`;
+                msgPopUp = `<strong>Incorreto, ${corAlvo}!</strong><br>Como era uma Pergunta Bônus (DRE), ninguém sofre penalidade.`;
             } else {
                 jogadorAtivo.posicao += 1;
                 grupoQueMoveu = jogadorAtivo;
-                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 1 casa de bônus por dificultar.`;
+                msgPopUp = `<strong>Incorreto, ${corAlvo}!</strong><br>${corAtivo} ganhou 1 casa de bônus por dificultar.`;
             }
         }
     } else { 
         if (acertou) {
             jogadorAlvo.posicao += 5;
             grupoQueMoveu = jogadorAlvo;
-            msgPopUp = `<strong>Correto!</strong> ${jogadorAlvo.nome} acertou e avançou 5 casas.`;
+            msgPopUp = `<strong>Correto!</strong> ${corAlvo} acertou e avançou 5 casas.`;
         } else {
-            // Verifica se está em qualquer evento DRE (DRE+ ou DRE-)
             if (jogo.emEventoDRE) {
-                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>Como era uma Pergunta Bônus (DRE), ninguém sofre penalidade.`;
+                msgPopUp = `<strong>Incorreto, ${corAlvo}!</strong><br>Como era uma Pergunta Bônus (DRE), ninguém sofre penalidade.`;
             } else {
                 jogadorAtivo.posicao += 3;
                 grupoQueMoveu = jogadorAtivo;
-                msgPopUp = `<strong>Incorreto, ${jogadorAlvo.nome}!</strong><br>O grupo ${jogadorAtivo.nome} ganhou 3 casas de bônus por dificultar.`;
+                msgPopUp = `<strong>Incorreto, ${corAlvo}!</strong><br>${corAtivo} ganhou 3 casas de bônus por dificultar.`;
             }
         }
     }
@@ -547,8 +553,8 @@ function ativarMotorDeCombos(grupo) {
         let especial = CASAS_ESPECIAIS[grupo.posicao];
         
         if (especial) { 
-            // Inclui o nome do grupo diretamente no log do pop-up
-            log += `<br>🎯 <strong>${grupo.nome}</strong> caiu na Casa ${grupo.posicao} (${especial}): `;
+            let corGrupo = `<span style="display:inline-block; width:15px; height:15px; background:${grupo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong>${grupo.nome}</strong>`;
+            log += `<br>🎯 ${corGrupo} caiu na Casa ${grupo.posicao} (${especial}): `;
             
             if (especial === 'BP+') {
                 grupo.posicao += 2; log += `Avança +2 casas!`;
@@ -852,16 +858,18 @@ async function carregarContribuidores() {
         const contribuidores = await resposta.json();
         const container = document.getElementById('lista-contribuidores');
         
-        // Monta a lista formatada
         container.innerHTML = contribuidores.map(c => {
-            // Só monta o texto do usuário se ele existir e não for vazio
             let textoUsuario = (c.usuario && c.usuario.trim() !== "") ? ` (${c.usuario})` : "";
             
-            if (c.link && c.link.trim() !== "") {
-                return `<a href="${c.link}" target="_blank" style="color: inherit; text-decoration: none;">${c.nome}${textoUsuario}</a>`;
-            }
-            return `${c.nome}${textoUsuario}`;
-        }).join('<br>');
+            // Adiciona a tag com o papel/cargo do contribuidor
+            let papel = c.papel ? `<br><small style="color: #666; font-size: 0.95rem;">🛠️ ${c.papel}</small>` : "";
+            
+            let nomeFormatado = c.link && c.link.trim() !== ""
+                ? `<a href="${c.link}" target="_blank" style="color: #007bff; text-decoration: none; font-weight: bold;">${c.nome}${textoUsuario}</a>`
+                : `<strong style="color: #2c3e50;">${c.nome}${textoUsuario}</strong>`;
+
+            return `<div style="margin-bottom: 12px; line-height: 1.2;">${nomeFormatado}${papel}</div>`;
+        }).join('');
 
     } catch (error) {
         document.getElementById('lista-contribuidores').innerText = "elrunix12"; 
