@@ -892,3 +892,19 @@ async function carregarContribuidores() {
         console.error("Erro ao carregar contribuidores:", error);
     }
 }
+
+// --- MENU MOBILE ---
+function toggleMenuMobile() {
+    const painel = document.querySelector('.painel-lateral');
+    const overlay = document.getElementById('overlay-mobile');
+    
+    // Adiciona ou remove a classe 'aberto'
+    painel.classList.toggle('aberto');
+    
+    // Mostra ou esconde o fundo escuro
+    if (painel.classList.contains('aberto')) {
+        overlay.classList.add('ativo');
+    } else {
+        overlay.classList.remove('ativo');
+    }
+}

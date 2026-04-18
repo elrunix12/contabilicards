@@ -378,3 +378,78 @@ body.modo-projetor .alternativa { font-size: 1.6rem; padding: 20px; }
 /* Pop-up Projetor e Botões Finais */
 body.modo-projetor .toast { font-size: 1.6rem; padding: 25px 30px; }
 body.modo-projetor .btn-dificuldade { font-size: 2.5rem !important; padding: 25px 50px !important; border-radius: 16px !important; }
+
+/* ==========================================================================
+   9. RESPONSIVIDADE (MOBILE / ECRÃS PEQUENOS)
+   ========================================================================== */
+/* Esconde o botão e o overlay por padrão (em Monitores e Projetores) */
+#btn-menu-mobile { display: none; }
+#overlay-mobile { display: none; }
+
+@media (max-width: 950px), (max-height: 500px) {
+    /* Transforma o Painel Lateral numa gaveta escondida à esquerda */
+    .painel-lateral {
+        position: fixed;
+        top: 0;
+        left: -320px; /* Fica fora do ecrã */
+        width: 280px;
+        height: 100%;
+        z-index: 2000;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Animação suave */
+        border-radius: 0 16px 16px 0; /* Arredonda só a direita */
+        margin: 0;
+        border-left: none;
+    }
+
+    /* Classe que o JavaScript vai adicionar para abrir a gaveta */
+    .painel-lateral.aberto {
+        left: 0;
+    }
+
+    /* O Botão Flutuante (Estilo Chat) */
+    #btn-menu-mobile {
+        display: flex;
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 65px;
+        height: 65px;
+        background-color: #007bff;
+        color: white;
+        font-size: 2.2rem;
+        border-radius: 50%; /* Faz ficar redondo */
+        border: 3px solid #2c3e50;
+        box-shadow: 3px 4px 0px #2c3e50;
+        z-index: 1500;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    #btn-menu-mobile:active {
+        transform: translateY(4px);
+        box-shadow: 0px 0px 0px #2c3e50;
+    }
+
+    /* O fundo escuro que foca a atenção no menu */
+    #overlay-mobile {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(44, 62, 80, 0.6);
+        backdrop-filter: blur(2px);
+        z-index: 1999;
+        display: none; /* Só aparece quando tem a classe ativa */
+    }
+
+    #overlay-mobile.ativo {
+        display: block;
+    }
+    
+    /* Dá um bocadinho mais de espaço para o tabuleiro no telemóvel */
+    .area-principal {
+        padding: 5px;
+    }
+}
