@@ -10,11 +10,11 @@
 
 ### ✨ Melhorias de UX
 * [ ] **Girar a carta de acordo com o lado clicado.**
-* [ ] **Cores das bolinhas (peças do grupo) em Lê e Responde e no pop-up.**
+* [x] **Cores das bolinhas (peças do grupo) em Lê e Responde e no pop-up.**
 * [ ] **Animações das peças a mexerem-se.** *(Risco estrutural alto - avaliar no fim).*
 * [ ] **Menu hambúrguer com estética de balão de diálogo.**
 * [ ] **Tela de escolha da DRE- no centro do tabuleiro.**
 * [x] **Barra lateral cobre os botões de zoom ao aumentar o tabuleiro.** *(Resolvido com a blindagem de layout, flexbox e z-index).*
 
 ### 👥 Contribuidores
-* [ ] **Colocar o que cada um fez no projeto. Destacar o nome do Criador e Mantenedor.**
+* [x] **Colocar o que cada um fez no projeto. Destacar o nome do Criador e Mantenedor.**
