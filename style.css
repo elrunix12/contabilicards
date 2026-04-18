@@ -263,7 +263,9 @@ button:active {
     background: transparent;
 }
 
-.carta-mestra.virada .carta-inner { transform: rotateY(180deg); } /* Vira a carta */
+/* FÍSICA DA CARTA: Gira para o lado que foi clicado */
+.carta-mestra.virada-direita .carta-inner { transform: rotateY(180deg); }
+.carta-mestra.virada-esquerda .carta-inner { transform: rotateY(-180deg); }
 
 .carta-frente, .carta-verso {
     width: 100%; height: 100%;

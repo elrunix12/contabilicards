@@ -414,7 +414,12 @@ function carregarPergunta(dificuldade) {
     verso.innerHTML = htmlVerso;
     
     // Gira a carta visualmente
-    cartaCentral.classList.add('virada');
+    // Gira a carta visualmente (Física Direcional)
+    if (dificuldade === 'facil') {
+        cartaCentral.classList.add('virada-esquerda'); // Botão esquerdo
+    } else {
+        cartaCentral.classList.add('virada-direita');  // Botão direito
+    }
 
     iniciarTemporizador(dificuldade === 'facil' ? 30 : 60); 
 }
@@ -626,30 +631,41 @@ function proximoTurno() {
 
 // --- FUNÇÕES DE CONTROLE DO DRE ---
 function abrirSelecaoAlvoDRE(nomeEscolhedor) {
-    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-    document.getElementById('modal-selecao-primeiro').classList.add('ativo');
+    // Agora a seleção acontece no centro do tabuleiro, sem esconder o jogo
+    const centro = document.getElementById('centro-tabuleiro');
     
-    let titulo = document.querySelector('#modal-selecao-primeiro h2');
-    titulo.innerHTML = `DRE- <br><small style="font-size: 1rem; color: #555;">${nomeEscolhedor}, escolha o alvo:</small>`;
-    
-    const lista = document.getElementById('lista-selecao-grupos');
-    
-    // Mapeia os grupos, mas retorna vazio se for o próprio grupo que caiu na casa
-    lista.innerHTML = jogo.grupos.map((g, i) => {
-        if (g.nome === nomeEscolhedor) return ''; 
+    let botoesHtml = jogo.grupos.map((g, i) => {
+        if (g.nome === nomeEscolhedor) return ''; // Ignora a própria equipe
         
         return `
-        <button class="btn-selecao" onclick="aplicarAlvoDRE(${i})">
-            <span style="display:inline-block; width:20px; height:20px; background:${g.cor}; border-radius:50%; margin-right:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></span>
+        <button class="alternativa" style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; font-weight: bold; padding: 12px 20px; border-radius: 12px;" onclick="aplicarAlvoDRE(${i})">
+            <span style="display:inline-block; width:20px; height:20px; background:${g.cor}; border-radius:50%; box-shadow: 1px 1px 3px rgba(0,0,0,0.5);"></span>
             ${g.nome}
         </button>
         `;
     }).join('');
+
+    // Injeta a seleção direto na face da carta central
+    centro.innerHTML = `
+        <div class="carta-mestra" id="carta-central">
+            <div class="carta-inner">
+                <div class="carta-frente" style="justify-content: flex-start; padding: 25px;">
+                    <div style="font-size: 1.5rem; font-weight: 900; color: #dc3545; margin-bottom: 10px; text-shadow: 1px 1px 0px rgba(0,0,0,0.1);">🎯 Armadilha DRE-</div>
+                    <p style="font-size: 1.1rem; text-align: center; margin-bottom: 15px; color: #2c3e50; line-height: 1.3;">
+                        <strong>${nomeEscolhedor}</strong>, escolha o alvo olhando o mapa:
+                    </p>
+                    <div style="width: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                        ${botoesHtml}
+                    </div>
+                </div>
+                <div class="carta-verso"></div>
+            </div>
+        </div>
+    `;
 }
 
 function aplicarAlvoDRE(index) {
     jogo.turnoAtual = index;
-    document.getElementById('modal-selecao-primeiro').classList.remove('ativo');
     prepararPerguntaDRE(jogo.grupos[index].nome);
 }
 
