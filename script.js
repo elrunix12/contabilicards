@@ -152,9 +152,11 @@ function montarTelaJogo() {
     
     const tabela = document.getElementById('tabela-grupos');
     tabela.innerHTML = jogo.grupos.map((g, i) => `
-        <div class="grupo-item ${i === jogo.turnoAtual ? 'ativo' : ''}" style="padding: 10px; margin: 5px 0; border-radius: 4px;">
-            <span style="display:inline-block; width:15px; height:15px; background:${g.cor}; border-radius:50%;"></span>
-            ${g.nome} - Casa ${g.posicao}
+        <div class="grupo-item ${i === jogo.turnoAtual ? 'ativo' : ''}" style="padding: 10px; margin: 5px 0; border-radius: 4px; display: flex; align-items: center; justify-content: flex-start; gap: 8px;">
+            <span style="display:inline-block; width:15px; height:15px; background:${g.cor}; border-radius:50%; flex-shrink: 0;"></span>
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold;">
+                ${g.nome} - ${g.posicao}
+            </span>
         </div>
     `).join('');
 
@@ -743,6 +745,21 @@ function encerrarJogoMostrarRanking() {
 
 // --- NAVEGAÇÃO, MODAIS E ZOOM ---
 function voltarMenu() {
+    // Para o temporizador para não dar pop-up fantasma
+    clearInterval(temporizador);
+    
+    // Tira o modo projetor se estiver ativo
+    const body = document.body;
+    if (body.classList.contains('modo-projetor')) {
+        body.classList.remove('modo-projetor');
+        if (document.exitFullscreen) document.exitFullscreen();
+        const btn = document.getElementById('btn-projetor');
+        if(btn) {
+            btn.innerText = "Modo Projetor";
+            btn.style.backgroundColor = "#007bff";
+        }
+    }
+
     document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
     document.getElementById('tela-inicial').classList.add('ativa');
     if (localStorage.getItem('jogoSalvo')) document.getElementById('btn-continuar').style.display = 'block';
