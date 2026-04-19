@@ -1,4 +1,6 @@
 // --- CONFIGURAÇÕES INICIAIS ---
+const somPulo = new Audio('src/pop1.wav');
+
 const CASAS_ESPECIAIS = {
     5: 'BP+', 9: 'IR-', 12: 'BP-', 15: 'IR+', 18: 'DRE-', 21: 'DRE+', 25: 'BP-', 26: 'IR-'
 };
@@ -211,7 +213,7 @@ function montarTelaJogo() {
             <div class="carta-inner">
                 <div class="carta-frente">
                     <div style="font-size: 1.4rem; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">${tituloTurno}</div>
-                    <img src="logo.png" alt="Contabilicards" style="max-width: 60%; max-height: 40%; object-fit: contain; margin-bottom: 20px;">
+                    <img src="src/logo.png" alt="Contabilicards" style="max-width: 60%; max-height: 40%; object-fit: contain; margin-bottom: 20px;">
                     <div style="display: flex; gap: 20px;">
                         <button class="btn-dificuldade btn-3" onclick="carregarPergunta('facil')">3 Casas</button>
                         <button class="btn-dificuldade btn-5" onclick="carregarPergunta('dificil')">5 Casas</button>
@@ -532,6 +534,11 @@ function processarResposta(acertou) {
     let textoNotificacao = msgPopUp;
     if (logCombo !== "") textoNotificacao += `<br><br><strong>Efeitos Extras:</strong>` + logCombo;
     mostrarNotificacao(textoNotificacao);
+
+    // TOCA O SOM APENAS SE ALGUÉM REALMENTE ANDOU! 🎵
+    if (grupoQueMoveu !== null || logCombo !== "") {
+        tocarSom();
+    }
 
     // Finaliza o turno (virando a carta ou mostrando a resolução no digital)
     if (jogo.modoFisico) {
@@ -906,5 +913,19 @@ function toggleMenuMobile() {
         overlay.classList.add('ativo');
     } else {
         overlay.classList.remove('ativo');
+    }
+}
+
+// --- SISTEMA DE ÁUDIO ---
+function tocarSom() {
+    if (configuracoes.somAtivo) {
+        somPulo.currentTime = 0; // Reinicia o áudio para tocar rápido
+        let playPromise = somPulo.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                // Se o arquivo não existir ou o navegador bloquear, engole o erro e o jogo não trava
+                console.warn("Áudio bloqueado ou não encontrado.");
+            });
+        }
     }
 }

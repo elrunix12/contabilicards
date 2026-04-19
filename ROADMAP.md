@@ -11,10 +11,12 @@
 ### ✨ Melhorias de UX
 * [x] **Girar a carta de acordo com o lado clicado.**
 * [x] **Cores das bolinhas (peças do grupo) em Lê e Responde e no pop-up.**
-* [ ] **Animações das peças a mexerem-se.** *(Risco estrutural alto - avaliar no fim).*
-* [x] **Menu hambúrguer com estética de balão de diálogo.**
+* [x] **Efeitos Sonoros:** Som ao mover as peças, com trava de segurança e opção de desativar nas configurações.
+* [x] **Menu hambúrguer com estética de balão de diálogo no mobile.**
 * [x] **Tela de escolha da DRE- no centro do tabuleiro.**
 * [x] **Barra lateral cobre os botões de zoom ao aumentar o tabuleiro.** *(Resolvido com a blindagem de layout, flexbox e z-index).*
+* [x] **Mover o Poup Up para o centro da Tela.** 
+* [ ] **Animações das peças a mexerem-se passo a passo.** *(Risco estrutural alto - movido para a Versão 2.0).*
 
 ### 👥 Contribuidores
 * [x] **Colocar o que cada um fez no projeto. Destacar o nome do Criador e Mantenedor.**

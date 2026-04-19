@@ -1,8 +1,8 @@
-# 🎲 Regras: Contabilicards
+# 🎲 Regras: Contabilicards!
 
 ## 📌 Como funciona o seu turno
 1. Os jogadores jogam sozinhos ou em grupos, alternando entre si para fazer ou responder as perguntas.
-2. O jogador ativo (quem lê a carta) pergunta para o jogador à sua esquerda (o alvo) se ele quer uma pergunta Fácil (3 casas) ou Difícil (5 casas).
+2. O jogador ativo (quem lê a carta) pergunta para o jogador alvo se ele quer uma pergunta Fácil (3 casas) ou Difícil (5 casas).
 
 ### 🟢 Nível Fácil (3 casas - 30 segundos)
 * **Acertou?** O jogador que respondeu avança 3 casas.
@@ -12,7 +12,7 @@
 * **Acertou?** O jogador que respondeu avança 5 casas.
 * **Errou?** O jogador que respondeu fica onde está, e o jogador ativo (que leu a pergunta) avança 3 casas de bônus.
 
-*Após o fim do tempo ou a resposta, a carta é descartada e o jogador à esquerda se torna o novo jogador ativo.*
+*Após o fim do tempo ou a resposta, a carta é descartada e o próximo jogador se torna o novo jogador ativo.*
 
 ## 🏢 Casas Especiais no Tabuleiro
 Quando uma peça cair em uma destas casas, o efeito imediato é ativado:
