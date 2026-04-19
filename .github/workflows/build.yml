@@ -2,10 +2,10 @@ name: Gerar Executáveis e Release
 
 on:
   release:
-    types: [published] # O robô acorda assim que você publicar um release no GitHub
+    types: [published]
 
 permissions:
-  contents: write # Dá permissão para o robô anexar os arquivos no release
+  contents: write
 
 jobs:
   build:
@@ -29,10 +29,12 @@ jobs:
           mkdir -p lib
           curl -sL https://cdn.jsdelivr.net/npm/marked/marked.min.js -o lib/marked.min.js
 
-      - name: Instalar o Electron
-        run: npm install
+      - name: Instalar o Electron de forma direta (Evita travamento no Windows)
+        run: npm install electron electron-builder --save-dev --no-audit --no-fund
 
-      - name: Empacotar Jogo
+      - name: Empacotar Jogo (Com Token de Segurança para o Ubuntu)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run dist -- --publish never
 
       - name: Anexar os Executáveis ao Release
