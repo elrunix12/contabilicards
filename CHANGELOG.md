@@ -1,21 +1,23 @@
 ## [0.30.0] - 2026-04-19
 
 ### Adicionado
-- Efeitos sonoros de movimento das peças, incluindo uma trava de segurança e opção para desativar nas configurações.
-- Menu lateral deslizante (formato de gaveta) e botão flutuante para compatibilidade com telemóveis e ecrãs pequenos.
-- Novo ecrã "Sobre o Projeto" no menu inicial para destacar autores, mantenedores e créditos de recursos de terceiros.
+- Efeitos sonoros de movimento das peças, com trava de segurança e opção para desativar nas configurações.
+- Menu lateral deslizante (formato de gaveta) e botão flutuante para compatibilidade com dispositivos móveis.
+- Tela "Sobre o Projeto" no menu inicial com créditos de autores, mantenedores e recursos de terceiros.
 - Empacotamento automático do projeto via GitHub Actions.
-- Geração de executáveis portáteis (`.exe` para Windows e `.AppImage` para Linux) para uso *offline* sem necessidade de instalação ou permissões de administrador.
-- Mecanismo de *fallback* para a biblioteca Marked, carregando a versão local caso o sistema não tenha ligação à internet.
+- Geração de executáveis portáteis (`.exe` para Windows e `.AppImage` para Linux) para rodar offline.
+- Fallback para a biblioteca Marked, utilizando o arquivo local caso não haja internet.
 
 ### Alterado
-- Dinâmica visual da carta central: a carta passa a girar na direção do botão clicado (esquerda ou direita).
-- A seleção de alvo da Armadilha DRE- foi movida do modal de ecrã inteiro para o centro do tabuleiro, permitindo a visualização da posição das peças antes da escolha.
-- Identidade visual das notificações: a cor da equipa passa a ser exibida nos textos de turno e nos *pop-ups* (*Toast*).
-- A configuração de tamanho do tabuleiro recebeu a etiqueta "(⚠️ Experimental)" para melhor orientação do mediador.
+- A carta central agora gira na direção correspondente ao botão clicado (esquerda ou direita).
+- A tela de escolha da DRE- foi movida para o centro do tabuleiro.
+- Notificações de turno e pop-ups agora exibem as cores das peças das equipes.
+- O Pop-up (Toast) foi movido do topo para o centro da tela para não cobrir a movimentação das peças.
+- A configuração de tamanho do tabuleiro recebeu a etiqueta "(⚠️ Experimental)".
+- O comportamento visual da peça na última casa (Publicação) foi mantido como decisão de design para destacar o término do jogo.
 
 ### Corrigido
-- O relógio (temporizador) continua a contar indevidamente após voltar ao menu principal.
-- O botão de "Sair do Projetor" não encerrava a funcionalidade de ecrã inteiro (*fullscreen*) no navegador.
-- A barra lateral de grupos sobrepunha-se aos botões de *zoom* ao aumentar demasiado o tabuleiro (corrigido com *Flexbox* e *z-index*).
-- Quebra de escala de texto na área dos grupos resolvida com a implementação de um *Grid* fluido inteligente.
+- O temporizador continuava rodando em segundo plano ao voltar para o menu inicial.
+- O botão "Sair do Projetor" não fechava o modo tela cheia adequadamente.
+- A barra lateral cobria os botões de zoom em tabuleiros muito expandidos.
+- Problema de escala e quebra de texto na lista de grupos, resolvido com Grid Fluido.
