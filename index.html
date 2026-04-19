@@ -54,7 +54,7 @@
             <div id="conteudo-regras" style="text-align: left; max-height: 60vh; overflow-y: auto; margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
                 Carregando regras...
             </div>
-            <button onclick="fecharModal('modal-regras')">Fechar Regras</button>
+            <button onclick="fecharModal('modal-regras')" style="padding: 10px 20px; font-size: 1.1rem; cursor: pointer; width: 100%;">Fechar Regras</button>
         </div>
     </div>
 
@@ -145,6 +145,13 @@
     <div id="toast-notificacao" class="toast" onclick="fecharNotificacao()"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        if (typeof marked === 'undefined') {
+            document.write('<script src="lib/marked.min.js"><\/script>');
+        }
+    </script>
+    
     <script src="script.js"></script>
 </body>
 </html>
