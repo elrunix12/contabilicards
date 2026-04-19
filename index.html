@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Contabilidade</title>
+    <title>🎲 Contabilicards</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,41 +15,38 @@
             <button onclick="carregarJogoSalvo()" id="btn-continuar" style="display: none;">Continuar Jogo</button>
             <button onclick="abrirModal('modal-regras')">Regras</button>
             <button onclick="abrirModal('modal-configs')">Configurações</button>
-        </div>
-
-        <div class="rodape">
-            <p id="licenca"><a href="https://www.gnu.org/licenses/agpl-3.0.txt" target="_blank">Licença do Software</a></p>
-            
-            <p class="contribuidores" style="text-align: center; margin: 0;">
-                <strong>Contribuidores:</strong><br>
-                <span id="lista-contribuidores">Carregando...</span>
-            </p>
-            
-            <p id="github-repo"><a href="https://github.com/elrunix12/contabilicards" target="_blank">Repositório no GitHub</a></p>
+            <button onclick="abrirModal('modal-sobre')">Sobre o Projeto</button>
         </div>
     </div>
 
     <div id="tela-jogo" class="tela">
         <div class="painel-lateral">
-            <button onclick="desfazerJogada()" id="btn-desfazer" disabled>Desfazer Jogada</button>
-            <button onclick="refazerJogada()" id="btn-refazer" disabled>Refazer Jogada</button>
-            <button onclick="voltarMenu()">Voltar ao Menu</button>
-            <hr style="margin: 15px 0;">
-            <button onclick="alternarModoProjetor()" id="btn-projetor" style="background-color: #007bff; color: white;">Modo Projetor</button>
+            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                <button onclick="voltarMenu()" style="flex: 1; padding: 10px; font-size: 1.2rem;" title="Sair para o Menu">🏠 Sair</button>
+                <button onclick="desfazerJogada()" id="btn-desfazer" disabled style="flex: 1; padding: 10px; font-size: 1.2rem;" title="Desfazer Jogada">↩️</button>
+                <button onclick="refazerJogada()" id="btn-refazer" disabled style="flex: 1; padding: 10px; font-size: 1.2rem;" title="Refazer Jogada">↪️</button>
+            </div>
             
-            <div style="display: flex; gap: 5px; margin-top: 10px;">
-                <button onclick="mudarZoom(0.1)" style="flex: 1; font-size: 1.2rem; background: #6c757d; color: white;">Zoom +</button>
-                <button onclick="mudarZoom(-0.1)" style="flex: 1; font-size: 1.2rem; background: #6c757d; color: white;">Zoom -</button>
+            <button onclick="alternarModoProjetor()" id="btn-projetor" style="width: 100%; padding: 10px; margin-bottom: 10px; background-color: #007bff; color: white;">Modo Projetor</button>
+            
+            <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                <button onclick="mudarZoom(0.1)" style="flex: 1; padding: 10px; font-size: 1.2rem; background: #6c757d; color: white;" title="Aumentar Zoom">🔍 +</button>
+                <button onclick="mudarZoom(-0.1)" style="flex: 1; padding: 10px; font-size: 1.2rem; background: #6c757d; color: white;" title="Diminuir Zoom">🔍 -</button>
             </div>
 
-            <h3>Grupos</h3>
-            <div id="tabela-grupos"></div>
+            <hr style="margin: 0 0 15px 0;">
+            <h3 style="margin-top: 0; text-align: center;">Grupos</h3>
+            
+            <div id="tabela-grupos" style="flex-grow: 1; overflow-y: auto;"></div>
         </div>
 
         <div class="area-principal">
             <div id="tabuleiro"></div>
         </div>
-    </div>
+        
+        <div id="overlay-mobile" onclick="toggleMenuMobile()"></div>
+        <button id="btn-menu-mobile" onclick="toggleMenuMobile()" title="Abrir Menu">💬</button>
+        </div>
 
     <div id="modal-regras" class="modal">
         <div class="modal-conteudo">
@@ -57,7 +54,7 @@
             <div id="conteudo-regras" style="text-align: left; max-height: 60vh; overflow-y: auto; margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
                 Carregando regras...
             </div>
-            <button onclick="fecharModal('modal-regras')">Fechar Regras</button>
+            <button onclick="fecharModal('modal-regras')" style="padding: 10px 20px; font-size: 1.1rem; cursor: pointer; width: 100%;">Fechar Regras</button>
         </div>
     </div>
 
@@ -67,7 +64,8 @@
             <div style="text-align: left; margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 15px;">
                     <strong>Quantidade de casas no tabuleiro:</strong><br>
-                    <small>(Aumente de 4 em 4 para fechar perfeito. Ex: 24, 28, 32, 36)</small><br>
+                    <small style="color: #dc3545; font-weight: bold;">(⚠️ Experimental)</small>
+                    <small> Aumente de 4 em 4 para fechar perfeito. Ex: 24, 28, 32, 36.</small><br>
                     <input type="number" id="config-casas" min="16" max="100" step="4" onchange="salvarConfiguracoes()" style="width: 80px; padding: 8px; font-size: 1.1rem; margin-top: 5px;">
                 </label>
                 <hr style="margin: 15px 0;">
@@ -118,11 +116,42 @@
                 <button onclick="confirmarNovoJogo()" style="padding: 12px 25px; font-size: 1.1rem; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold;">Iniciar Jogo</button>
             </div>
         </div>
+    </div> 
+    
+    <div id="modal-sobre" class="modal">
+        <div class="modal-conteudo" style="max-width: 550px;">
+            <h2 style="color: #2c3e50; margin-top: 0; font-size: 2rem;">Contabilicards!</h2>
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 1rem;">v0.30</h3>
+            
+            <div style="text-align: left; margin-bottom: 20px; font-size: 1.1rem; line-height: 1.6;">
+                <p style="background: #e4ebf1; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; margin-bottom: 20px;">
+                    Um jogo de tabuleiro educacional digital focado no aprendizado e revisão de conceitos de contabilidade de forma interativa e gamificada.
+                </p>
+                
+                <p style="margin-bottom: 5px;"><strong>Equipe e Contribuidores:</strong></p>
+                <div id="lista-contribuidores" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px; max-height: 150px; overflow-y: auto;">
+                    Carregando...
+                </div>
+                
+                <div style="display: flex; justify-content: space-around; margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee;">
+                    <a href="https://github.com/elrunix12/contabilicards" target="_blank" style="color: #007bff; text-decoration: none; font-weight: bold;">📦 Repositório GitHub</a>
+                    <a href="https://www.gnu.org/licenses/agpl-3.0.txt" target="_blank" style="color: #28a745; text-decoration: none; font-weight: bold;">📜 Licença do Software</a>
+                </div>
+            </div>
+            <button onclick="fecharModal('modal-sobre')" style="padding: 10px 20px; font-size: 1.1rem; cursor: pointer; width: 100%;">Fechar</button>
+        </div>
     </div>
 
     <div id="toast-notificacao" class="toast" onclick="fecharNotificacao()"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        if (typeof marked === 'undefined') {
+            document.write('<script src="lib/marked.min.js"><\/script>');
+        }
+    </script>
+    
     <script src="script.js"></script>
 </body>
 </html>

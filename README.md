@@ -63,3 +63,11 @@ O código fonte deste software é de código aberto (AGPL3). Consulte o arquivo 
 
 **⚠️ ATENÇÃO: Restrições do Banco de Perguntas**
 O arquivo `dados/perguntas.json` (e todo o seu conteúdo textual e educacional) **não** faz parte da licença de código aberto deste software. As perguntas, alternativas e resoluções são de propriedade intelectual de seus respectivos autores. É expressamente **proibida** qualquer forma de distribuição, cópia, derivação, reprodução ou uso comercial do conteúdo contido neste arquivo sem a devida autorização legal dos criadores.
+
+## 🎖️ Agradecimentos e Créditos
+
+Este projeto utiliza recursos visuais e sonoros de terceiros. Os devidos agradecimentos vão para:
+
+* **Efeitos Sonoros:** [Pop Sounds](https://opengameart.org/content/pop-sounds-0) (disponibilizado via OpenGameArt).
+* **Logo Contabilidade:** [Contabilidade Brasil](https://images.seeklogo.com/logo-png/17/1/contabilidade-brasil-logo-png_seeklogo-171216.png) (via Seeklogo).
+* **Inspiração Visual (UI):** O design limpo, as bordas arredondadas e a paleta de cores grafite/azul foram fortemente inspirados no [Graphite GTK Theme](https://github.com/vinceliuice/Graphite-gtk-theme), criado por *vinceliuice*.

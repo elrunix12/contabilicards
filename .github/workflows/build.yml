@@ -1,0 +1,43 @@
+name: Gerar Executáveis e Release
+
+on:
+  release:
+    types: [published] # O robô acorda assim que você publicar um release no GitHub
+
+permissions:
+  contents: write # Dá permissão para o robô anexar os arquivos no release
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Clonar o Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Baixar biblioteca Marked para o modo Offline
+        shell: bash
+        run: |
+          mkdir -p lib
+          curl -sL https://cdn.jsdelivr.net/npm/marked/marked.min.js -o lib/marked.min.js
+
+      - name: Instalar o Electron
+        run: npm install
+
+      - name: Empacotar Jogo
+        run: npm run dist
+
+      - name: Anexar os Executáveis ao Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.exe
+            dist/*.AppImage
