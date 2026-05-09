@@ -1,3 +1,19 @@
+## [0.31.0] - 2026-05-09
+
+### Adicionado
+- Distribuição geométrica circular das peças no tabuleiro, eliminando a sobreposição de equipes na mesma casa.
+- Suporte a PWA (Progressive Web App), permitindo instalação nativa e uso 100% offline direto pelo navegador.
+
+### Alterado
+- Melhoria no comportamento da carta central: textos muito longos agora rolam naturalmente sem distorcer o grid ou esconder o cronômetro, mantendo a centralização para cartas físicas.
+- O histórico de jogadas parou de clonar o banco de perguntas completo a cada turno, focando apenas no estado do tabuleiro.
+- Remoção do suporte a empacotamento via Electron em favor do formato PWA, tornando o projeto infinitamente mais leve.
+
+### Corrigido
+- Prevenção de quebra da interface (Injeção de HTML) quando alternativas possuíam aspas duplas no banco de dados.
+- Correção de falha onde recarregar a página (F5) durante a escolha de alvo da casa DRE travava a mecânica do jogo.
+- Eliminação do risco de estouro de limite de armazenamento do navegador (QuotaExceededError) em partidas longas.
+
 ## [0.30.0] - 2026-04-19
 
 ### Adicionado

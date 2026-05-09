@@ -271,7 +271,8 @@ button:active {
     position: absolute;
     backface-visibility: hidden;
     border-radius: 12px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; align-items: center; 
+    justify-content: center;
     padding: 20px;
     background: #ffffff;
     box-sizing: border-box;
@@ -281,6 +282,7 @@ button:active {
 .carta-verso { 
     transform: rotateY(180deg); 
     background: #f8fafc;
+    justify-content: flex-start;
 }
 
 /* Botões 3 e 5 Formato Bola */

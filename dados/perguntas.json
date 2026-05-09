@@ -1,16 +1,1444 @@
 [
   {
+    "id": "01001",
     "dificuldade": "facil",
-    "pergunta": "O que é um Ativo?",
-    "alternativas": ["Bens e direitos", "Obrigações", "Capital Social"],
-    "correta": "Bens e direitos",
-    "resolucao": "Os ativos representam todos os bens e direitos que a empresa possui."
+    "pergunta": "Onde está localizado o “imobilizado” no balanço patrimonial?",
+    "alternativas": [
+      "Passivo circulante",
+      "Ativo circulante",
+      "Passivo não circulante",
+      "Ativo não circulante"
+    ],
+    "correta": "Ativo não circulante",
+    "resolucao": "",
+    "cálculo": "false"
   },
   {
+    "id": "01002",
+    "dificuldade": "facil",
+    "pergunta": "É um exemplo de imobilizado:",
+    "alternativas": [
+      "Máquinas",
+      "Contas a Pagar",
+      "Marcas e Patentes",
+      "Mercadorias"
+    ],
+    "correta": "Máquinas",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01003",
+    "dificuldade": "facil",
+    "pergunta": "Qual imobilizado pode ser amortizado?",
+    "alternativas": [
+      "Máquinas e equipamentos",
+      "Propriedade para investimento",
+      "Terrenos",
+      "Benfeitorias em imóveis de terceiros"
+    ],
+    "correta": "Benfeitorias em imóveis de terceiros",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01004",
+    "dificuldade": "facil",
+    "pergunta": "Qual é a definição de ativo intangível?",
+    "alternativas": [
+      "Ativos corpóreos que podem ser tocados",
+      "Ativos não financeiros que não possuem valor",
+      "Ativos incorpóreos que possuem valor",
+      "Ativos financeiros que não podem ser tocados"
+    ],
+    "correta": "Ativos incorpóreos que possuem valor",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01005",
+    "dificuldade": "facil",
+    "pergunta": "Por quanto tempo se espera utilizar um imobilizado?",
+    "alternativas": [
+      "Por um período maior que 6 meses",
+      "Por um período maior que 10 meses",
+      "Por um período maior que 12 meses",
+      "Por um período maior que 24 meses"
+    ],
+    "correta": "Por um período maior que 12 meses",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01006",
+    "dificuldade": "facil",
+    "pergunta": "Não é um exemplo de imobilizado:",
+    "alternativas": [
+      "Software",
+      "Navios",
+      "Instalações",
+      "Terrenos"
+    ],
+    "correta": "Software",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01007",
+    "dificuldade": "facil",
+    "pergunta": "O imobilizado é destinado a:",
+    "alternativas": [
+      "Venda para obtenção de receita da empresa",
+      "Manutenção das atividades da empresa",
+      "Negociação com fornecedores da empresa",
+      "Divulgação dos produtos da empresa"
+    ],
+    "correta": "Manutenção das atividades da empresa",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01008",
+    "dificuldade": "facil",
+    "pergunta": "No imobilizado, pode ser capitalizado:",
+    "alternativas": [
+      "Custos administrativos e outros custos indiretos",
+      "Custo de reparos e outras manutenções periódicas",
+      "Custo da transferência para novo local",
+      "Custos de frete e seguros"
+    ],
+    "correta": "Custos de frete e seguros",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02001",
+    "dificuldade": "facil",
+    "pergunta": "O que é depreciação?",
+    "alternativas": [
+      "A perda de valor de um ativo intangível ao longo do tempo",
+      "A perda de valor de um ativo tangível ao longo do tempo",
+      "A perda de valor de um passivo contingente ao longo do tempo",
+      "A perda de valor de um passivo exigível ao longo do tempo"
+    ],
+    "correta": "A perda de valor de um ativo tangível ao longo do tempo",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02002",
+    "dificuldade": "facil",
+    "pergunta": "O que é o valor residual de um ativo?",
+    "alternativas": [
+      "O valor de mercado atual do ativo",
+      "O valor contábil do ativo no momento da sua aquisição",
+      "O valor estimado que o ativo terá ao final de sua vida útil",
+      "O valor estimado que o ativo terá no próximo ano"
+    ],
+    "correta": "O valor estimado que o ativo terá ao final de sua vida útil",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02003",
+    "dificuldade": "facil",
+    "pergunta": "O que é amortização?",
+    "alternativas": [
+      "A perda de valor de um ativo tangível ao longo do tempo",
+      "A perda de valor de um passivo contingente ao longo do tempo",
+      "A perda de valor de um passivo exigível ao longo do tempo",
+      "A perda de valor de um ativo intangível ao longo do tempo"
+    ],
+    "correta": "A perda de valor de um ativo intangível ao longo do tempo",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02004",
+    "dificuldade": "facil",
+    "pergunta": "O que é a vida útil de um ativo?",
+    "alternativas": [
+      "O tempo que um ativo leva para ser produzido",
+      "O tempo que um ativo leva para ser vendido",
+      "O tempo estimado que um ativo será utilizado pela empresa",
+      "O tempo que um ativo leva para ser depreciado completamente"
+    ],
+    "correta": "O tempo estimado que um ativo será utilizado pela empresa",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02005",
+    "dificuldade": "facil",
+    "pergunta": "Qual é o objetivo da depreciação e amortização?",
+    "alternativas": [
+      "Reduzir o lucro líquido da empresa",
+      "Aumentar o valor contábil dos ativos da empresa",
+      "Refletir a perda de valor dos ativos ao longo do tempo",
+      "Melhorar a rentabilidade da empresa"
+    ],
+    "correta": "Refletir a perda de valor dos ativos ao longo do tempo",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02006",
+    "dificuldade": "facil",
+    "pergunta": "Qual a quota de depreciação anual linear de um ativo adquirido por R$1.250, vida útil de 10 anos e valor residual de R$250?",
+    "alternativas": [
+      "100",
+      "150",
+      "250",
+      "500"
+    ],
+    "correta": "100",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "02007",
+    "dificuldade": "facil",
+    "pergunta": "Qual método de depreciação é baseado na produção do ativo?",
+    "alternativas": [
+      "Método Linear",
+      "Método das Unidades Produzidas",
+      "Método da Soma dos Algarismos",
+      "Método dos Saldos Decrescentes"
+    ],
+    "correta": "Método das Unidades Produzidas",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02008",
+    "dificuldade": "facil",
+    "pergunta": "Estima-se que uma máquina produza 300.000 produtos até o fim de sua vida útil. Se ela produzir 50.000 unidades por ano, por quantos anos ela será depreciada?",
+    "alternativas": [
+      "3 anos",
+      "6 anos",
+      "9 anos",
+      "12 anos"
+    ],
+    "correta": "6 anos",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "02009",
+    "dificuldade": "facil",
+    "pergunta": "Qual a fórmula do método de depreciação linear?",
+    "alternativas": [
+      "Percentual anual igual a um menos raiz enésima do custo sobre o valor residual",
+      "Depreciação é igual ao custo sobre o valor residual multiplicado pela vida útil sobre a soma dos algarismos",
+      "Quota de depreciação igual ao custo menos valor residual sobre a vida útil",
+      "Quota de depreciação igual ao valor residual menos vida útil sobre o custo"
+    ],
+    "correta": "Quota de depreciação igual ao custo menos valor residual sobre a vida útil",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02010",
+    "dificuldade": "facil",
+    "pergunta": "No método de depreciação da soma dos algarismos:",
+    "alternativas": [
+      "somam-se os algarismos da unidade até o número das unidades produzidas",
+      "somam-se os algarismos da unidade até o número do valor residual",
+      "somam-se os algarismos da unidade até o número do custo de aquisição",
+      "somam-se os algarismos da unidade até o número de anos da vida útil"
+    ],
+    "correta": "somam-se os algarismos da unidade até o número de anos da vida útil",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02011",
+    "dificuldade": "facil",
+    "pergunta": "Os terrenos não sofrem depreciação pois:",
+    "alternativas": [
+      "Possuem vida útil ilimitada, exceto pedreiras e aterros",
+      "Possuem vida útil limitada, exceto pedreiras e aterros",
+      "São contabilizados a valor justo",
+      "São ativos tangíveis"
+    ],
+    "correta": "Possuem vida útil ilimitada, exceto pedreiras e aterros",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02012",
+    "dificuldade": "facil",
+    "pergunta": "Quais são os três fatores que devem ser levados em consideração para calcular a depreciação?",
+    "alternativas": [
+      "Vida útil, valor residual e método de depreciação",
+      "Valor residual, método de depreciação e custo do passivo",
+      "Custo do ativo, vida útil e valor presente líquido",
+      "Método de depreciação, vida útil e taxa interna de retorno"
+    ],
+    "correta": "Vida útil, valor residual e método de depreciação",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02013",
+    "dificuldade": "facil",
+    "pergunta": "Quando a depreciação começa a ser registrada na contabilidade?",
+    "alternativas": [
+      "Quando o bem é adquirido",
+      "Quando o bem é pago",
+      "Quando o bem está disponível para uso",
+      "Quando o bem começa a ser utilizado"
+    ],
+    "correta": "Quando o bem está disponível para uso",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02014",
+    "dificuldade": "facil",
+    "pergunta": "A depreciação:",
+    "alternativas": [
+      "Transforma em receita uma parte do valor de um ativo imobilizado",
+      "Transforma em despesa uma parte do valor de um ativo imobilizado",
+      "Aumenta o valor contábil dos ativos imobilizados da empresa",
+      "Reduz os impostos pagos pela empresa sobre seus ativos imobilizados"
+    ],
+    "correta": "Transforma em despesa uma parte do valor de um ativo imobilizado",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02015",
+    "dificuldade": "facil",
+    "pergunta": "Como a conta \"Depreciação/Amortização Acumulada\" afeta o saldo da conta do ativo imobilizado/intangível no Balanço Patrimonial?",
+    "alternativas": [
+      "Não afetando o saldo da conta do ativo imobilizado/intangível",
+      "Transformando o saldo da conta do ativo imobilizado/intangível em passivo",
+      "Aumentando o saldo da conta do ativo imobilizado/intangível",
+      "Reduzindo o saldo da conta do ativo imobilizado/intangível"
+    ],
+    "correta": "Reduzindo o saldo da conta do ativo imobilizado/intangível",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03001",
+    "dificuldade": "facil",
+    "pergunta": "Como é chamado o impairment no Brasil de acordo com o CPC?",
+    "alternativas": [
+      "Redução ao valor de ativos",
+      "Redução ao valor irrecuperável de ativos",
+      "Redução ao valor recuperável de ativos",
+      "Redução ao valor não recuperável de ativos"
+    ],
+    "correta": "Redução ao valor recuperável de ativos",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03002",
+    "dificuldade": "facil",
+    "pergunta": "Com que frequência deve ser feito o teste de impairment de um imobilizado?",
+    "alternativas": [
+      "Trimestralmente",
+      "Semestralmente",
+      "Anualmente",
+      "Quando houver evidência de desvalorização"
+    ],
+    "correta": "Quando houver evidência de desvalorização",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03003",
+    "dificuldade": "facil",
+    "pergunta": "É um indício de desvalorização do ativo:",
+    "alternativas": [
+      "Valor do ativo diminuiu mais do que o esperado",
+      "Valor do ativo aumentou mais do que o esperado",
+      "Desempenho do ativo é melhor do que o esperado",
+      "Diminuição nas taxas de juros do mercado"
+    ],
+    "correta": "Valor do ativo diminuiu mais do que o esperado",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03004",
+    "dificuldade": "facil",
+    "pergunta": "É uma fonte interna de indício de desvalorização de um ativo:",
+    "alternativas": [
+      "Valor do ativo diminuiu mais do que o esperado",
+      "Evidências de obsolescência ou dano físico",
+      "Mudanças significativas no ambiente tecnológico, de mercado, econômico ou legal",
+      "Aumento nas taxas de juros do mercado"
+    ],
+    "correta": "Evidências de obsolescência ou dano físico",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03005",
+    "dificuldade": "facil",
+    "pergunta": "Qual(is) valor(es) se utiliza(m) no teste de impairment?",
+    "alternativas": [
+      "Valor contábil líquido",
+      "Valor recuperável",
+      "Valor da quota de depreciação",
+      "Valor contábil líquido e valor recuperável"
+    ],
+    "correta": "Valor contábil líquido e valor recuperável",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03006",
+    "dificuldade": "facil",
+    "pergunta": "Uma empresa possui uma máquina com valor contábil líquido de 1.000, valor de venda de 600, e um valor em uso de 500. Qual o valor da perda com desvalorização?",
+    "alternativas": [
+      "100",
+      "400",
+      "500",
+      "1000"
+    ],
+    "correta": "400",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "03007",
+    "dificuldade": "facil",
+    "pergunta": "O que é o valor de uso de um ativo?",
+    "alternativas": [
+      "Valor que a empresa espera obter de lucro com o uso do ativo, diminuído do prejuízo",
+      "Valor que a empresa espera obter de receita com o uso do ativo, diminuído das despesas",
+      "Valor que a empresa conseguiria vender o ativo no futuro, diminuído das despesas de venda",
+      "Valor que a empresa conseguiria vender o ativo agora, diminuído das despesas de venda"
+    ],
+    "correta": "Valor que a empresa espera obter de receita com o uso do ativo, diminuído das despesas",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03008",
+    "dificuldade": "facil",
+    "pergunta": "O que é o valor líquido de venda de um ativo?",
+    "alternativas": [
+      "Valor que a empresa espera obter de lucro com o uso do ativo, diminuído do prejuízo",
+      "Valor que a empresa espera obter de receita com o uso do ativo, diminuído das despesas",
+      "Valor que a empresa conseguiria vender o ativo no futuro, diminuído das despesas de venda",
+      "Valor que a empresa conseguiria vender o ativo agora, diminuído das despesas de venda"
+    ],
+    "correta": "Valor que a empresa conseguiria vender o ativo agora, diminuído das despesas de venda",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03009",
+    "dificuldade": "facil",
+    "pergunta": "O que é o teste de impairment?",
+    "alternativas": [
+      "Um teste para avaliar a capacidade da empresa de pagar suas dívidas",
+      "Um teste para avaliar a eficiência dos processos produtivos da empresa",
+      "Um teste para avaliar se o valor contábil de um ativo é maior do que seu valor recuperável",
+      "Um teste para avaliar a qualidade dos produtos ou serviços oferecidos pela empresa"
+    ],
+    "correta": "Um teste para avaliar se o valor contábil de um ativo é maior do que seu valor recuperável",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03010",
+    "dificuldade": "facil",
+    "pergunta": "Há uma perda por desvalorização se:",
+    "alternativas": [
+      "O valor recuperável é menor que o valor contábil líquido",
+      "O valor contábil líquido é menor que o valor recuperável",
+      "O valor de uso é maior que o valor de venda",
+      "O valor de venda é maior que o valor de uso."
+    ],
+    "correta": "O valor recuperável é menor que o valor contábil líquido",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03011",
+    "dificuldade": "facil",
+    "pergunta": "Não há uma perda por desvalorização se:",
+    "alternativas": [
+      "O valor recuperável é maior que o valor contábil líquido",
+      "O valor recuperável é menor que o valor contábil líquido",
+      "O valor contábil líquido é menor que o valor de venda",
+      "O valor contábil líquido é menor que o valor de uso"
+    ],
+    "correta": "O valor recuperável é maior que o valor contábil líquido",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01001",
     "dificuldade": "dificil",
-    "pergunta": "Como é calculada a Depreciação Linear?",
-    "alternativas": ["(Valor do bem - Valor residual) / Vida útil", "Valor do bem x Taxa de juros", "Valor residual / Vida útil"],
-    "correta": "(Valor do bem - Valor residual) / Vida útil",
-    "resolucao": "Na depreciação linear subtraímos o valor residual do custo de aquisição e dividimos pela vida útil estimada."
+    "pergunta": "Não é um exemplo de intangível:",
+    "alternativas": [
+      "Marcas",
+      "Licenças de softwares",
+      "Gastos com pesquisa",
+      "Direitos autorais"
+    ],
+    "correta": "Gastos com pesquisa",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01002",
+    "dificuldade": "dificil",
+    "pergunta": "No imobilizado, não pode ser capitalizado:",
+    "alternativas": [
+      "Honorários profissionais",
+      "Custos de abertura de nova instalação",
+      "Custos de preparação do local",
+      "Custos de instalação e montagem"
+    ],
+    "correta": "Custos de abertura de nova instalação",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01003",
+    "dificuldade": "dificil",
+    "pergunta": "Como a baixa do imobilizado é registrada contabilmente?",
+    "alternativas": [
+      "Como uma despesa operacional",
+      "Como uma redução do ativo imobilizado",
+      "Como uma receita operacional",
+      "Como uma redução do passivo circulante"
+    ],
+    "correta": "Como uma redução do ativo imobilizado",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01004",
+    "dificuldade": "dificil",
+    "pergunta": "Quando o Ativo Imobilizado deve ser reconhecido na contabilidade?",
+    "alternativas": [
+      "No momento do pagamento da aquisição",
+      "No momento da assinatura do contrato",
+      "No momento em que o ativo é utilizado pela primeira vez",
+      "No momento da sua aquisição"
+    ],
+    "correta": "No momento da sua aquisição",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01005",
+    "dificuldade": "dificil",
+    "pergunta": "Qual é o valor registrado no balanço patrimonial de um Ativo Intangível?",
+    "alternativas": [
+      "O valor de mercado",
+      "O valor justo",
+      "O valor contábil líquido",
+      "O valor residual"
+    ],
+    "correta": "O valor contábil líquido",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01006",
+    "dificuldade": "dificil",
+    "pergunta": "Como é calculada a vida útil econômica de um Ativo Intangível?",
+    "alternativas": [
+      "Com base na sua vida útil legal",
+      "Com base na sua vida útil esperada",
+      "Com base na sua vida útil fiscal",
+      "Com base na sua vida útil técnica"
+    ],
+    "correta": "Com base na sua vida útil esperada",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01007",
+    "dificuldade": "dificil",
+    "pergunta": "Caso não seja possível diferenciar a fase, o gasto com o projeto deve ser tratado como:",
+    "alternativas": [
+      "Pesquisa",
+      "Desenvolvimento",
+      "Ativo intangível",
+      "Imobilizado"
+    ],
+    "correta": "Pesquisa",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01008",
+    "dificuldade": "dificil",
+    "pergunta": "Nenhum ativo intangível resultante de pesquisa deve ser:",
+    "alternativas": [
+      "Mensurado",
+      "Quantificado",
+      "Reconhecido",
+      "Adicionado em Notas Explicativas"
+    ],
+    "correta": "Reconhecido",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01009",
+    "dificuldade": "dificil",
+    "pergunta": "A fase em que o intangível deve ser reconhecido é a fase de:",
+    "alternativas": [
+      "Desenvolvimento",
+      "Pesquisa",
+      "Viabilidade técnica",
+      "Mensuração"
+    ],
+    "correta": "Desenvolvimento",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01010",
+    "dificuldade": "dificil",
+    "pergunta": "As marcas, títulos de publicações, lista de clientes e outros itens similares gerados internamente:",
+    "alternativas": [
+      "não devem ser reconhecidos como ativos intangíveis",
+      "devem ser reconhecidos como ativos intangíveis",
+      "devem ser mensurados pelo valor justo",
+      "devem ser reconhecidos como ativos imobilizados"
+    ],
+    "correta": "não devem ser reconhecidos como ativos intangíveis",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01011",
+    "dificuldade": "dificil",
+    "pergunta": "Quando tiver ocorrido ganho na venda do imobilizado/intangível, deve ser contabilizado como:",
+    "alternativas": [
+      "Outras receitas",
+      "Receita de vendas",
+      "Receitas operacionais",
+      "Receita de serviços"
+    ],
+    "correta": "Outras receitas",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01012",
+    "dificuldade": "dificil",
+    "pergunta": "Um intangível com vida útil indefinida:",
+    "alternativas": [
+      "Deve ser amortizado",
+      "Não deve ser amortizado",
+      "Deve ser depreciado",
+      "Não deve ser depreciado"
+    ],
+    "correta": "Não deve ser amortizado",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01013",
+    "dificuldade": "dificil",
+    "pergunta": "Um intangível sofrerá impairment anualmente se:",
+    "alternativas": [
+      "O valor residual puder ser determinado",
+      "O valor residual não puder ser determinado",
+      "Possuir uma vida útil indefinida",
+      "Possuir uma vida útil definida"
+    ],
+    "correta": "Possuir uma vida útil indefinida",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "01014",
+    "dificuldade": "dificil",
+    "pergunta": "O que são benfeitorias em imóveis de terceiros?",
+    "alternativas": [
+      "Gastos com melhorias em imóveis próprios da empresa",
+      "Gastos com melhorias em imóveis alugados pela empresa",
+      "Gastos com manutenção de imóveis próprios da empresa",
+      "Gastos com manutenção de imóveis alugados pela empresa"
+    ],
+    "correta": "Gastos com melhorias em imóveis alugados pela empresa",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02001",
+    "dificuldade": "dificil",
+    "pergunta": "O que não deve ser considerado para a depreciação?",
+    "alternativas": [
+      "Desgaste físico",
+      "Limites legais sobre o uso do ativo",
+      "Obsoletismo técnico",
+      "Valor do ativo intangível"
+    ],
+    "correta": "Valor do ativo intangível",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02002",
+    "dificuldade": "dificil",
+    "pergunta": "Qual método de depreciação não está presente no CPC 27?",
+    "alternativas": [
+      "Método da Soma dos Algarismos",
+      "Método da Unidade de Produção",
+      "Método das Quotas Constantes",
+      "Método dos Saldos Decrescentes"
+    ],
+    "correta": "Método da Soma dos Algarismos",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02003",
+    "dificuldade": "dificil",
+    "pergunta": "Qual a fórmula do método de depreciação dos Saldos Decrescentes?",
+    "alternativas": [
+      "Percentual anual igual a um menos raiz enésima do custo sobre o valor residual",
+      "Percentual anual igual a um menos raiz enésima do valor residual sobre o custo",
+      "Percentual anual igual a um menos raiz quadrada do valor residual sobre o custo",
+      "Percentual anual igual a um menos raiz quadrada do custo sobre o valor residual"
+    ],
+    "correta": "Percentual anual igual a um menos raiz enésima do valor residual sobre o custo",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02004",
+    "dificuldade": "dificil",
+    "pergunta": "Qual a quota de depreciação anual por unidades produzidas de um equipamento adquirido por 10.000, que produziu 50.000 peças e que se estima que produza 500.000 peças?",
+    "alternativas": [
+      "10",
+      "100",
+      "1.000",
+      "10.000"
+    ],
+    "correta": "1.000",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "02005",
+    "dificuldade": "dificil",
+    "pergunta": "Qual a fórmula do método de depreciação da Soma dos Algarismos?",
+    "alternativas": [
+      "Depreciação é igual ao custo sobre o valor residual multiplicado pela vida útil sobre a soma dos algarismos",
+      "Depreciação é igual ao valor residual sobre o custo multiplicado pela vida útil sobre a soma dos algarismos",
+      "Depreciação é igual a soma dos algarismos sobre a vida útil multiplicado pelo custo menos o valor residual",
+      "Depreciação é igual a vida útil sobre a soma dos algarismos multiplicado pelo custo menos o valor residual"
+    ],
+    "correta": "Depreciação é igual a vida útil sobre a soma dos algarismos multiplicado pelo custo menos o valor residual",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02006",
+    "dificuldade": "dificil",
+    "pergunta": "No método de depreciação da Soma dos Algarismos:",
+    "alternativas": [
+      "O método pode ser utilizado começando pelo maior algarismo ou pelo menor",
+      "O método deve ser utilizado começando pelo maior algarismo.",
+      "O método deve ser utilizado começando pelo menor algarismo.",
+      "O método necessita ter um valor residual."
+    ],
+    "correta": "O método pode ser utilizado começando pelo maior algarismo ou pelo menor",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02007",
+    "dificuldade": "dificil",
+    "pergunta": "Quais são as exceções à regra de que terrenos não sofrem depreciação?",
+    "alternativas": [
+      "Pedreiras e aterros",
+      "Imóveis alugados pela empresa",
+      "Ativos intangíveis da empresa",
+      "Equipamentos utilizados na produção da empresa"
+    ],
+    "correta": "Pedreiras e aterros",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "02008",
+    "dificuldade": "dificil",
+    "pergunta": "Qual é o método utilizado para amortização dos ativos intangíveis quando não é possível determinar o padrão com confiabilidade?",
+    "alternativas": [
+      "Método dos saldos decrescentes",
+      "Método exponencial",
+      "Método de Matheson",
+      "Método da linha reta"
+    ],
+    "correta": "Método da linha reta",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03001",
+    "dificuldade": "dificil",
+    "pergunta": "Qual o objetivo do teste de impairment?",
+    "alternativas": [
+      "assegurar que os passivos estejam registrados contabilmente por valor que não exceda seu valor de recuperação",
+      "assegurar que os passivos estejam registrados contabilmente por valor que exceda seu valor de recuperação",
+      "assegurar que os ativos estejam registrados contabilmente por valor que exceda seu valor de recuperação",
+      "assegurar que os ativos estejam registrados contabilmente por valor que não exceda seu valor de recuperação"
+    ],
+    "correta": "assegurar que os ativos estejam registrados contabilmente por valor que não exceda seu valor de recuperação",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03002",
+    "dificuldade": "dificil",
+    "pergunta": "Com que frequência deve ser feito o teste de impairment de um ativo em desenvolvimento?",
+    "alternativas": [
+      "Trimestralmente",
+      "Semestralmente",
+      "Anualmente",
+      "Quando houver evidência de desvalorização"
+    ],
+    "correta": "Anualmente",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03003",
+    "dificuldade": "dificil",
+    "pergunta": "Com que frequência deve ser feito o teste de impairment de um intangível com vida útil definida?",
+    "alternativas": [
+      "Quando houver evidência de desvalorização",
+      "Trimestralmente",
+      "Semestralmente",
+      "Anualmente"
+    ],
+    "correta": "Quando houver evidência de desvalorização",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03004",
+    "dificuldade": "dificil",
+    "pergunta": "Com que frequência deve ser feito o teste de impairment de um intangível com vida útil indefinida?",
+    "alternativas": [
+      "Quando houver evidência de desvalorização",
+      "Trimestralmente",
+      "Semestralmente",
+      "Anualmente"
+    ],
+    "correta": "Anualmente",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03005",
+    "dificuldade": "dificil",
+    "pergunta": "É uma fonte externa de indício de desvalorização de um ativo:",
+    "alternativas": [
+      "Valor do ativo diminuiu mais do que o esperado",
+      "Evidências de ativo ocioso, inativo, descontinuidade da operação",
+      "Evidências de obsolescência ou dano físico",
+      "Desempenho do ativo é pior do que o esperado"
+    ],
+    "correta": "Valor do ativo diminuiu mais do que o esperado",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "03006",
+    "dificuldade": "dificil",
+    "pergunta": "Uma empresa possui um equipamento com valor contábil líquido de 230.000, preço de venda de 110.000, despesas de venda de 5.000, receita esperada de 135.000, custo esperado de 25.000. Qual o valor de uso?",
+    "alternativas": [
+      "100.000",
+      "105.000",
+      "110.000",
+      "120.000"
+    ],
+    "correta": "110.000",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "03007",
+    "dificuldade": "dificil",
+    "pergunta": "O lançamento contábil de uma perda por impairment é:",
+    "alternativas": [
+      "D- Perda Acumulada com desvalorização de ativo (redutora de receita)",
+      "D- Perda Acumulada com desvalorização de ativo (redutora de ativo)",
+      "D- Despesa com perda de desvalorização de ativo (despesa)",
+      "D- Despesa com perda de desvalorização de ativo (despesa)"
+    ],
+    "correta": "D- Despesa com perda de desvalorização de ativo (despesa)",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04001",
+    "dificuldade": "facil",
+    "pergunta": "Qual das alternativas representa a correta definição de valor justo?",
+    "alternativas": [
+      "Valor do imobilizado ao final de sua vida útil.",
+      "Valor de mercado ou equivalente.",
+      "Maior valor entre o valor justo líquido e o valor em uso.",
+      "Redução no valor de um bem ao longo do tempo."
+    ],
+    "correta": "Valor de mercado ou equivalente.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04002",
+    "dificuldade": "facil",
+    "pergunta": "Na ausência de um mercado principal, a mensuração do valor justo presume que a transação ocorra:",
+    "alternativas": [
+      "No mercado de menor risco.",
+      "No mercado com maior volume e nível de atividade para o ativo ou passivo.",
+      "No mercado mais vantajoso para o ativo ou passivo.",
+      "No mercado secundário."
+    ],
+    "correta": "No mercado mais vantajoso para o ativo ou passivo.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04003",
+    "dificuldade": "facil",
+    "pergunta": "Qual o conceito de valor justo?",
+    "alternativas": [
+      "Custo de aquisição.",
+      "Preço que seria recebido para vender o ativo ou pago para transferir o passivo.",
+      "Valor estipulado pela empresa sem levar em conta fatores externos.",
+      "Valor pelo uso do ativo ou passivo."
+    ],
+    "correta": "Preço que seria recebido para vender o ativo ou pago para transferir o passivo.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04004",
+    "dificuldade": "facil",
+    "pergunta": "O que é o mercado principal?",
+    "alternativas": [
+      "Aquele em que a empresa tem maior participação acionária.",
+      "O mercado com maior concorrência para o ativo ou passivo.",
+      "Mercado com o maior volume e nível de atividade para o ativo ou passivo.",
+      "Aquele mais utilizado pela empresa em suas transações."
+    ],
+    "correta": "Mercado com o maior volume e nível de atividade para o ativo ou passivo.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04005",
+    "dificuldade": "facil",
+    "pergunta": "Uma entidade negocia seu ativo em dois mercados diferentes.\nNo mercado A, o preço da venda é de 1.000, com custos de transação de 100.\nNo mercado B, o preço da venda é de 900, com custos de transação de 50.\nQual é o valor justo do ativo, considerando que o mercado A seja o principal?",
+    "alternativas": [
+      "900 reais.",
+      "850 reais.",
+      "1000 reais.",
+      "900 reais."
+    ],
+    "correta": "1000 reais.",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "04006",
+    "dificuldade": "facil",
+    "pergunta": "Caso um certo ativo fosse negociado em seu mercado principal e a empresa pudesse acessar os preços desse ativo na data da mensuração, o que deveria ser levado em conta ao mensurar o valor justo?",
+    "alternativas": [
+      "O preço de venda e os custos de transporte.",
+      "Apenas o preço de venda.",
+      "O preço de venda e os custos de transação.",
+      "O preço de venda, os custos de transação e os custos de transporte."
+    ],
+    "correta": "O preço de venda e os custos de transporte.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04007",
+    "dificuldade": "facil",
+    "pergunta": "De acordo com o CPC 46, uma empresa que mensure a valor justo deve fazer divulgações quantitativas, no final do período das demonstrações contábeis:",
+    "alternativas": [
+      "Sobre as mensurações de valor justo para ativos e passivos",
+      "Apenas sobre as mensurações de classes de ativos.",
+      "Apenas sobre as mensurações de dados observáveis significativos.",
+      "Sobre as mensurações que a empresa achar adequado apresentar."
+    ],
+    "correta": "Sobre as mensurações de valor justo para ativos e passivos",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04008",
+    "dificuldade": "facil",
+    "pergunta": "Qual dos ativos descritos abaixo deve ser avaliado a valor justo?",
+    "alternativas": [
+      "Valores a receber de clientes.",
+      "Instrumentos financeiros.",
+      "Estoques.",
+      "Intangíveis."
+    ],
+    "correta": "Instrumentos financeiros.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04009",
+    "dificuldade": "facil",
+    "pergunta": "De acordo com a definição de valor justo, qual das alternativas abaixo é a correta?",
+    "alternativas": [
+      "Valor justo é o preço de mercado, deduzidas as despesas de venda.",
+      "O valor justo deve ser ajustado para refletir os custos de transação.",
+      "A hierarquia de valor justo prioriza o uso de dados observáveis.",
+      "Valor justo é o preço que seria recebido ou pago em uma transação forçada entre participantes do mercado."
+    ],
+    "correta": "A hierarquia de valor justo prioriza o uso de dados observáveis.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04010",
+    "dificuldade": "facil",
+    "pergunta": "Uma entidade tem um ativo financeiro avaliado a valor justo. Negociado em seu mercado principal, o preço de venda é de 10.000. Porém, os custos para transportar o ativo para o mercado são de 1.000. Qual o valor justo do ativo?",
+    "alternativas": [
+      "10.000",
+      "11.000",
+      "9.000",
+      "1.000"
+    ],
+    "correta": "9.000",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "05001",
+    "dificuldade": "facil",
+    "pergunta": "Qual das alternativas abaixo NÃO pode ser classificada como Propriedade para Investimento?",
+    "alternativas": [
+      "Edifício mantido para auferir aluguel",
+      "Terreno mantido para venda no curso ordinário do negócio",
+      "Imóvel mantido para valorização de capital",
+      "Terreno mantido para futuro uso corrente indeterminado"
+    ],
+    "correta": "Terreno mantido para venda no curso ordinário do negócio",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05002",
+    "dificuldade": "facil",
+    "pergunta": "Em qual grupo do balanço patrimonial são classificadas as Propriedades para Investimento?",
+    "alternativas": [
+      "Ativo imobilizado",
+      "Investimentos",
+      "Ativo circulante mantido para venda",
+      "Ativo realizável a longo prazo"
+    ],
+    "correta": "Investimentos",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05003",
+    "dificuldade": "facil",
+    "pergunta": "A propriedade para investimento deve ser, inicialmente, mensurada pelo:",
+    "alternativas": [
+      "Custo histórico",
+      "Valor justo",
+      "Custo corrente",
+      "Valor em uso"
+    ],
+    "correta": "Custo histórico",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05004",
+    "dificuldade": "facil",
+    "pergunta": "Uma empresa mantém um terreno para valorização de capital reconhecido por 500.000. No final do exercício, o valor justo do terreno era de 400.000. A empresa deve:",
+    "alternativas": [
+      "Reconhecer a despesa de 100.000 e diminuir o valor do ativo.",
+      "Reconhecer a receita de 100.000 e aumentar o valor do ativo.",
+      "Reconhecer a despesa de 100.000, porém sem alterar o valor do ativo.",
+      "Não deve realizar ajustes a valor justo."
+    ],
+    "correta": "Reconhecer a despesa de 100.000 e diminuir o valor do ativo.",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "05005",
+    "dificuldade": "facil",
+    "pergunta": "Ajustes posteriores a valor justo nas Propriedades para Investimento devem ser contabilizados:",
+    "alternativas": [
+      "No patrimônio líquido, apenas as perdas",
+      "No resultado, apenas os ganhos",
+      "No patrimônio líquido, os ganhos e perdas",
+      "No resultado, os ganhos e perdas"
+    ],
+    "correta": "No resultado, os ganhos e perdas",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05006",
+    "dificuldade": "facil",
+    "pergunta": "Caso uma propriedade seja transferida de Estoque para Propriedade para Investimento, o ajuste a valor justo deve ser reconhecido:",
+    "alternativas": [
+      "No resultado",
+      "No ativo circulante",
+      "No imobilizado",
+      "No patrimônio líquido"
+    ],
+    "correta": "No resultado",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05007",
+    "dificuldade": "facil",
+    "pergunta": "Uma determinada companhia adquire um terreno, porém seu futuro uso corrente ainda não foi determinado pela administração. Como esse terreno deve ser contabilizado?",
+    "alternativas": [
+      "Ativo não circulante mantido para venda",
+      "Ativo imobilizado",
+      "Propriedade para investimento",
+      "Arrendamentos"
+    ],
+    "correta": "Propriedade para investimento",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05008",
+    "dificuldade": "facil",
+    "pergunta": "Qual dos custos abaixo não pode ser atribuído ao custo inicial de uma Propriedade para Investimento?",
+    "alternativas": [
+      "Impostos de transferência",
+      "Frete pago pelo comprador",
+      "Despesas de financiamento",
+      "Honorários de terceiros"
+    ],
+    "correta": "Despesas de financiamento",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05009",
+    "dificuldade": "facil",
+    "pergunta": "Qual dos seguintes exemplos pode ser classificado como propriedade para investimento?",
+    "alternativas": [
+      "Imóvel utilizado pelos funcionários da empresa, que pagam aluguel",
+      "Prédio utilizado como sede da empresa",
+      "Prédio em construção para ser valorizado ao longo do tempo",
+      "Galpão utilizado para armazenar os produtos em estoque"
+    ],
+    "correta": "Prédio em construção para ser valorizado ao longo do tempo",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05010",
+    "dificuldade": "facil",
+    "pergunta": "Uma companhia, ao adquirir uma Propriedade para Investimento por 100.000, pagou também 8.000 referente aos custos de preparação do ativo. Por qual valor deve ser a propriedade contabilizada inicialmente?",
+    "alternativas": [
+      "100.000",
+      "108.000",
+      "92.000",
+      "116.000"
+    ],
+    "correta": "108.000",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "04001",
+    "dificuldade": "dificil",
+    "pergunta": "Quando dados não observáveis devem ser utilizados para mensurar o valor justo?",
+    "alternativas": [
+      "Quando a empresa não quiser utilizar dados observáveis.",
+      "Quando dados observáveis relevantes não estiverem disponíveis.",
+      "Quando a empresa desejar ajustar o valor de seus ativos.",
+      "Sempre que houver dados disponíveis e verificáveis no mercado."
+    ],
+    "correta": "Quando dados observáveis relevantes não estiverem disponíveis.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04002",
+    "dificuldade": "dificil",
+    "pergunta": "Qual dessas não é uma técnica de avaliação do valor justo?",
+    "alternativas": [
+      "Abordagem de mercado",
+      "Abordagem de custo",
+      "Abordagem de receita",
+      "Abordagem de fluxo de caixa"
+    ],
+    "correta": "Abordagem de fluxo de caixa",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04003",
+    "dificuldade": "dificil",
+    "pergunta": "Dados não observáveis para o ativo ou passivo são informações:",
+    "alternativas": [
+      "Diretamente verificáveis no mercado",
+      "Fornecidas por órgãos reguladores.",
+      "Desenvolvidas pela própria entidade",
+      "Utilizadas para distorcer a avaliação dos ativos e passivos"
+    ],
+    "correta": "Desenvolvidas pela própria entidade",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04004",
+    "dificuldade": "dificil",
+    "pergunta": "Um ativo é negociado em seu mercado principal pelos seguintes valores:\nNo mercado A, o preço é de 200, os custos de transação são de 60 e os custos para transportar o ativo a esse mercado são de 30.\nQual é o valor justo?",
+    "alternativas": [
+      "170",
+      "200",
+      "140",
+      "110"
+    ],
+    "correta": "170",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "04005",
+    "dificuldade": "dificil",
+    "pergunta": "Considerando que uma ativo seja negociado em dois mercados diferentes. No mercado A, o preço é 10, os custos de transação são 3 e os custos com transporte são de 2.\nNo mercado B, o preço é 15, com custos de transação de 1 e custos com transporte de 5.\nQual o valor justo no mercado mais vantajoso?",
+    "alternativas": [
+      "5",
+      "9",
+      "8",
+      "10"
+    ],
+    "correta": "10",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "04006",
+    "dificuldade": "dificil",
+    "pergunta": "Em relação a hierarquia de valor justo, qual das alternativas abaixo é correta?",
+    "alternativas": [
+      "A hierarquia prioriza o uso de dados não observáveis, que são desenvolvidos pela própria entidade.",
+      "A hierarquia prioriza preços diretamente observáveis de ativos ou passivos idênticos em mercados ativos.",
+      "O nível 3 é o mais alto e confiável na hierarquia, pois utiliza de dados observáveis.",
+      "O nível 1 é o mais alto e confiável na hierarquia, pois utiliza estimativas e premissas internas."
+    ],
+    "correta": "A hierarquia prioriza preços diretamente observáveis de ativos ou passivos idênticos em mercados ativos.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04007",
+    "dificuldade": "dificil",
+    "pergunta": "Uma empresa tem um imóvel avaliado a valor justo em seu balanço patrimonial. Ao final do exercício, o valor de mercado do imóvel era 1.000, porém, caso a empresa decidisse seguir com a venda, teria que pagar 10% à corretora de imóveis.\nO valor justo do imóvel na data de encerramento do exercício é de:",
+    "alternativas": [
+      "990",
+      "1.100",
+      "900",
+      "1.000"
+    ],
+    "correta": "1.000",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "04008",
+    "dificuldade": "dificil",
+    "pergunta": "Os ativos abaixo podem ser avaliados a valor justo, exceto:",
+    "alternativas": [
+      "Participações societárias a serem vendidas no curto prazo.",
+      "Ativos biológicos.",
+      "Estoques mantidos para venda.",
+      "Propriedades para investimento."
+    ],
+    "correta": "Estoques mantidos para venda.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "04009",
+    "dificuldade": "dificil",
+    "pergunta": "Uma empresa avalia seu ativo a valor justo. Na data da mensuração, o ativo é negociado em seu mercado principal por 300, com custos pela transação de 50. Os custos de transporte, pagos pelo comprador, seriam de 100.\nQual o valor justo na data da mensuração?",
+    "alternativas": [
+      "300",
+      "250",
+      "200",
+      "150"
+    ],
+    "correta": "300",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "04010",
+    "dificuldade": "dificil",
+    "pergunta": "Em qual conta do patrimônio líquido devem ser registrados os ganhos e perdas na mensuração a valor justo?",
+    "alternativas": [
+      "Reservas",
+      "Capital Social",
+      "Prejuízos Acumulados",
+      "Ajustes de Avaliação Patrimonial"
+    ],
+    "correta": "Ajustes de Avaliação Patrimonial",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05001",
+    "dificuldade": "dificil",
+    "pergunta": "Qual das alternativas abaixo não é um critério para reconhecer um ativo como Propriedade para Investimento?",
+    "alternativas": [
+      "For provável que benefícios econômicos futuros associados ao ativo fluirão para a entidade",
+      "O custo do ativo pode ser mensurado confiavelmente",
+      "O ativo gera fluxos de caixa altamente independente de outros ativos da entidade",
+      "O ativo será utilizado na produção de bens"
+    ],
+    "correta": "O ativo será utilizado na produção de bens",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05002",
+    "dificuldade": "dificil",
+    "pergunta": "Uma entidade decidiu reclassificar um ativo de seu Imobilizado para Propriedade para Investimento. Caso o valor justo supere o valor contabilizado, como deve ser reconhecido esse ganho?",
+    "alternativas": [
+      "Receita de ativos avaliados a valor justo",
+      "Ajuste de avaliação patrimonial",
+      "Receita financeira",
+      "Não deve ser reconhecido."
+    ],
+    "correta": "Ajuste de avaliação patrimonial",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05003",
+    "dificuldade": "dificil",
+    "pergunta": "Uma propriedade para investimento foi adquirida por 150.000. No final do exercício, o valor justo da propriedade era de 180.000. Qual será o valor do ativo no balanço patrimonial da empresa, caso ela utilize o método de custo?",
+    "alternativas": [
+      "150.000",
+      "180.000",
+      "330.000",
+      "30.000"
+    ],
+    "correta": "150.000",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "05004",
+    "dificuldade": "dificil",
+    "pergunta": "Se uma propriedade tiver uma parte destinada para uso e outra para valorização no longo prazo, ela deve ser reconhecida:",
+    "alternativas": [
+      "Sempre como ativo imobilizado",
+      "Sempre como propriedade para investimento",
+      "Separadamente, caso as partes possam ser vendidas separadamente",
+      "Como propriedade para investimento, se a parte para uso for significante"
+    ],
+    "correta": "Separadamente, caso as partes possam ser vendidas separadamente",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05005",
+    "dificuldade": "dificil",
+    "pergunta": "Uma certa empresa adquiriu um edifício de dois andares por 200.000. Um dos andares ela planeja utilizar para desenvolver as atividades no negócio. O outro, a administração tem a intenção de alugar para terceiros. Considerando que cada andar valha metade do preço de compra e, caso seja necessário, possa ser vendido separadamente, a entidade deve:",
+    "alternativas": [
+      "Reconhecer 200.000 no ativo imobilizado",
+      "Reconhecer 200.000 como propriedade para investimento",
+      "Reconhecer 100.000 no imobilizado, e 100.000 em investimentos.",
+      "Reconhecer 100.000 no imobilizado, e 100.000 como despesa de aluguel."
+    ],
+    "correta": "Reconhecer 100.000 no imobilizado, e 100.000 em investimentos.",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05006",
+    "dificuldade": "dificil",
+    "pergunta": "Uma empresa possuía um imobilizado reconhecido por 200.000. No final daquele ano, foram alteradas as intenções de uso para o ativo, que foi reclassificado para Propriedade para Investimento e o valor justo avaliado foi de 230.000. Qual o impacto no período, caso a empresa utilize o método do valor justo?",
+    "alternativas": [
+      "Ganho de 30.000 no resultado",
+      "Perda de 30.000 no resultado",
+      "Ajuste positivo de 30.000 no patrimônio líquido",
+      "Não será reconhecido nenhum impacto."
+    ],
+    "correta": "Ajuste positivo de 30.000 no patrimônio líquido",
+    "resolucao": "",
+    "cálculo": "true"
+  },
+  {
+    "id": "05007",
+    "dificuldade": "dificil",
+    "pergunta": "Uma empresa obtém renda com o aluguel de dois imóveis. Um deles é ocupado por terceiros, o outro é ocupado por funcionários da empresa. Como devem ser contabilizados esses imóveis?",
+    "alternativas": [
+      "Ambos como Imobilizado",
+      "Ambos como Propriedade para Investimento",
+      "Um como Propriedade para Investimento, outro como Imobilizado",
+      "Um como Propriedade para Investimento, outro como Estoque"
+    ],
+    "correta": "Um como Propriedade para Investimento, outro como Imobilizado",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05008",
+    "dificuldade": "dificil",
+    "pergunta": "Uma determinada entidade adquiriu dois imóveis, um por R$10.000 e outro por R$20.000. Os imóveis foram contabilizados como Propriedade para Investimento e, no final do exercício, o valor justo era, respectivamente, de R$15.000 e R$21.000.\nSe a empresa decidir colocar os dois imóveis à venda e reclassificá-los para o ativo circulante, por qual valor devem ser contabilizados?",
+    "alternativas": [
+      "10.000 e 20.000",
+      "15.000 e 20.000",
+      "10.000 e 21.000",
+      "15.000 e 21.000"
+    ],
+    "correta": "15.000 e 21.000",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05009",
+    "dificuldade": "dificil",
+    "pergunta": "Uma empresa adquiriu um imóvel com a intenção de disponibilizar aos seus funcionários, que pagam à empresa o valor de R$1.000 a título de aluguel. O imóvel deve ser contabilizado como:",
+    "alternativas": [
+      "Imobilizado",
+      "Propriedade para investimento",
+      "Ativo não circulante mantido para venda",
+      "Ativo realizável a longo prazo"
+    ],
+    "correta": "Imobilizado",
+    "resolucao": "",
+    "cálculo": "false"
+  },
+  {
+    "id": "05010",
+    "dificuldade": "dificil",
+    "pergunta": "Uma empresa adquire um edifício com a intenção de alugá-lo a terceiros. Porém, uma parte insignificante de um dos andares será utilizado para finalidades administrativas da empresa, a fim de aproveitar o imóvel. Considerando que os andares não possam ser vendidos separadamente, como o edifício deve ser contabilizado?",
+    "alternativas": [
+      "Propriedade para investimento",
+      "Ativo imobilizado",
+      "Estoques",
+      "A parte alugada e a parte utilizada pela empresa devem ser contabilizadas separadamente"
+    ],
+    "correta": "Propriedade para investimento",
+    "resolucao": "",
+    "cálculo": "false"
   }
 ]
