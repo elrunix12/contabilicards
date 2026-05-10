@@ -1,5 +1,5 @@
 // --- CONFIGURAÇÕES INICIAIS ---
-const somPulo = new Audio('src/pop1.wav');
+const somPulo = new Audio('assets/pop1.wav');
 
 const CASAS_ESPECIAIS = {
     5: 'BP+', 9: 'IR-', 12: 'BP-', 15: 'IR+', 18: 'DRE-', 21: 'DRE+', 25: 'BP-', 26: 'IR-'
@@ -19,12 +19,12 @@ let jogo = {
     pendenciaDRE: null,
     emEventoDRE: false,
     turnoRetornoDRE: null,
+    idCausadorDRE: null, // NOVA LINHA
     modoFisico: false 
 };
 
 let configuracoes = {
     somAtivo: false,
-    exibirPergunta: true,
     totalCasas: 28,
     penalidadeTempo: false 
 };
@@ -36,25 +36,21 @@ function carregarConfiguracoes() {
     if(localStorage.getItem('jogoConfigs')) {
         let salvo = JSON.parse(localStorage.getItem('jogoConfigs'));
         configuracoes.somAtivo = salvo.somAtivo || false;
-        configuracoes.exibirPergunta = salvo.exibirPergunta !== undefined ? salvo.exibirPergunta : true;
         configuracoes.totalCasas = salvo.totalCasas || 28; 
         configuracoes.penalidadeTempo = salvo.penalidadeTempo || false;
     }
     
     let chkSom = document.getElementById('config-som');
-    let chkPergunta = document.getElementById('config-exibir-pergunta');
     let chkPenalidade = document.getElementById('config-penalidade-tempo');
     let inpCasas = document.getElementById('config-casas');
     
     if (chkSom) chkSom.checked = configuracoes.somAtivo;
-    if (chkPergunta) chkPergunta.checked = configuracoes.exibirPergunta;
     if (chkPenalidade) chkPenalidade.checked = configuracoes.penalidadeTempo;
     if (inpCasas) inpCasas.value = configuracoes.totalCasas;
 }
 
 function salvarConfiguracoes() {
     configuracoes.somAtivo = document.getElementById('config-som').checked;
-    configuracoes.exibirPergunta = document.getElementById('config-exibir-pergunta').checked;
     configuracoes.penalidadeTempo = document.getElementById('config-penalidade-tempo').checked;
     configuracoes.totalCasas = parseInt(document.getElementById('config-casas').value) || 28;
     
@@ -68,6 +64,10 @@ function salvarConfiguracoes() {
 window.onload = async () => {
     carregarConfiguracoes();
     carregarContribuidores();
+    
+    // Injeta a versão definida no config.js
+    document.getElementById('app-versao').innerText = "v" + APP_VERSION;
+
     if (localStorage.getItem('jogoSalvo')) {
         document.getElementById('btn-continuar').style.display = 'block';
     }
@@ -183,7 +183,9 @@ function montarTelaJogo() {
 
     if (jogo.emEventoDRE) {
         jogadorAlvo = jogo.grupos[jogo.turnoAtual]; // Quem responde é o alvo escolhido
-        let idxCausador = (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
+        let idxCausador = jogo.idCausadorDRE !== undefined && jogo.idCausadorDRE !== null 
+            ? jogo.idCausadorDRE 
+            : (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
         jogadorAtivo = jogo.grupos[idxCausador]; // Quem causou o DRE
     } else {
         jogadorAtivo = jogo.grupos[jogo.turnoAtual];
@@ -213,7 +215,7 @@ function montarTelaJogo() {
             <div class="carta-inner">
                 <div class="carta-frente">
                     <div style="font-size: 1.4rem; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">${tituloTurno}</div>
-                    <img src="src/logo.png" alt="Contabilicards" style="max-width: 60%; max-height: 40%; object-fit: contain; margin-bottom: 20px;">
+                    <img src="assets/logo.png" alt="Contabilicards" style="max-width: 60%; max-height: 40%; object-fit: contain; margin-bottom: 20px;">
                     <div style="display: flex; gap: 20px;">
                         <button class="btn-dificuldade btn-3" onclick="carregarPergunta('facil')">3 Casas</button>
                         <button class="btn-dificuldade btn-5" onclick="carregarPergunta('dificil')">5 Casas</button>
@@ -291,18 +293,50 @@ function montarTelaJogo() {
 }
 
 function posicionarPecas() {
+    // 1. Agrupar quais jogadores estão em cada casa
+    let pecasPorCasa = {};
+    
     jogo.grupos.forEach(g => {
         let idCasaVisual = g.posicao >= jogo.totalCasas - 1 ? jogo.totalCasas - 1 : g.posicao;
-        let casaDiv = document.getElementById(`casa-${idCasaVisual}`);
-        
-        if(casaDiv) {
+        if (!pecasPorCasa[idCasaVisual]) {
+            pecasPorCasa[idCasaVisual] = [];
+        }
+        pecasPorCasa[idCasaVisual].push(g);
+    });
+
+    // 2. Renderizar as peças geometricamente distribuídas
+    for (let idCasa in pecasPorCasa) {
+        let casaDiv = document.getElementById(`casa-${idCasa}`);
+        if (!casaDiv) continue;
+
+        let gruposNaCasa = pecasPorCasa[idCasa];
+        let total = gruposNaCasa.length;
+
+        gruposNaCasa.forEach((g, index) => {
             let peca = document.createElement('div');
             peca.className = 'peca';
             peca.style.backgroundColor = g.cor;
-            peca.style.transform = `translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px)`;
+            
+            // Adiciona o nome do grupo no hover para facilitar a identificação
+            peca.title = g.nome; 
+
+            let tx = 0;
+            let ty = 0;
+
+            // Se houver mais de 1 peça, distribui em um círculo
+            if (total > 1) {
+                let raio = total > 5 ? 24 : 16; // Aumenta o raio se tiver muita gente
+                let angulo = (Math.PI * 2 / total) * index;
+                
+                tx = Math.cos(angulo) * raio;
+                ty = Math.sin(angulo) * raio;
+            }
+
+            // Aplica a tradução calculada
+            peca.style.transform = `translate(${tx}px, ${ty}px)`;
             casaDiv.appendChild(peca);
-        }
-    });
+        });
+    }
 }
 
 // --- FUNÇÕES DE MEMÓRIA SEGURA ---
@@ -310,11 +344,11 @@ function obterFotoDoJogo() {
     return JSON.stringify({
         grupos: jogo.grupos,
         turnoAtual: jogo.turnoAtual,
-        perguntasDisponiveis: jogo.perguntasDisponiveis,
         totalCasas: jogo.totalCasas,
         pendenciaDRE: jogo.pendenciaDRE,
         emEventoDRE: jogo.emEventoDRE,
         turnoRetornoDRE: jogo.turnoRetornoDRE,
+        idCausadorDRE: jogo.idCausadorDRE, // NOVA LINHA
         modoFisico: jogo.modoFisico 
     });
 }
@@ -323,11 +357,11 @@ function aplicarFotoDoJogo(fotoString) {
     let backup = JSON.parse(fotoString);
     jogo.grupos = backup.grupos;
     jogo.turnoAtual = backup.turnoAtual;
-    jogo.perguntasDisponiveis = backup.perguntasDisponiveis;
     jogo.totalCasas = backup.totalCasas || 28;
     jogo.pendenciaDRE = backup.pendenciaDRE || null;
     jogo.emEventoDRE = backup.emEventoDRE || false;
     jogo.turnoRetornoDRE = backup.turnoRetornoDRE !== undefined ? backup.turnoRetornoDRE : null;
+    jogo.idCausadorDRE = backup.idCausadorDRE !== undefined ? backup.idCausadorDRE : null; // ✨ NOVA LINHA
     jogo.modoFisico = backup.modoFisico || false; 
 }
 
@@ -367,12 +401,14 @@ function carregarPergunta(dificuldade) {
 
     if (jogo.modoFisico) {
         htmlVerso += `
-            <div style="font-size: 1.8rem; font-weight: bold; color: ${dificuldade === 'facil' ? '#28a745' : '#dc3545'}; text-transform: uppercase; margin-bottom: 20px;">
-                Andar ${dificuldade === 'facil' ? '3' : '5'} Casas
-            </div>
-            <div style="display: flex; gap: 15px;">
-                <button class="alternativa" style="background-color: #28a745; color: white; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px;" onclick="responder(true)">Acertou</button>
-                <button class="alternativa" style="background-color: #dc3545; color: white; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px;" onclick="responder(false)">Errou</button>
+            <div style="margin: auto 0; width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div style="font-size: 1.8rem; font-weight: bold; color: ${dificuldade === 'facil' ? '#28a745' : '#dc3545'}; text-transform: uppercase; margin-bottom: 20px;">
+                    Andar ${dificuldade === 'facil' ? '3' : '5'} Casas
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button class="alternativa" style="background-color: #28a745; color: white; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px;" onclick="responder(true)">Acertou</button>
+                    <button class="alternativa" style="background-color: #dc3545; color: white; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px;" onclick="responder(false)">Errou</button>
+                </div>
             </div>
         `;
     } else {
@@ -390,25 +426,19 @@ function carregarPergunta(dificuldade) {
         const removeIdx = jogo.perguntasDisponiveis.findIndex(p => p.pergunta === perguntaAtual.pergunta);
         if (removeIdx !== -1) jogo.perguntasDisponiveis.splice(removeIdx, 1);
         
-        let textoQ = configuracoes.exibirPergunta ? perguntaAtual.pergunta : "[O mediador lerá a pergunta e as opções. Escolha a alternativa abaixo:]";
+        let textoQ = perguntaAtual.pergunta;
         
         htmlVerso += `
-            <p id="texto-pergunta" style="font-size: 1.2rem; margin-bottom: 15px; text-align: center;">${textoQ}</p>
-            <div id="alternativas" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-                ${perguntaAtual.alternativas.map((alt, index) => {
-                    // Gera as letras A, B, C, D usando a tabela ASCII (65 = A)
-                    let letra = String.fromCharCode(65 + index); 
-                    
-                    // Se exibir pergunta estiver marcado, mostra "A) Texto". Se não, mostra só um "A" centralizado e grande.
-                    let textoBotao = configuracoes.exibirPergunta 
-                        ? `<strong>${letra})</strong> ${alt}` 
-                        : `<span style="font-size: 1.5rem; font-weight: bold; text-align: center; display: block;">${letra}</span>`;
-                    
-                    // Substitui aspas simples para não quebrar o código
-                    let altEscapada = alt.replace(/'/g, "\\'"); 
-
-                    return `<button class="alternativa" onclick="responder('${altEscapada}')">${textoBotao}</button>`;
-                }).join('')}
+            <div style="margin: auto 0; width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <p id="texto-pergunta" style="font-size: 1.2rem; margin-bottom: 15px; text-align: center;">${textoQ}</p>
+                <div id="alternativas" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                    ${perguntaAtual.alternativas.map((alt, index) => {
+                        let letra = String.fromCharCode(65 + index); 
+                        let textoBotao = `<strong>${letra})</strong> ${alt}`;
+                        let altEscapada = alt.replace(/'/g, "\\'").replace(/"/g, "&quot;"); 
+                        return `<button class="alternativa" onclick="responder('${altEscapada}')">${textoBotao}</button>`;
+                    }).join('')}
+                </div>
             </div>
         `;
     }
@@ -471,7 +501,9 @@ function processarResposta(acertou) {
 
     if (jogo.emEventoDRE) {
         jogadorAlvo = jogo.grupos[jogo.turnoAtual];
-        let idxCausador = (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
+        let idxCausador = jogo.idCausadorDRE !== undefined && jogo.idCausadorDRE !== null 
+            ? jogo.idCausadorDRE 
+            : (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
         jogadorAtivo = jogo.grupos[idxCausador];
     } else {
         jogadorAtivo = jogo.grupos[jogo.turnoAtual];
@@ -549,9 +581,11 @@ function processarResposta(acertou) {
         
         const verso = document.getElementById('carta-conteudo-verso');
         verso.innerHTML = `
-            <h3 style="color: ${acertou ? '#28a745' : '#dc3545'}; margin-top: 0; font-size: 2rem;">${acertou ? 'Correto!' : 'Incorreto!'}</h3>
-            <p style="text-align: center; max-width: 90%; font-size: 1.3rem;"><strong>Resolução:</strong><br>${perguntaAtual.resolucao}</p>
-            <button onclick="proximoTurno()" style="margin-top: 25px; padding: 15px 30px; font-size: 1.3rem; cursor: pointer; background-color: #2c3e50; color: white; border: none; border-radius: 12px; box-shadow: 4px 4px 0px #1a252f; transition: transform 0.1s;">Concluir e Passar a Vez</button>
+            <div style="margin: auto 0; width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <h3 style="color: ${acertou ? '#28a745' : '#dc3545'}; margin-top: 0; font-size: 2rem;">${acertou ? 'Correto!' : 'Incorreto!'}</h3>
+                <p style="text-align: center; max-width: 90%; font-size: 1.3rem;"><strong>Resolução:</strong><br>${perguntaAtual.resolucao}</p>
+                <button onclick="proximoTurno()" style="margin-top: 25px; padding: 15px 30px; font-size: 1.3rem; cursor: pointer; background-color: #2c3e50; color: white; border: none; border-radius: 12px; box-shadow: 4px 4px 0px #1a252f; transition: transform 0.1s;">Concluir e Passar a Vez</button>
+            </div>
         `;
     }
 }
@@ -607,6 +641,9 @@ function proximoTurno() {
         jogo.turnoRetornoDRE = (jogo.turnoAtual + 1) % jogo.grupos.length;
         
         let idCausador = jogo.grupos.findIndex(g => g.id === p.grupoCausador.id);
+        jogo.idCausadorDRE = idCausador; // SALVA O CAUSADOR REAL AQUI
+
+        salvarEstado();
 
         if (p.tipo === 'DRE+') {
             jogo.turnoAtual = idCausador; 
@@ -628,6 +665,7 @@ function proximoTurno() {
         jogo.turnoAtual = jogo.turnoRetornoDRE;
         jogo.emEventoDRE = false;
         jogo.turnoRetornoDRE = null;
+        jogo.idCausadorDRE = null; // LIMPA O CAUSADOR AQUI
     } else {
         jogo.turnoAtual = (jogo.turnoAtual + 1) % jogo.grupos.length;
     }
@@ -831,7 +869,7 @@ function mudarZoom(alteracao) {
     nivelZoom += alteracao;
     if (nivelZoom < 0.5) nivelZoom = 0.5;
     if (nivelZoom > 2.0) nivelZoom = 2.0;
-    document.getElementById('tabuleiro').style.transform = `scale(${nivelZoom})`;
+    document.getElementById('tabuleiro').style.zoom = nivelZoom;
 }
 
 function alternarModoProjetor() {

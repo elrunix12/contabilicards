@@ -149,13 +149,6 @@ button:active {
     box-shadow: 8px 8px 0px rgba(44, 62, 80, 0.2);
     margin: 0 0 30px 0;           
     transform-origin: top center; 
-    transition: transform 0.3s ease; 
-    
-    /* CORREÇÃO PARA TEXTOS BORRADOS NO ZOOM (1080p) */
-    backface-visibility: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    will-change: transform;
 }
 
 /* Espaço do meio do tabuleiro (Onde fica a carta) */
@@ -271,7 +264,8 @@ button:active {
     position: absolute;
     backface-visibility: hidden;
     border-radius: 12px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; align-items: center; 
+    justify-content: center;
     padding: 20px;
     background: #ffffff;
     box-sizing: border-box;
@@ -281,6 +275,7 @@ button:active {
 .carta-verso { 
     transform: rotateY(180deg); 
     background: #f8fafc;
+    justify-content: flex-start;
 }
 
 /* Botões 3 e 5 Formato Bola */

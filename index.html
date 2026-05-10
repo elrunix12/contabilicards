@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎲 Contabilicards</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div id="tela-inicial" class="tela ativa">
@@ -73,10 +74,6 @@
                     <input type="checkbox" id="config-som" onchange="salvarConfiguracoes()">
                     Ativar som de movimento das peças
                 </label>
-                <label style="display: block; margin-bottom: 15px;">
-                    <input type="checkbox" id="config-exibir-pergunta" onchange="salvarConfiguracoes()">
-                    Exibir texto da pergunta e das alternativas na tela (se desmarcado, exibe apenas A, B, C, D...)
-                </label>
                 <label style="display: block;">
                     <input type="checkbox" id="config-penalidade-tempo" onchange="salvarConfiguracoes()">
                     Marcar como errada automaticamente se o tempo esgotar
@@ -121,7 +118,7 @@
     <div id="modal-sobre" class="modal">
         <div class="modal-conteudo" style="max-width: 550px;">
             <h2 style="color: #2c3e50; margin-top: 0; font-size: 2rem;">Contabilicards!</h2>
-            <h3 style="color: #2c3e50; margin-top: 0; font-size: 1rem;">v0.30</h3>
+            <h3 id="app-versao" style="color: #2c3e50; margin-top: 0; font-size: 1rem;"></h3>
             
             <div style="text-align: left; margin-bottom: 20px; font-size: 1.1rem; line-height: 1.6;">
                 <p style="background: #e4ebf1; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; margin-bottom: 20px;">
@@ -152,6 +149,14 @@
         }
     </script>
     
+    <script src="config.js"></script>
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('PWA Offline Ativado!'))
+                .catch(err => console.error('Erro no PWA:', err));
+        }
+    </script>
 </body>
 </html>
