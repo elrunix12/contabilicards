@@ -15,7 +15,7 @@ Transformar a revisão de conteúdos contábeis em uma experiência interativa e
 * **Sistema de Turnos e Dificuldade:** * *Nível Fácil (30s):* Acerto avança 3 casas. Erro faz o jogador ativo (quem leu a pergunta) avançar 1 casa.
   * *Nível Difícil (60s):* Acerto avança 5 casas. Erro faz o jogador ativo avançar 3 casas.
 * **Casas Especiais e Combos:** O tabuleiro possui casas bônus (BP), casas de interação que afetam os oponentes (IR) e casas de pergunta bônus (DRE). O jogo conta com um sistema de proteção contra *loops* infinitos, limitando as reações em cadeia a apenas um combo por rodada.
-* **Configurações Flexíveis:** Opções nativas para ativar/desativar penalidade por tempo esgotado e para ocultar o texto das perguntas na tela. Quando a exibição do texto é desativada, as opções mostram apenas as letras (A, B, C, D...), focando a atenção na leitura do mediador.
+* **Configurações Flexíveis:** Opções nativas para ativar/desativar penalidade por tempo esgotado.
 * **Linha do Tempo Segura:** Sistema de "Desfazer" e "Refazer" jogadas com limite de memória estrita para corrigir cliques acidentais sem risco de travar o navegador por limite de armazenamento (*QuotaExceeded*).
 
 ## 🛠️ Tecnologias Utilizadas

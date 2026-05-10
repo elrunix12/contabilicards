@@ -32,7 +32,6 @@ Quando uma peça cair em uma destas casas, o efeito imediato é ativado:
 O jogo possui um botão de "Configurações" na tela inicial onde o professor/mediador pode personalizar a partida:
 * **Penalidade de Tempo:** Se o tempo esgotar, o jogo apenas avisa e aguarda a decisão do mediador. Se esta opção for ativada, o esgotamento do tempo contará automaticamente como uma resposta errada.
 * **Tamanho do Tabuleiro:** Pode ser ajustado de 16 a 100 casas.
-* **Exibir Pergunta na Tela:** Permite esconder o texto da pergunta na tela digital (mostrando apenas os botões A, B, C...) para forçar os alunos a prestarem atenção na leitura do mediador.
 
 ## ⏱️ Acordos do Jogo
 * **Botão Desfazer/Refazer:** Utilize apenas caso o mediador clique em algo por acidente na tela.

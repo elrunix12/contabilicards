@@ -24,7 +24,6 @@ let jogo = {
 
 let configuracoes = {
     somAtivo: false,
-    exibirPergunta: true,
     totalCasas: 28,
     penalidadeTempo: false 
 };
@@ -36,25 +35,21 @@ function carregarConfiguracoes() {
     if(localStorage.getItem('jogoConfigs')) {
         let salvo = JSON.parse(localStorage.getItem('jogoConfigs'));
         configuracoes.somAtivo = salvo.somAtivo || false;
-        configuracoes.exibirPergunta = salvo.exibirPergunta !== undefined ? salvo.exibirPergunta : true;
         configuracoes.totalCasas = salvo.totalCasas || 28; 
         configuracoes.penalidadeTempo = salvo.penalidadeTempo || false;
     }
     
     let chkSom = document.getElementById('config-som');
-    let chkPergunta = document.getElementById('config-exibir-pergunta');
     let chkPenalidade = document.getElementById('config-penalidade-tempo');
     let inpCasas = document.getElementById('config-casas');
     
     if (chkSom) chkSom.checked = configuracoes.somAtivo;
-    if (chkPergunta) chkPergunta.checked = configuracoes.exibirPergunta;
     if (chkPenalidade) chkPenalidade.checked = configuracoes.penalidadeTempo;
     if (inpCasas) inpCasas.value = configuracoes.totalCasas;
 }
 
 function salvarConfiguracoes() {
     configuracoes.somAtivo = document.getElementById('config-som').checked;
-    configuracoes.exibirPergunta = document.getElementById('config-exibir-pergunta').checked;
     configuracoes.penalidadeTempo = document.getElementById('config-penalidade-tempo').checked;
     configuracoes.totalCasas = parseInt(document.getElementById('config-casas').value) || 28;
     
@@ -426,7 +421,7 @@ function carregarPergunta(dificuldade) {
         const removeIdx = jogo.perguntasDisponiveis.findIndex(p => p.pergunta === perguntaAtual.pergunta);
         if (removeIdx !== -1) jogo.perguntasDisponiveis.splice(removeIdx, 1);
         
-        let textoQ = configuracoes.exibirPergunta ? perguntaAtual.pergunta : "[O mediador lerá a pergunta e as opções. Escolha a alternativa abaixo:]";
+        let textoQ = perguntaAtual.pergunta;
         
         htmlVerso += `
             <div style="margin: auto 0; width: 100%; display: flex; flex-direction: column; align-items: center;">
@@ -434,9 +429,7 @@ function carregarPergunta(dificuldade) {
                 <div id="alternativas" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
                     ${perguntaAtual.alternativas.map((alt, index) => {
                         let letra = String.fromCharCode(65 + index); 
-                        let textoBotao = configuracoes.exibirPergunta 
-                            ? `<strong>${letra})</strong> ${alt}` 
-                            : `<span style="font-size: 1.5rem; font-weight: bold; text-align: center; display: block;">${letra}</span>`;
+                        let textoBotao = `<strong>${letra})</strong> ${alt}`;
                         let altEscapada = alt.replace(/'/g, "\\'").replace(/"/g, "&quot;"); 
                         return `<button class="alternativa" onclick="responder('${altEscapada}')">${textoBotao}</button>`;
                     }).join('')}
@@ -867,7 +860,7 @@ function mudarZoom(alteracao) {
     nivelZoom += alteracao;
     if (nivelZoom < 0.5) nivelZoom = 0.5;
     if (nivelZoom > 2.0) nivelZoom = 2.0;
-    document.getElementById('tabuleiro').style.transform = `scale(${nivelZoom})`;
+    document.getElementById('tabuleiro').style.zoom = nivelZoom;
 }
 
 function alternarModoProjetor() {
