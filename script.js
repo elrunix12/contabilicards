@@ -19,6 +19,7 @@ let jogo = {
     pendenciaDRE: null,
     emEventoDRE: false,
     turnoRetornoDRE: null,
+    idCausadorDRE: null, // NOVA LINHA
     modoFisico: false 
 };
 
@@ -182,7 +183,9 @@ function montarTelaJogo() {
 
     if (jogo.emEventoDRE) {
         jogadorAlvo = jogo.grupos[jogo.turnoAtual]; // Quem responde é o alvo escolhido
-        let idxCausador = (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
+        let idxCausador = jogo.idCausadorDRE !== undefined && jogo.idCausadorDRE !== null 
+            ? jogo.idCausadorDRE 
+            : (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
         jogadorAtivo = jogo.grupos[idxCausador]; // Quem causou o DRE
     } else {
         jogadorAtivo = jogo.grupos[jogo.turnoAtual];
@@ -345,6 +348,7 @@ function obterFotoDoJogo() {
         pendenciaDRE: jogo.pendenciaDRE,
         emEventoDRE: jogo.emEventoDRE,
         turnoRetornoDRE: jogo.turnoRetornoDRE,
+        idCausadorDRE: jogo.idCausadorDRE, // NOVA LINHA
         modoFisico: jogo.modoFisico 
     });
 }
@@ -357,6 +361,7 @@ function aplicarFotoDoJogo(fotoString) {
     jogo.pendenciaDRE = backup.pendenciaDRE || null;
     jogo.emEventoDRE = backup.emEventoDRE || false;
     jogo.turnoRetornoDRE = backup.turnoRetornoDRE !== undefined ? backup.turnoRetornoDRE : null;
+    jogo.idCausadorDRE = backup.idCausadorDRE !== undefined ? backup.idCausadorDRE : null; // ✨ NOVA LINHA
     jogo.modoFisico = backup.modoFisico || false; 
 }
 
@@ -496,7 +501,9 @@ function processarResposta(acertou) {
 
     if (jogo.emEventoDRE) {
         jogadorAlvo = jogo.grupos[jogo.turnoAtual];
-        let idxCausador = (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
+        let idxCausador = jogo.idCausadorDRE !== undefined && jogo.idCausadorDRE !== null 
+            ? jogo.idCausadorDRE 
+            : (jogo.turnoRetornoDRE - 1 + jogo.grupos.length) % jogo.grupos.length;
         jogadorAtivo = jogo.grupos[idxCausador];
     } else {
         jogadorAtivo = jogo.grupos[jogo.turnoAtual];
@@ -634,6 +641,7 @@ function proximoTurno() {
         jogo.turnoRetornoDRE = (jogo.turnoAtual + 1) % jogo.grupos.length;
         
         let idCausador = jogo.grupos.findIndex(g => g.id === p.grupoCausador.id);
+        jogo.idCausadorDRE = idCausador; // SALVA O CAUSADOR REAL AQUI
 
         salvarEstado();
 
@@ -657,6 +665,7 @@ function proximoTurno() {
         jogo.turnoAtual = jogo.turnoRetornoDRE;
         jogo.emEventoDRE = false;
         jogo.turnoRetornoDRE = null;
+        jogo.idCausadorDRE = null; // LIMPA O CAUSADOR AQUI
     } else {
         jogo.turnoAtual = (jogo.turnoAtual + 1) % jogo.grupos.length;
     }

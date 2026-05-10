@@ -3,6 +3,7 @@
 Um jogo de tabuleiro educacional digital focado no aprendizado e revisão de conceitos de contabilidade. Criado para ser utilizado em sala de aula, o jogo combina a dinâmica clássica de jogos de tabuleiro com perguntas de múltipla escolha.
 
 ## 🎯 Objetivo do Projeto
+
 Transformar a revisão de conteúdos contábeis em uma experiência interativa e gamificada. O projeto foi estruturado para que professores possam utilizá-lo facilmente via projetor, engajando grupos de alunos na resolução de questões em tempo real.
 
 ## ✨ Principais Funcionalidades
@@ -38,14 +39,18 @@ O jogo não requer instalação de servidores ou banco de dados.
 **Opção 2: Jogar Direto no Navegador**
 Basta acessar o link do projeto e jogar normalmente, sem instalar nada.
 
-**Opção 3: Executar Arquivos Locais**
-1. Faça o download ou clone este repositório.
-2. Extraia os arquivos numa pasta no seu computador.
-3. Clique duas vezes no arquivo `index.html` para abri-lo em qualquer navegador de internet.
+**Opção 3: Executar Localmente (Requer Servidor Local)**
+Devido às políticas de segurança dos navegadores (CORS), o jogo não funcionará corretamente se você apenas clicar duas vezes no arquivo `index.html`, pois o sistema será bloqueado ao tentar carregar o banco de perguntas. É necessário rodar um servidor local:
 
+1. Faça o download ou clone este repositório e extraia em uma pasta no seu computador.
+2. Utilize uma das ferramentas abaixo para emular um servidor na pasta do projeto:
+   * **Via VS Code:** Abra a pasta no editor e inicie a extensão **Live Server** (clicando em "Go Live").
+   * **Via Python:** Abra o terminal na pasta do jogo e rode o comando `python -m http.server` (ou `python3 -m http.server`). Em seguida, acesse `http://localhost:8000` no navegador.
+   * **Via Node.js:** Abra o terminal na pasta e rode o comando `npx serve .`
+   
 ## 📝 Como Adicionar Novas Perguntas
 
-O banco de perguntas é personalizável para uso local. Para adicionar, editar ou remover questões, basta abrir o arquivo `dados/perguntas.json` e seguir a estrutura abaixo:
+O banco de perguntas é personalizável para uso local. Para adicionar, editar ou remover questões, basta abrir o arquivo [`dados/perguntas.json`](dados/perguntas.json) e seguir a estrutura abaixo:
 
 ```json
 {
@@ -64,14 +69,14 @@ O banco de perguntas é personalizável para uso local. Para adicionar, editar o
 
 ## 📜 Regras do Jogo
 
-As instruções completas de como o jogo funciona, detalhamento das casas especiais e penalidades estão disponíveis no menu inicial do jogo, clicando no botão **Regras** (o arquivo é lido a partir de `manual/regras.md`).
+As instruções completas de como o jogo funciona, detalhamento das casas especiais e penalidades estão disponíveis no menu inicial do jogo, clicando no botão **Regras** (o arquivo é lido a partir de [`manual/regras.md`](manual/regras.md)).
 
 ## 📄 Licença e Direitos Autorais
 
-O código fonte deste software é de código aberto (AGPL3). Consulte o arquivo `LICENSE` para mais detalhes.
+O código fonte deste software é de código aberto (AGPL3). Consulte o arquivo [`LICENSE`](LICENSE) para mais detalhes.
 
 **⚠️ ATENÇÃO: Restrições do Banco de Perguntas**
-O arquivo `dados/perguntas.json` (e todo o seu conteúdo textual e educacional) **não** faz parte da licença de código aberto deste software. As perguntas, alternativas e resoluções são de propriedade intelectual de seus respectivos autores. É expressamente **proibida** qualquer forma de distribuição, cópia, derivação, reprodução ou uso comercial do conteúdo contido neste arquivo sem a devida autorização legal dos criadores.
+O arquivo [`dados/perguntas.json`](dados/perguntas.json) (e todo o seu conteúdo textual e educacional) **não** faz parte da licença de código aberto deste software. As perguntas, alternativas e resoluções são de propriedade intelectual de seus respectivos autores. É expressamente **proibida** qualquer forma de distribuição, cópia, derivação, reprodução ou uso comercial do conteúdo contido neste arquivo sem a devida autorização legal dos criadores.
 
 ## 🎖️ Agradecimentos e Créditos
 

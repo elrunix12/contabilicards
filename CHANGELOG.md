@@ -1,4 +1,4 @@
-## [0.31.1] - 2026-05-10
+## [0.32.0] - 2026-05-10
 
 ### Adicionado
 - Distribuição geométrica circular das peças no tabuleiro, eliminando a sobreposição de equipes na mesma casa.
@@ -13,6 +13,7 @@
 - Opção legada de "Exibir texto da pergunta" das configurações, funcionalidade agora nativamente substituída pelo "Modo Físico".
 
 ### Corrigido
+- Correção na identificação do causador do evento especial (DRE-), garantindo que a equipe correta escolha o alvo caso caia na casa após responder a uma pergunta.
 - Prevenção de quebra da interface (Injeção de HTML) quando alternativas possuíam aspas duplas no banco de dados.
 - Correção de falha onde recarregar a página (F5) durante a escolha de alvo da casa DRE travava a mecânica do jogo.
 - Eliminação do risco de estouro de limite de armazenamento do navegador (QuotaExceededError) em partidas longas.
