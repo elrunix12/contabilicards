@@ -308,6 +308,15 @@ button:active {
 }
 .alternativa:hover { background-color: #e4ebf1; }
 
+/* Destaque para navegação por teclado ou controle remoto */
+.carta-mestra button:focus {
+    outline: none !important;
+    background-color: #007bff !important; /* Azul de Destaque */
+    color: #ffffff !important;            /* Texto branco de alto contraste */
+    border-color: #2c3e50 !important;     /* Mantém a identidade cartoon escura */
+    box-shadow: 4px 4px 0px #004085 !important; /* Sombra sólida limpa (Sem estourar limites) */
+    transform: translateY(-1px);          /* Movimento sutil e seguro */
+}
 
 /* ==========================================================================
    7. TOAST NOTIFICATION (POP-UP DE COMBOS)
@@ -378,6 +387,12 @@ body.modo-projetor .alternativa { font-size: 1.6rem; padding: 20px; }
 /* Pop-up Projetor e Botões Finais */
 body.modo-projetor .toast { font-size: 1.6rem; padding: 25px 30px; }
 body.modo-projetor .btn-dificuldade { font-size: 2.5rem !important; padding: 25px 50px !important; border-radius: 16px !important; }
+
+/* Aumenta o ícone de Correto/Incorreto no Projetor */
+body.modo-projetor .icone-resultado {
+    font-size: 3.0rem !important;
+    margin-bottom: 15px !important;
+}
 
 /* ==========================================================================
    9. RESPONSIVIDADE (MOBILE / ECRÃS PEQUENOS)
@@ -452,4 +467,17 @@ body.modo-projetor .btn-dificuldade { font-size: 2.5rem !important; padding: 25p
     .area-principal {
         padding: 5px;
     }
+}
+
+/* Escalonamento correto dos resultados de eventos na carta mestre */
+body.modo-projetor .texto-resultado-carta {
+    font-size: 2.2rem !important;
+    line-height: 1.4 !important;
+    margin-bottom: 25px !important;
+}
+
+/* Redimensiona os círculos de identificação dos grupos no texto do projetor */
+body.modo-projetor .cor-indicador-texto {
+    width: 25px !important;
+    height: 25px !important;
 }

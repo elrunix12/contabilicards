@@ -1,3 +1,28 @@
+## [0.33.0] - 2026-05-17
+
+### Adicionado
+
+* Trava de segurança (Debounce) de 400ms para controles remotos e passadores de slides, evitando que falhas mecânicas ou cliques duplos acidentais pulem o turno de um grupo.
+* O botão "Avançar" na tela de resultados agora recebe foco automático, permitindo o progresso fluido da partida utilizando apenas a tecla de confirmação do passador.
+
+### Modificado
+
+* A exibição do resultado da jogada (acertos, erros e efeitos de casas especiais) foi transferida de um pop-up temporário (Toast) para uma nova fase estática diretamente na carta central, exigindo confirmação manual para o próximo turno.
+* Substituição do texto "Correto/Incorreto" na tela de resultado por ícones universais (✔️ e ❌), com escalonamento otimizado para o Modo Projetor.
+* O design da tela de "Fim de Jogo" foi redesenhado para herdar a paleta visual clara e as bordas da carta central, abandonando o fundo escurecido genérico.
+* A cor de destaque para navegação via teclado foi alterada para um tom de azul com sombra interna, impedindo o corte visual nos botões da carta mestre.
+* Adicionado escalonamento automático das "bolinhas" coloridas de identificação dos grupos nos textos dinâmicos do Modo Projetor.
+
+### Corrigido
+
+* Correção na lógica de atribuição de medalhas no fim de jogo (Dense Ranking): grupos empatados na mesma casa agora recebem a mesma medalha com justiça (ex: dois 1º lugares recebem Ouro, e o próximo colocado recebe Prata).
+* Resolução do "Bug do Enter Fantasma": implementação da propriedade HTML `inert` na mecânica 3D da carta, impedindo definitivamente que o navegador acione botões invisíveis nas costas da carta e reinicie o cronômetro acidentalmente.
+* Correção do bug de "Inception do DRE": encadeamentos de eventos bônus não sobrescrevem mais a memória do turno. O jogo agora retorna corretamente a vez ao jogador original após sequências múltiplas de casas especiais.
+* Prevenção contra a "Amnésia do DRE-": o estado do jogo agora é salvo imediatamente após a seleção de um alvo, impedindo que a atualização acidental da página (F5) resete a equipe escolhida pelo mediador.
+* Correção de vazamento de estados: sair para o menu e iniciar um "Novo Jogo" enquanto uma carta aguardava o botão "Avançar" agora limpa integralmente a máquina de estados, respeitando a seleção de quem começa a nova partida.
+* Prevenção de conflito de teclas: o controle da carta central via teclado é agora totalmente ignorado caso algum modal (Novo Jogo, Configurações, Regras) esteja aberto na tela.
+* Correção ortográfica de espaçamento faltante no prefixo "Efeitos Extras:".
+
 ## [0.32.0] - 2026-05-10
 
 ### Adicionado

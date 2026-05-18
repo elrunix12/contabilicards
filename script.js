@@ -19,8 +19,12 @@ let jogo = {
     pendenciaDRE: null,
     emEventoDRE: false,
     turnoRetornoDRE: null,
-    idCausadorDRE: null, // NOVA LINHA
-    modoFisico: false 
+    idCausadorDRE: null, 
+    modoFisico: false,
+    faseTurno: 'inicio', // ✨ NOVA LINHA
+    textoResultado: "",  // ✨ NOVA LINHA
+    acertouUltima: null, // ✨ NOVA LINHA
+    dificuldadeUltima: 'facil' // ✨ NOVA LINHA
 };
 
 let configuracoes = {
@@ -90,7 +94,6 @@ function confirmarNovoJogo() {
     
     let qtd = parseInt(qtdInput.value);
     
-    // Validação de segurança sem alert()
     if (isNaN(qtd) || qtd < 1 || qtd > 10) {
         erroMsg.style.display = 'block';
         qtdInput.style.borderColor = '#dc3545';
@@ -110,6 +113,16 @@ function confirmarNovoJogo() {
     jogo.totalCasas = configuracoes.totalCasas || 28; 
     jogo.perguntasDisponiveis = [...bancoDePerguntasGeral];
     jogo.modoFisico = usaCardsFisicos;
+    
+    // ✨ NOVA SEÇÃO: Limpa qualquer estado de cartas ou eventos pendentes do jogo anterior
+    jogo.faseTurno = 'inicio';
+    jogo.textoResultado = "";
+    jogo.acertouUltima = null;
+    jogo.dificuldadeUltima = 'facil';
+    jogo.emEventoDRE = false;
+    jogo.pendenciaDRE = null;
+    jogo.turnoRetornoDRE = null;
+    jogo.idCausadorDRE = null;
     
     abrirSelecaoPrimeiro();
 }
@@ -195,9 +208,9 @@ function montarTelaJogo() {
     
     // Formata os nomes já com as cores dos grupos e um contorno escuro para leitura clara
     // Formata os nomes com a bolinha colorida do lado e texto normal
-    let nomeGrupoAtual = jogadorAtivo ? `<span style="display:inline-block; width:15px; height:15px; background:${jogadorAtivo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong style="color: #2c3e50;">${jogadorAtivo.nome}</strong>` : "";
-    
-    let nomeAlvo = jogadorAlvo ? `<span style="display:inline-block; width:15px; height:15px; background:${jogadorAlvo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong style="color: #2c3e50;">${jogadorAlvo.nome}</strong>` : "";
+    let nomeGrupoAtual = jogadorAtivo ? `<span class="cor-indicador-texto" style="display:inline-block; width:15px; height:15px; background:${jogadorAtivo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong style="color: #2c3e50;">${jogadorAtivo.nome}</strong>` : "";
+
+    let nomeAlvo = jogadorAlvo ? `<span class="cor-indicador-texto" style="display:inline-block; width:15px; height:15px; background:${jogadorAlvo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong style="color: #2c3e50;">${jogadorAlvo.nome}</strong>` : "";
 
     let tituloTurno = "";
     if (jogo.emEventoDRE) {
@@ -210,19 +223,48 @@ function montarTelaJogo() {
         tituloTurno = `Lê: ${nomeGrupoAtual} | Responde: ${nomeAlvo}`;
     }
 
-    centro.innerHTML = `
-        <div class="carta-mestra" id="carta-central">
-            <div class="carta-inner">
-                <div class="carta-frente">
-                    <div style="font-size: 1.4rem; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">${tituloTurno}</div>
-                    <img src="assets/logo.png" alt="Contabilicards" style="max-width: 60%; max-height: 40%; object-fit: contain; margin-bottom: 20px;">
-                    <div style="display: flex; gap: 20px;">
-                        <button class="btn-dificuldade btn-3" onclick="carregarPergunta('facil')">3 Casas</button>
-                        <button class="btn-dificuldade btn-5" onclick="carregarPergunta('dificil')">5 Casas</button>
-                    </div>
+    let conteudoFrente = "";
+    let conteudoVerso = "";
+    let classeExtraCarta = "";
+
+    if (jogo.faseTurno === 'resultado') {
+        classeExtraCarta = jogo.dificuldadeUltima === 'facil' ? 'virada-esquerda' : 'virada-direita';
+        
+        let textoResolucao = "";
+        if (!jogo.modoFisico && perguntaAtual && perguntaAtual.resolucao) {
+            textoResolucao = `<p style="text-align: center; max-width: 90%; font-size: 1.1rem; margin-top: 10px;"><strong>Resolução:</strong><br>${perguntaAtual.resolucao}</p>`;
+        }
+
+        conteudoVerso = `
+            <div style="margin: auto 0; width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <h3 class="icone-resultado" style="color: ${jogo.acertouUltima ? '#28a745' : '#dc3545'}; margin-top: 0; font-size: 3.5rem; margin-bottom: 15px; line-height: 1; text-shadow: 2px 2px 0px rgba(0,0,0,0.1);">${jogo.acertouUltima ? '✔️' : '❌'}</h3>
+                <p class="texto-resultado-carta" style="font-size: 1.2rem; text-align: center; margin-bottom: 10px; line-height: 1.4;">${jogo.textoResultado}</p>
+                ${textoResolucao}
+                <div style="display: flex; justify-content: center; width: 100%; margin-top: 15px;">
+                    <button id="btn-avancar-fase" class="btn-dificuldade" style="background-color: #007bff; color: white; padding: 12px 25px; font-size: 1.1rem;" onclick="proximoTurno()">Avançar</button>
                 </div>
-                <div class="carta-verso" id="carta-conteudo-verso">
-                    </div>
+            </div>
+        `;
+    } else {
+        conteudoFrente = `
+            <div style="font-size: 1.4rem; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">${tituloTurno}</div>
+            <img src="assets/logo.png" alt="Contabilicards" style="max-width: 60%; max-height: 40%; object-fit: contain; margin-bottom: 20px;">
+            <div style="display: flex; gap: 20px;">
+                <button class="btn-dificuldade btn-3" onclick="carregarPergunta('facil')">3 Casas</button>
+                <button class="btn-dificuldade btn-5" onclick="carregarPergunta('dificil')">5 Casas</button>
+            </div>
+        `;
+    }
+
+    centro.innerHTML = `
+        <div class="carta-mestra ${classeExtraCarta}" id="carta-central">
+            <div class="carta-inner">
+                <div class="carta-frente" ${jogo.faseTurno === 'resultado' ? 'inert' : ''}>
+                    ${conteudoFrente}
+                </div>
+                <div class="carta-verso" id="carta-conteudo-verso" ${jogo.faseTurno === 'inicio' ? 'inert' : ''}>
+                    ${conteudoVerso}
+                </div>
             </div>
         </div>
     `;
@@ -290,6 +332,14 @@ function montarTelaJogo() {
 
     posicionarPecas();
     atualizarBotoesHistorico();
+
+    // ✨ NOVA SEÇÃO: Força o foco no botão de avanço imediatamente ao carregar a tela de resultados
+    if (jogo.faseTurno === 'resultado') {
+        setTimeout(() => {
+            const btnAvancar = document.getElementById('btn-avancar-fase');
+            if (btnAvancar) btnAvancar.focus();
+        }, 50);
+    }
 }
 
 function posicionarPecas() {
@@ -339,7 +389,6 @@ function posicionarPecas() {
     }
 }
 
-// --- FUNÇÕES DE MEMÓRIA SEGURA ---
 function obterFotoDoJogo() {
     return JSON.stringify({
         grupos: jogo.grupos,
@@ -348,8 +397,12 @@ function obterFotoDoJogo() {
         pendenciaDRE: jogo.pendenciaDRE,
         emEventoDRE: jogo.emEventoDRE,
         turnoRetornoDRE: jogo.turnoRetornoDRE,
-        idCausadorDRE: jogo.idCausadorDRE, // NOVA LINHA
-        modoFisico: jogo.modoFisico 
+        idCausadorDRE: jogo.idCausadorDRE, 
+        modoFisico: jogo.modoFisico,
+        faseTurno: jogo.faseTurno,
+        textoResultado: jogo.textoResultado,
+        acertouUltima: jogo.acertouUltima,
+        dificuldadeUltima: jogo.dificuldadeUltima
     });
 }
 
@@ -361,8 +414,12 @@ function aplicarFotoDoJogo(fotoString) {
     jogo.pendenciaDRE = backup.pendenciaDRE || null;
     jogo.emEventoDRE = backup.emEventoDRE || false;
     jogo.turnoRetornoDRE = backup.turnoRetornoDRE !== undefined ? backup.turnoRetornoDRE : null;
-    jogo.idCausadorDRE = backup.idCausadorDRE !== undefined ? backup.idCausadorDRE : null; // ✨ NOVA LINHA
+    jogo.idCausadorDRE = backup.idCausadorDRE !== undefined ? backup.idCausadorDRE : null; 
     jogo.modoFisico = backup.modoFisico || false; 
+    jogo.faseTurno = backup.faseTurno || 'inicio';
+    jogo.textoResultado = backup.textoResultado || "";
+    jogo.acertouUltima = backup.acertouUltima !== undefined ? backup.acertouUltima : null;
+    jogo.dificuldadeUltima = backup.dificuldadeUltima || 'facil';
 }
 
 // --- LÓGICA DE PERGUNTAS E TURNOS ---
@@ -445,13 +502,17 @@ function carregarPergunta(dificuldade) {
 
     verso.innerHTML = htmlVerso;
     
-    // Gira a carta visualmente
     // Gira a carta visualmente (Física Direcional)
     if (dificuldade === 'facil') {
-        cartaCentral.classList.add('virada-esquerda'); // Botão esquerdo
+        cartaCentral.classList.add('virada-esquerda');
     } else {
-        cartaCentral.classList.add('virada-direita');  // Botão direito
+        cartaCentral.classList.add('virada-direita');
     }
+
+    // ✨ A SOLUÇÃO DEFINITIVA: Congela a frente e descongela o verso!
+    // O navegador expulsa o foco automaticamente sem precisarmos de "blur()"
+    document.querySelector('.carta-frente').setAttribute('inert', '');
+    document.querySelector('.carta-verso').removeAttribute('inert');
 
     iniciarTemporizador(dificuldade === 'facil' ? 30 : 60); 
 }
@@ -515,9 +576,9 @@ function processarResposta(acertou) {
     let grupoQueMoveu = null;
 
     // Gera as bolinhas e o nome para o Pop-up
-    let corAtivo = jogadorAtivo ? `<span style="display:inline-block; width:15px; height:15px; background:${jogadorAtivo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong>${jogadorAtivo.nome}</strong>` : "";
-    
-    let corAlvo = jogadorAlvo ? `<span style="display:inline-block; width:15px; height:15px; background:${jogadorAlvo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong>${jogadorAlvo.nome}</strong>` : "";
+    let corAtivo = jogadorAtivo ? `<span class="cor-indicador-texto" style="display:inline-block; width:15px; height:15px; background:${jogadorAtivo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong>${jogadorAtivo.nome}</strong>` : "";
+
+    let corAlvo = jogadorAlvo ? `<span class="cor-indicador-texto" style="display:inline-block; width:15px; height:15px; background:${jogadorAlvo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong>${jogadorAlvo.nome}</strong>` : "";
 
     if (dificuldadeAtual === 'facil') {
         if (acertou) {
@@ -564,30 +625,21 @@ function processarResposta(acertou) {
     });
 
     let textoNotificacao = msgPopUp;
-    if (logCombo !== "") textoNotificacao += `<br><br><strong>Efeitos Extras:</strong>` + logCombo;
-    mostrarNotificacao(textoNotificacao);
+    if (logCombo !== "") textoNotificacao += `<br><br><strong>Efeitos Extras:</strong> ` + logCombo;
 
     // TOCA O SOM APENAS SE ALGUÉM REALMENTE ANDOU! 🎵
     if (grupoQueMoveu !== null || logCombo !== "") {
         tocarSom();
     }
 
-    // Finaliza o turno (virando a carta ou mostrando a resolução no digital)
-    if (jogo.modoFisico) {
-        proximoTurno();
-    } else {
-        document.querySelectorAll('.peca').forEach(p => p.remove());
-        posicionarPecas();
-        
-        const verso = document.getElementById('carta-conteudo-verso');
-        verso.innerHTML = `
-            <div style="margin: auto 0; width: 100%; display: flex; flex-direction: column; align-items: center;">
-                <h3 style="color: ${acertou ? '#28a745' : '#dc3545'}; margin-top: 0; font-size: 2rem;">${acertou ? 'Correto!' : 'Incorreto!'}</h3>
-                <p style="text-align: center; max-width: 90%; font-size: 1.3rem;"><strong>Resolução:</strong><br>${perguntaAtual.resolucao}</p>
-                <button onclick="proximoTurno()" style="margin-top: 25px; padding: 15px 30px; font-size: 1.3rem; cursor: pointer; background-color: #2c3e50; color: white; border: none; border-radius: 12px; box-shadow: 4px 4px 0px #1a252f; transition: transform 0.1s;">Concluir e Passar a Vez</button>
-            </div>
-        `;
-    }
+    // ✨ OPÇÃO 3: Salva o resultado e desenha a tela de pausa
+    jogo.faseTurno = 'resultado';
+    jogo.textoResultado = textoNotificacao;
+    jogo.acertouUltima = acertou;
+    jogo.dificuldadeUltima = dificuldadeAtual;
+
+    salvarEstado();
+    montarTelaJogo();
 }
 
 // O MOTOR DE COMBOS! (Sem loop, restrito a 1 execução por turno)
@@ -599,8 +651,7 @@ function ativarMotorDeCombos(grupo) {
         let especial = CASAS_ESPECIAIS[grupo.posicao];
         
         if (especial) { 
-            let corGrupo = `<span style="display:inline-block; width:15px; height:15px; background:${grupo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong>${grupo.nome}</strong>`;
-            log += `<br>🎯 ${corGrupo} caiu na Casa ${grupo.posicao} (${especial}): `;
+            let corGrupo = `<span class="cor-indicador-texto" style="display:inline-block; width:15px; height:15px; background:${grupo.cor}; border-radius:50%; margin-right:5px; vertical-align: middle; box-shadow: 1px 1px 2px rgba(0,0,0,0.5);"></span><strong>${grupo.nome}</strong>`;
             
             if (especial === 'BP+') {
                 grupo.posicao += 2; log += `Avança +2 casas!`;
@@ -631,14 +682,20 @@ function ativarMotorDeCombos(grupo) {
 }
 
 function proximoTurno() {
+    jogo.faseTurno = 'inicio'; // ✨ RESETA O ESTADO PARA A PRÓXIMA PERGUNTA
     // Removemos a linha que tentava fechar o modal antigo
     
     if (jogo.pendenciaDRE && jogo.pendenciaDRE.ativo) {
         let p = jogo.pendenciaDRE;
         jogo.pendenciaDRE = null; 
         
+        // ✨ CORREÇÃO: Só define o ponto de retorno se for o primeiro evento da cadeia.
+        // Se for um DRE ativando outro DRE, mantém a memória original intacta.
+        if (!jogo.emEventoDRE) {
+            jogo.turnoRetornoDRE = (jogo.turnoAtual + 1) % jogo.grupos.length;
+        }
+        
         jogo.emEventoDRE = true;
-        jogo.turnoRetornoDRE = (jogo.turnoAtual + 1) % jogo.grupos.length;
         
         let idCausador = jogo.grupos.findIndex(g => g.id === p.grupoCausador.id);
         jogo.idCausadorDRE = idCausador; // SALVA O CAUSADOR REAL AQUI
@@ -711,6 +768,11 @@ function abrirSelecaoAlvoDRE(nomeEscolhedor) {
 
 function aplicarAlvoDRE(index) {
     jogo.turnoAtual = index;
+    
+    // ✨ CORREÇÃO: Salva o jogo IMEDIATAMENTE após o alvo ser escolhido
+    // Garante que o F5 não faça o jogo esquecer quem vai responder
+    salvarEstado(); 
+    
     prepararPerguntaDRE(jogo.grupos[index].nome);
 }
 
@@ -765,8 +827,6 @@ function refazerJogada() {
 }
 
 function encerrarJogoMostrarRanking() {
-    // Removemos a linha que tentava fechar o modal antigo
-    
     let ranking = [...jogo.grupos].sort((a, b) => b.posicao - a.posicao);
     let maiorPosicao = ranking[0].posicao;
     let vencedores = ranking.filter(g => g.posicao === maiorPosicao).map(g => g.nome);
@@ -781,30 +841,48 @@ function encerrarJogoMostrarRanking() {
     let tituloFim = vencedores.length > 1 ? "EMPATE TÉCNICO!" : "TEMOS UM VENCEDOR!";
     let subtitulo = vencedores.join(', ');
 
+    // Lógica inteligente de Medalhas para Empate (Dense Ranking)
+    let rankVisual = 1;
+    let rankingItemsHTML = ranking.map((g, i) => {
+        if (i > 0 && ranking[i].posicao < ranking[i - 1].posicao) {
+            rankVisual++;
+        }
+        let medalha = "";
+        if (rankVisual === 1) medalha = "🥇";
+        else if (rankVisual === 2) medalha = "🥈";
+        else if (rankVisual === 3) medalha = "🥉";
+        
+        let casaTexto = g.posicao >= jogo.totalCasas - 1 ? "Publicação (Final)" : `Casa ${g.posicao}`;
+        return `<li style="margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+            <span class="cor-indicador-texto" style="display:inline-block; width:15px; height:15px; background:${g.cor}; border-radius:50%; box-shadow: 1px 1px 2px rgba(0,0,0,0.3);"></span>
+            <strong>${g.nome}</strong> ${medalha} - <span style="font-size: 1rem; color: #64748b;">${casaTexto}</span>
+        </li>`;
+    }).join('');
+
     let rankingHTML = `
-        <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-            <h2 style="font-size: 2.8rem; color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin: 0 0 10px 0;">🏆 FIM DE JOGO 🏆</h2>
-            <p style="font-size: 1.5rem; color: white; margin: 0 0 20px 0;">${tituloFim}<br><strong style="font-size: 2rem;">${subtitulo}</strong></p>
+        <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box;">
+            <h2 style="font-size: 2.4rem; color: #2c3e50; margin: 0 0 5px 0; font-weight: 900; text-transform: uppercase;">🏆 FIM DE JOGO 🏆</h2>
+            <p style="font-size: 1.3rem; color: #4a5568; margin: 0 0 20px 0; line-height: 1.3;">${tituloFim}<br><strong style="font-size: 1.8rem; color: #2c3e50;">${subtitulo}</strong></p>
             
-            <div style="background: rgba(255, 255, 255, 0.95); padding: 15px 30px; border-radius: 10px; width: 85%; box-shadow: 0 4px 10px rgba(0,0,0,0.3); max-height: 50%; overflow-y: auto;">
-                <h3 style="margin: 0 0 10px 0; color: #333; font-size: 1.6rem; text-align: center; text-transform: uppercase;">Ranking Final</h3>
-                <ol style="margin: 0; padding-left: 20px; font-size: 1.3rem; color: #444; text-align: left;">
-                    ${ranking.map((g, i) => {
-                        let casaTexto = g.posicao >= jogo.totalCasas - 1 ? "Publicação (Final)" : `Casa ${g.posicao}`;
-                        let medalha = i === 0 ? "🥇" : (i === 1 ? "🥈" : (i === 2 ? "🥉" : ""));
-                        return `<li style="margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 5px;"><strong>${g.nome}</strong> ${medalha} - <span style="font-size: 1rem;">${casaTexto}</span></li>`;
-                    }).join('')}
+            <div style="background: #ffffff; padding: 20px 25px; border-radius: 12px; width: 90%; max-width: 440px; border: 3px solid #2c3e50; box-shadow: 4px 4px 0px #2c3e50; max-height: 240px; overflow-y: auto; box-sizing: border-box;">
+                <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 1.3rem; text-align: center; text-transform: uppercase; font-weight: 800; border-bottom: 2px solid #2c3e50; padding-bottom: 5px;">Ranking Final</h3>
+                <ol style="margin: 0; padding-left: 10px; list-style: none; text-align: left;">
+                    ${rankingItemsHTML}
                 </ol>
             </div>
             
-            <button onclick="location.reload()" style="margin-top: 25px; padding: 15px 30px; font-size: 1.4rem; font-weight: bold; background: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.4); transition: transform 0.2s;">Sair para o Menu</button>
+            <button onclick="location.reload()" style="margin-top: 25px; padding: 12px 35px; font-size: 1.2rem; font-weight: bold; background: #007bff; color: white; border: 3px solid #2c3e50; box-shadow: 4px 4px 0px #2c3e50; border-radius: 12px; cursor: pointer;">Sair para o Menu</button>
         </div>
     `;
 
     const centro = document.getElementById('centro-tabuleiro');
-    centro.style.background = "rgba(44, 62, 80, 0.95)"; 
-    centro.style.transform = "scale(1.03)"; 
-    centro.style.transition = "all 0.5s ease";
+    // Alinha o fundo com a estética original e limpa dos cards do tabuleiro
+    centro.style.background = "#f8fafc"; 
+    centro.style.borderRadius = "16px";
+    centro.style.border = "4px solid #2c3e50";
+    centro.style.boxShadow = "8px 8px 0px rgba(44, 62, 80, 0.3)";
+    centro.style.width = "95%";
+    centro.style.height = "95%";
     centro.style.zIndex = "20";
     
     centro.innerHTML = rankingHTML;
@@ -967,3 +1045,60 @@ function tocarSom() {
         }
     }
 }
+
+// --- CONTROLE REMOTO / TECLADO ---
+let bloqueioControle = false;
+
+document.addEventListener('keydown', function(event) {
+    if (bloqueioControle) return;
+
+    // ✨ TRAVA NOVA: Se tiver algum modal aberto (Novo Jogo, Configs, etc), o teclado ignora a carta!
+    if (document.querySelector('.modal.ativo')) return;
+
+    const cartaCentral = document.getElementById('carta-central');
+    if (!cartaCentral) return;
+
+    const isVirada = cartaCentral.classList.contains('virada-esquerda') || cartaCentral.classList.contains('virada-direita');
+    const faceAtiva = isVirada ? cartaCentral.querySelector('.carta-verso') : cartaCentral.querySelector('.carta-frente');
+    
+    const botoes = Array.from(faceAtiva.querySelectorAll('button:not([disabled])'));
+    if (botoes.length === 0) return;
+
+    const indexAtual = botoes.indexOf(document.activeElement);
+    let teclaProcessada = false;
+
+    // AVANÇAR (PageDown / Setas Direita/Baixo)
+    if (event.key === 'PageDown' || event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+        event.preventDefault(); 
+        let proximo = indexAtual === -1 ? 0 : (indexAtual + 1) % botoes.length;
+        botoes[proximo].focus();
+        teclaProcessada = true;
+    }
+    // VOLTAR (PageUp / Setas Esquerda/Cima)
+    else if (event.key === 'PageUp' || event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+        event.preventDefault(); 
+        let anterior = indexAtual <= 0 ? botoes.length - 1 : indexAtual - 1;
+        botoes[anterior].focus();
+        teclaProcessada = true;
+    }
+    // FALSO ENTER (Exclusivo para o Passador de Slides - 'B' ou Ponto)
+    else if (event.key === 'b' || event.key === 'B' || event.key === '.') {
+        event.preventDefault(); 
+        
+        if (indexAtual !== -1) {
+            botoes[indexAtual].click();
+        } else {
+            // Limpa o foco sujo da memória e clica na opção principal da tela atual
+            if (document.activeElement) document.activeElement.blur();
+            botoes[0].click();
+        }
+        teclaProcessada = true;
+    }
+
+    if (teclaProcessada) {
+        bloqueioControle = true;
+        setTimeout(() => {
+            bloqueioControle = false;
+        }, 400);
+    }
+});

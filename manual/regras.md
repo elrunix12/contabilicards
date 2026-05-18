@@ -27,6 +27,9 @@ Quando uma peça cair em uma destas casas, o efeito imediato é ativado:
 ## 🔄 Regra de Combos e Reações em Cadeia
 * **Limite de 1 Combo:** Para evitar confusão e loops infinitos, os efeitos de casas especiais ocorrem **apenas uma vez por rodada**. 
 * Se um jogador sofrer o efeito de uma casa (como avançar ou recuar) e acabar parando em cima de uma segunda casa especial, a segunda casa será **ignorada**.
+* **Exceção (Perguntas Bônus):** As casas DRE+ e DRE- pausam o jogo para uma pergunta extra. Como o movimento não é automático (exige que o grupo acerte a resposta), a regra do combo é reiniciada.
+    * O grupo cai no DRE+, responde a nova pergunta e acerta. Ao andar as 3 casas, cai em cima de um "Avança +2". O grupo ganha esse bônus, pois a jogada veio de um novo acerto!
+
 
 ## ⚙️ Configurações Opcionais (Menu Iniciar)
 O jogo possui um botão de "Configurações" na tela inicial onde o professor/mediador pode personalizar a partida:

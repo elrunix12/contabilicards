@@ -12,18 +12,19 @@ Transformar a revisão de conteúdos contábeis em uma experiência interativa e
 * **Tabuleiro Dinâmico:** O tamanho do tabuleiro se ajusta automaticamente (de 16 a 100 casas) em um formato de anel contínuo, permitindo partidas rápidas ou prolongadas.
 * **Distribuição Visual Inteligente:** Sistema geométrico circular que organiza as peças automaticamente, impedindo que equipes fiquem sobrepostas quando caem na mesma casa.
 * **Modo Projetor:** Um botão dedicado que ativa a tela cheia e amplia automaticamente todas as fontes e elementos visuais para leitura em grandes espaços, adaptando inclusive o scroll para perguntas longas.
-* **Modo Físico:** Opção para jogar com cartas impressas. A tela atua apenas como tabuleiro e controle de turnos, com botões centrais de "Acertou" ou "Errou" para o mediador.
+* **Suporte a Passadores de Slides:** Otimizado para a mobilidade do professor, o jogo permite navegação total via teclado ou controles remotos, contando com sistema interno de *debounce* (proteção contra *double-click* mecânico do hardware).
+* **Modo Físico:** Opção para jogar com cartas impressas. A tela atua apenas como tabuleiro e controle de turnos, com botões centrais para o mediador validar a resposta.
 * **Sistema de Turnos e Dificuldade:** * *Nível Fácil (30s):* Acerto avança 3 casas. Erro faz o jogador ativo (quem leu a pergunta) avançar 1 casa.
   * *Nível Difícil (60s):* Acerto avança 5 casas. Erro faz o jogador ativo avançar 3 casas.
-* **Casas Especiais e Combos:** O tabuleiro possui casas bônus (BP), casas de interação que afetam os oponentes (IR) e casas de pergunta bônus (DRE). O jogo conta com um sistema de proteção contra *loops* infinitos, limitando as reações em cadeia a apenas um combo por rodada.
-* **Configurações Flexíveis:** Opções nativas para ativar/desativar penalidade por tempo esgotado.
+* **Casas Especiais e Combos:** O tabuleiro possui casas bônus (BP), casas de interação que afetam os oponentes (IR) e casas de pergunta bônus (DRE). O jogo conta com proteção nativa contra *loops* infinitos (limitando reações em cadeia automáticas a um por rodada) e uma máquina de estados segura para múltiplos eventos simultâneos.
+* **Configurações Flexíveis:** Opções nativas para ativar/desativar penalidades automáticas por tempo esgotado e controle de efeitos sonoros de movimentação.
 * **Linha do Tempo Segura:** Sistema de "Desfazer" e "Refazer" jogadas com limite de memória estrita para corrigir cliques acidentais sem risco de travar o navegador por limite de armazenamento (*QuotaExceeded*).
 
 ## 🛠️ Tecnologias Utilizadas
 
 O projeto foi construído de forma nativa e leve, sem a necessidade de frameworks complexos:
-* **HTML5 & CSS3:** Estruturação visual, animações 3D de cartas e responsividade utilizando CSS Grid e Flexbox.
-* **Vanilla JavaScript:** Lógica do jogo, controle de turnos, motor de combos, física de tabuleiro e manipulação de memória.
+* **HTML5 & CSS3:** Estruturação visual, animações 3D de cartas, escalonamento automático e manipulação de foco/acessibilidade via atributo `inert`.
+* **Vanilla JavaScript:** Lógica do jogo, controle de turnos, motor de combos, física de tabuleiro circular e manipulação de memória.
 * **PWA (Service Workers):** Gerenciamento de cache avançado para instalação nativa e execução offline segura.
 * **Marked.js:** Biblioteca simples para renderizar as regras do jogo escritas em Markdown (com fallback embutido para acesso sem internet).
 
